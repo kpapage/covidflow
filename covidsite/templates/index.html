@@ -20,6 +20,8 @@
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static',filename='sb-admin-2.min.css') }}" rel="stylesheet">
 
+
+
 </head>
 
 <body id="page-top">
@@ -191,7 +193,7 @@
                     <div class="row">
 
                         <!-- Area Chart -->
-                        <div class=" col-md-12">
+                        <div class=" col-xl-12 ">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -201,7 +203,7 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
-                                        <canvas id="lineChart"></canvas>
+                                        <canvas id="lineChart"  ></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -218,39 +220,12 @@
                             <!-- Project Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">WordCloud of Most Used Tags</h6>
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="small font-weight-bold">Server Migration <span
-                                            class="float-right">20%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Sales Tracking <span
-                                            class="float-right">40%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Customer Database <span
-                                            class="float-right">60%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Payout Details <span
-                                            class="float-right">80%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Account Setup <span
-                                            class="float-right">Complete!</span></h4>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                                   <div class="chart-area" >
+                                       <div id="wordCloud"></div>
+                                   </div>
                                 </div>
                             </div>
 
@@ -412,6 +387,10 @@
     <!-- Chart.js-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
+    <!-- D3.js Word Cloud -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="{{ url_for('static',filename='js/d3.layout.cloud.js') }}"></script>
+
     <!-- Bootstrap core JavaScript-->
     <script scr="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
     <script scr="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -460,6 +439,53 @@
         });
 
     </script>
+
+    <script>
+
+
+      'use strict';
+
+      var dataScale = d3.scale.linear().range([10,80]);
+
+      const data= {{ list_of_tags_and_values | safe }};
+
+      var width= 750,height=500;
+
+      var fill = d3.scale.category20();
+
+      dataScale.domain([
+          d3.min(data,function (d) {return d.size;}),
+          d3.max(data,function (d) {return d.size;})
+      ]);
+
+      d3.layout.cloud().size([width, height])
+          .words(data)
+          .padding(0)
+          {#.rotate(function() { return ~~(Math.random() * 2) * 90; })#}
+          .font("Impact")
+          .fontSize(function(d) { return dataScale(d.size); })
+          .on("end", draw)
+          .start();
+
+      function draw(words) {
+        d3.select("#wordCloud").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+          .append("g")
+            .attr("transform", "translate("+(width/2)+","+(height/2)+")")
+          .selectAll("text")
+            .data(words)
+          .enter().append("text")
+            .style("font-size", function(d) { return d.size + "px"; })
+            .style("font-family", "Impact")
+            .style("fill", function(d, i) { return fill(i); })
+            .attr("text-anchor", "middle")
+            .attr("transform", function(d) {
+              return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .text(function(d) { return d.text; });
+      }
+</script>
 
 </body>
 
