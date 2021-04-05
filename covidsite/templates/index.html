@@ -223,8 +223,8 @@
                                     <h6 class="m-0 font-weight-bold text-primary">WordCloud of Most Used Tags</h6>
                                 </div>
                                 <div class="card-body">
-                                   <div class="chart-area" >
-                                       <div id="wordCloud"></div>
+                                   <div class="chart-area" id="wordCloudArea">
+                                       <div id="wordCloud" ></div>
                                    </div>
                                 </div>
                             </div>
@@ -445,11 +445,11 @@
 
       'use strict';
 
-      var dataScale = d3.scale.linear().range([10,80]);
+      var dataScale = d3.scale.linear().range([20,80]);
 
       const data= {{ list_of_tags_and_values | safe }};
 
-      var width= 750,height=500;
+      var width= 500,height=500;
 
       var fill = d3.scale.category20();
 
@@ -485,7 +485,7 @@
             })
             .text(function(d) { return d.text; });
       }
-</script>
+    </script>
 
 </body>
 

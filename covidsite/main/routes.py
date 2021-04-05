@@ -2,6 +2,8 @@ from flask import Blueprint, render_template
 
 from covidsite.extensions import mongo
 
+from itertools import islice
+
 main = Blueprint('main', __name__)
 
 
@@ -30,7 +32,11 @@ def index():
     for i in range(len(tags)):
         tags_and_values[tags[i]] = tags.count(tags[i])
 
-    for key, value in tags_and_values.items():
+    sorted_tags_and_values = dict(sorted(tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+
+    best_sorted_tags_and_values = dict(islice(sorted_tags_and_values.items(), 80))
+
+    for key, value in best_sorted_tags_and_values.items():
         d = {"text": key, "size": value}
         list_of_tags_and_values.append(d)
 
