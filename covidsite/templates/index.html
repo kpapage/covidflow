@@ -29,7 +29,10 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
+
+
+
+            <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
             <br>
             <!-- Sidebar - Brand -->
@@ -88,12 +91,15 @@
                 </a>
             </li>
 
-
-
-
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
 
         </ul>
         <!-- End of Sidebar -->
+
+
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -101,8 +107,17 @@
             <!-- Main Content -->
             <div id="content">
 
-                <br>
-                <br>
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top ">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+
+
+                </nav>
+
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -223,7 +238,7 @@
                                     <h6 class="m-0 font-weight-bold text-primary">WordCloud of Most Used Tags</h6>
                                 </div>
                                 <div class="card-body">
-                                   <div class="chart-area" id="wordCloudArea">
+                                   <div class="chart-area" id="wordCloudArea" >
                                        <div id="wordCloud" ></div>
                                    </div>
                                 </div>
@@ -392,14 +407,14 @@
     <script src="{{ url_for('static',filename='js/d3.layout.cloud.js') }}"></script>
 
     <!-- Bootstrap core JavaScript-->
-    <script scr="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
-    <script scr="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Core plugin JavaScript-->
-    <script scr="{{ url_for('static',filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script scr="{{ url_for('static',filename='js/sb-admin-2.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/sb-admin-2.min.js') }}"></script>
 
     <!-- Page level plugins -->
     <script scr="{{ url_for('static',filename='vendor/chart.js/Chart.min.js') }}"></script>
@@ -449,7 +464,7 @@
 
       const data= {{ list_of_tags_and_values | safe }};
 
-      var width= 500,height=500;
+      var width= 750,height= 500;
 
       var fill = d3.scale.category20();
 
