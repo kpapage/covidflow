@@ -16,6 +16,9 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static',filename='sb-admin-2.min.css') }}" rel="stylesheet">
@@ -239,76 +242,8 @@
                                 </div>
                                 <div class="card-body">
                                    <div class="chart-area" id="wordCloudArea" >
-                                       <div id="wordCloud" ></div>
+                                       <div id="wordCloud"></div>
                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Color System -->
-                            <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-primary text-white shadow">
-                                        <div class="card-body">
-                                            Primary
-                                            <div class="text-white-50 small">#4e73df</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-success text-white shadow">
-                                        <div class="card-body">
-                                            Success
-                                            <div class="text-white-50 small">#1cc88a</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-info text-white shadow">
-                                        <div class="card-body">
-                                            Info
-                                            <div class="text-white-50 small">#36b9cc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-warning text-white shadow">
-                                        <div class="card-body">
-                                            Warning
-                                            <div class="text-white-50 small">#f6c23e</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-danger text-white shadow">
-                                        <div class="card-body">
-                                            Danger
-                                            <div class="text-white-50 small">#e74a3b</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-secondary text-white shadow">
-                                        <div class="card-body">
-                                            Secondary
-                                            <div class="text-white-50 small">#858796</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-light text-black shadow">
-                                        <div class="card-body">
-                                            Light
-                                            <div class="text-black-50 small">#f8f9fc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-dark text-white shadow">
-                                        <div class="card-body">
-                                            Dark
-                                            <div class="text-white-50 small">#5a5c69</div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -316,40 +251,42 @@
 
                         <div class="col-lg-6 mb-4">
 
-                            <!-- Illustrations -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Barchart of Most Used Tags</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="img/undraw_posting_photo.svg" alt="">
+                                   <div class="chart-area">
+                                        <canvas id="barChart"  ></canvas>
                                     </div>
-                                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                                        constantly updated collection of beautiful svg images that you can use
-                                        completely free and without attribution!</p>
-                                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                                        unDraw &rarr;</a>
                                 </div>
                             </div>
 
-                            <!-- Approach -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                                        CSS bloat and poor page performance. Custom CSS classes are used to create
-                                        custom components and custom utility classes.</p>
-                                    <p class="mb-0">Before working with this theme, you should become familiar with the
-                                        Bootstrap framework, especially the utility classes.</p>
-                                </div>
-                            </div>
 
                         </div>
+                    </div>
+
+                    <div class="row">
+
+                        <!-- Area Chart -->
+                        <div class=" col-xl-12 ">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">User World Map</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <div id="mapid" style="height: 500px;">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -406,6 +343,11 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="{{ url_for('static',filename='js/d3.layout.cloud.js') }}"></script>
 
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+
     <!-- Bootstrap core JavaScript-->
     <script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -423,6 +365,7 @@
     <script scr="{{ url_for('static',filename='js/demo/chart-area-demo.js') }}"></script>
     <script scr="{{ url_for('static',filename='js/demo/chart-pie-demo.js') }}"></script >
 
+    <!-- date script -->
     <script>
 
     var today = new Date();
@@ -433,6 +376,7 @@
 
     </script>
 
+    <!-- linechart script -->
     <script>
 
         var ctx = document.getElementById("lineChart").getContext("2d");
@@ -455,6 +399,7 @@
 
     </script>
 
+    <!-- wordcloud script -->
     <script>
 
 
@@ -500,6 +445,76 @@
             })
             .text(function(d) { return d.text; });
       }
+    </script>
+
+    <!-- linechart script -->
+    <script>
+
+        var ctx = document.getElementById("barChart").getContext("2d");
+
+        Chart.defaults.scale.ticks.beginAtZero = true;
+
+        var barChart = new Chart(ctx, {
+            type : "bar",
+            data : {
+                labels : {{ barChartLabels |safe }},
+                datasets : [
+                    {
+                        label: "Top 10 Technologies",
+                        data: {{ barChartValues |safe }},
+                        backgroundColor: [
+                          'rgba(51, 28, 71, 0.5)',
+                          'rgba(51, 99, 71, 0.5)',
+                          'rgba(255, 99, 71, 1)',
+                          'rgba(0, 152, 77, 0.7)',
+                          'rgba(0, 39, 77, 0.7)',
+                          'rgba(242, 39, 77, 0.7)',
+                          'rgba(242, 39, 77, 0.8)',
+                            'rgba(0, 183, 140, 0.8)',
+                            'rgba(0, 107, 140, 1)',
+                            'rgba(255, 107, 59, 0.7)'
+                        ]
+                    }
+                ]
+            }
+        });
+
+    </script>
+
+    <!-- map script -->
+
+    <script>
+
+        const latitude = {{ latitudes | safe }};
+
+        const longitude = {{ longitudes | safe }};
+
+        const mymap = L.map('mapid').setView([0, 0], 1);
+
+        const attribution =
+            '&copy; <a href="https://www.openstreet.org/copyright">OpenStreetMap</a> contributors';
+
+        const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+        const tiles = L.tileLayer(tileUrl,{attribution});
+
+        tiles.addTo(mymap);
+
+        mymap.fitWorld().zoomIn;
+
+        var i;
+
+        for(i=0;i<latitude.length;i++){
+
+            const circle = L.circle([latitude[i], longitude[i]], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 1500
+        }).addTo(mymap);
+        }
+
+
     </script>
 
 </body>
