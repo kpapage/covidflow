@@ -4,7 +4,7 @@ from covidsite.extensions import mongo
 
 from itertools import islice
 
-
+from collections import Counter
 
 main = Blueprint('main', __name__)
 
@@ -22,11 +22,14 @@ def index():
     list_of_tags_and_values = []
     latitudes = []
     longitudes = []
+    coordinates = []
 
     for question in questions:
         dates.append(question['timestamps'][:10])
         record_tags = question['tags'].split()
         if question['latitude'] != 'None':
+            latLng =  [question['latitude'],question['longitude']]
+            coordinates.append(latLng)
             latitudes.append(question['latitude'])
             longitudes.append(question['longitude'])
         for i in range(len(record_tags)):
@@ -57,9 +60,34 @@ def index():
     barChartLabels = list(top_ten_tags_and_values_barchart.keys())  # lineChart labels
     barChartValues = list(top_ten_tags_and_values_barchart.values())  # lineChart values
 
-    for i in range(len(latitudes)):
-        print(str(latitudes[i])+','+str(longitudes[i]))
+    list_of_tuples_for_coordinates=[tuple(elem) for elem in coordinates]
+
+    coordinates_counter_dict = dict(Counter(list_of_tuples_for_coordinates))
+
+
+    coordinates_latitude= []
+    coordinates_longitude = []
+    coordinates_values = []
+
+    for key,value in coordinates_counter_dict.items():
+        coordinates_latitude.append(key[0])
+        coordinates_longitude.append(key[1])
+        coordinates_values.append(value)
+
+
+
+    normalized_coordinates_values = [float(i)/max(coordinates_values) for i in coordinates_values]
+
+
+    latLngInt=[]
+
+    for i in range(len(coordinates_values)):
+        latLngInt.append([coordinates_latitude[i],coordinates_longitude[i],normalized_coordinates_values[i]])
+
+
+
+
 
     return render_template('index.html', questions=questions, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
-                           barChartValues=barChartValues,latitudes=latitudes,longitudes=longitudes)
+                           barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes)

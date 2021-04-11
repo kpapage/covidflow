@@ -275,13 +275,20 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">User World Map</h6>
+
+                                    <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="pointMap" checked="checked">
+                                      <label class="form-check-label" for="inlineRadio1">Point Map</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="heatMap" >
+                                      <label class="form-check-label" for="inlineRadio2">Heat Map</label>
+                                    </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-area">
-                                        <div id="mapid" style="height: 500px;">
+                                    <div class="chart-area" id="map">
 
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -347,6 +354,9 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
+
+    <!-- Leaflet-Heat.js -->
+    <script src="{{ url_for('static',filename='js/leaflet-heat.js') }}"></script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
@@ -485,34 +495,124 @@
 
     <script>
 
-        const latitude = {{ latitudes | safe }};
+        $(document).ready(function () {
 
-        const longitude = {{ longitudes | safe }};
+            document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
 
-        const mymap = L.map('mapid').setView([0, 0], 1);
+            const mymap = L.map('mapid').setView([0, 0], 1.5);
 
-        const attribution =
-            '&copy; <a href="https://www.openstreet.org/copyright">OpenStreetMap</a> contributors';
+            const attribution =
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-        const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
 
-        const tiles = L.tileLayer(tileUrl,{attribution});
+            const tiles = L.tileLayer(tileUrl,{attribution,noWrap: true});
 
-        tiles.addTo(mymap);
+            tiles.addTo(mymap);
 
-        mymap.fitWorld().zoomIn;
+            const latitude = {{ latitudes | safe }};
 
-        var i;
+            const longitude = {{ longitudes | safe }};
 
-        for(i=0;i<latitude.length;i++){
 
-            const circle = L.circle([latitude[i], longitude[i]], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 1500
-        }).addTo(mymap);
-        }
+
+            var i;
+
+            for(i=0;i<latitude.length;i++){
+
+                const circle = L.circle([latitude[i], longitude[i]], {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5,
+                    radius: 1500
+                }).addTo(mymap);
+            }
+
+            $('input[type=radio]').change(function () {
+                var radio = $(this).val();
+
+
+
+                if(radio === "heatMap"){
+
+                    document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'>"
+
+                    const mymap = L.map('mapid').setView([0, 0], 1.5);
+
+                    const attribution =
+                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+                    const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
+
+                    const tiles = L.tileLayer(tileUrl,{attribution,noWrap: true});
+
+                    tiles.addTo(mymap);
+
+                    var latLngInt = {{ latLngInt |safe}};
+
+
+                    var heat = L.heatLayer(
+                        latLngInt,
+                        {
+                            radius: 25 ,
+                            minOpacity : 0.2,
+                            gradient : {0.025: 'blue', 0.2: 'lime', 0.7: 'red'}
+                        }).addTo(mymap);
+
+
+                    var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
+                    corner2 = L.latLng(-90.17871349622823, -289.14062500000006),
+                    bounds = L.latLngBounds(corner1, corner2);
+
+                    mymap.setMaxBounds(bounds);
+                }else{
+
+                    document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
+
+                    const mymap = L.map('mapid').setView([0, 0], 1.5);
+
+                    const attribution =
+                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+                    const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
+
+                    const tiles = L.tileLayer(tileUrl,{attribution,noWrap: true});
+
+                    tiles.addTo(mymap);
+
+                    const latitude = {{ latitudes | safe }};
+
+                    const longitude = {{ longitudes | safe }};
+
+
+
+                    var i;
+
+                    for(i=0;i<latitude.length;i++){
+
+                        const circle = L.circle([latitude[i], longitude[i]], {
+                            color: 'red',
+                            fillColor: '#f03',
+                            fillOpacity: 0.5,
+                            radius: 1500
+                        }).addTo(mymap);
+                    }
+                }
+
+
+
+
+
+            });
+        });
+
+
+
+
+
+
+
+
 
 
     </script>
