@@ -11,9 +11,10 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    covidcollection = mongo.db.questions
-    questions = covidcollection.find()
-    users = len(covidcollection.distinct('owner_id'))
+    covidCollection = mongo.db.questions
+    questions = covidCollection.find()  #load questions from collection
+
+    users = len(covidCollection.distinct('owner_id'))
 
     dates = []
     dates_and_values = {}
@@ -23,6 +24,7 @@ def index():
     latitudes = []
     longitudes = []
     coordinates = []
+    added_values = []
 
     for question in questions:
         dates.append(question['timestamps'][:10])
@@ -57,6 +59,13 @@ def index():
     labels = list(dates_and_values.keys())  # lineChart labels
     values = list(dates_and_values.values())  # lineChart values
 
+    added_values = values.copy()
+
+
+    for i in range(1,len(added_values)):
+        added_values[i]=added_values[i]+added_values[i-1]
+
+
     barChartLabels = list(top_ten_tags_and_values_barchart.keys())  # lineChart labels
     barChartValues = list(top_ten_tags_and_values_barchart.values())  # lineChart values
 
@@ -84,10 +93,46 @@ def index():
     for i in range(len(coordinates_values)):
         latLngInt.append([coordinates_latitude[i],coordinates_longitude[i],normalized_coordinates_values[i]])
 
+    techCollection = mongo.db.techologies_list
+    technologies = techCollection.find()
+
+
+
+    fields_and_techs ={}
+    distinct_tags = []
+    radar_values = [0,0,0,0,0,0,0] #[languages,frameworks,other,dbs,platforms,tools,ides]
+
+    for technology in technologies:
+        fields_and_techs.update({technology['technology'].lower():technology['field']})
+
+    for tag in tags:
+        if tag in fields_and_techs.keys():
+            if tag not in distinct_tags:
+                distinct_tags.append(tag)
+
+    for tag in distinct_tags:
+        if fields_and_techs.get(tag)== 'Languages':
+            radar_values[0]=radar_values[0]+1
+        elif fields_and_techs.get(tag)== 'Web Frameworks':
+            radar_values[1] = radar_values[1] + 1
+        elif fields_and_techs.get(tag)== 'Other':
+            radar_values[2] = radar_values[2] + 1
+        elif fields_and_techs.get(tag)== 'Databases':
+            radar_values[3] = radar_values[3] + 1
+        elif fields_and_techs.get(tag)== 'Platforms':
+            radar_values[4] = radar_values[4] + 1
+        elif fields_and_techs.get(tag)== 'Collaboration Tools':
+            radar_values[5] = radar_values[5] + 1
+        elif fields_and_techs.get(tag)== 'Developer Environments':
+            radar_values[6] = radar_values[6] + 1
+
+    for i in range(len(radar_values)):
+        radar_values[i]=radar_values[i]/len(distinct_tags)
 
 
 
 
     return render_template('index.html', questions=questions, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
-                           barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes)
+                           barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes,
+                           radar_values=radar_values,added_values=added_values)
