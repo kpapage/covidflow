@@ -97,9 +97,6 @@ def index():
     technologies = techCollection.find()
 
 
-
-
-
     fields_and_techs ={}
     distinct_tags = []
     radar_values = [0,0,0,0,0,0,0] #[languages,frameworks,other,dbs,platforms,tools,ides]
