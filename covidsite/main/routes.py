@@ -28,7 +28,7 @@ def index():
 
     for question in questions:
         dates.append(question['timestamps'][:10])
-        record_tags = question['tags'].split()
+        record_tags = question['tag'].split()
         if question['latitude'] != 'None':
             latLng =  [question['latitude'],question['longitude']]
             coordinates.append(latLng)
@@ -66,8 +66,8 @@ def index():
         added_values[i]=added_values[i]+added_values[i-1]
 
 
-    barChartLabels = list(top_ten_tags_and_values_barchart.keys())  # lineChart labels
-    barChartValues = list(top_ten_tags_and_values_barchart.values())  # lineChart values
+    barChartLabels = list(top_ten_tags_and_values_barchart.keys())  # barChart labels
+    barChartValues = list(top_ten_tags_and_values_barchart.values())  # barChart values
 
     list_of_tuples_for_coordinates=[tuple(elem) for elem in coordinates]
 
@@ -93,7 +93,7 @@ def index():
     for i in range(len(coordinates_values)):
         latLngInt.append([coordinates_latitude[i],coordinates_longitude[i],normalized_coordinates_values[i]])
 
-    techCollection = mongo.db.techologies_list
+    techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
 
 
@@ -115,7 +115,7 @@ def index():
             radar_values[0]=radar_values[0]+1
         elif fields_and_techs.get(tag)== 'Web Frameworks':
             radar_values[1] = radar_values[1] + 1
-        elif fields_and_techs.get(tag)== 'Other':
+        elif fields_and_techs.get(tag)== 'Big Data - ML':
             radar_values[2] = radar_values[2] + 1
         elif fields_and_techs.get(tag)== 'Databases':
             radar_values[3] = radar_values[3] + 1
@@ -123,7 +123,7 @@ def index():
             radar_values[4] = radar_values[4] + 1
         elif fields_and_techs.get(tag)== 'Collaboration Tools':
             radar_values[5] = radar_values[5] + 1
-        elif fields_and_techs.get(tag)== 'Developer Environments':
+        elif fields_and_techs.get(tag)== 'Developer Tools':
             radar_values[6] = radar_values[6] + 1
 
     for i in range(len(radar_values)):
