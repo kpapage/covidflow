@@ -8,8 +8,7 @@ from .extensions import mongo
 def create_app():
     app = Flask(__name__)
 
-    app.config['MONGO_URI'] = "mongodb+srv://janblake:covidquestions@cluster0.wxqyz.mongodb.net/COVID-db" \
-                              "?retryWrites=true&w=majority "
+    app.config["MONGO_URI"] = "mongodb://localhost:27017/COVID-db"
 
     mongo.init_app(app)
 

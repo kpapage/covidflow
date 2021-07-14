@@ -73,7 +73,6 @@ def index():
 
     coordinates_counter_dict = dict(Counter(list_of_tuples_for_coordinates))
 
-
     coordinates_latitude= []
     coordinates_longitude = []
     coordinates_values = []
@@ -83,10 +82,7 @@ def index():
         coordinates_longitude.append(key[1])
         coordinates_values.append(value)
 
-
-
     normalized_coordinates_values = [float(i)/max(coordinates_values) for i in coordinates_values]
-
 
     latLngInt=[]
 
@@ -98,10 +94,12 @@ def index():
 
     fields_and_techs ={}
     distinct_tags = []
-    radar_values = [0,0,0,0,0,0,0] #[languages,frameworks,other,dbs,platforms,tools,ides]
+    radar_values = [0,0,0,0,0,0,0] #[languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+
+
 
     for technology in technologies:
-        fields_and_techs.update({technology['technology'].lower():technology['field']})
+        fields_and_techs.update({technology['field'].lower():technology['technology']})
 
     for tag in tags:
         if tag in fields_and_techs.keys():
