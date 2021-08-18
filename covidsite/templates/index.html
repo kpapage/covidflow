@@ -88,7 +88,11 @@
                 </a>
             </li>
 
-
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#sixthChart" >
+                    <span>Doughnut Chart of Questions Containing Code Snippets</span>
+                </a>
+            </li>
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -172,7 +176,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                                 Last Updated</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">2021-8-16</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -200,6 +204,72 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Number of Questions Card  -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                Average Number Of Comments</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfComments }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comment fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Number of Users Card  -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-secondary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                                Average Number Of Answers</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfAnswers }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-reply fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-light shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                                Average Number Of Votes</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfVotes }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-arrow-up fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                        </div>
+                    </div>
+
 
                     <!-- Content Row -->
 
@@ -314,7 +384,23 @@
                                 </div>
                                 <div class="card-body">
                                    <div class="chart-area">
-                                        <canvas id="radarChart" height="200"></canvas>
+                                        <canvas id="radarChart" height="250"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3" id="sixthChart">
+                                    <h6 class="m-0 font-weight-bold text-primary">Doughnut Chart of Questions Containing Code Snippets </h6>
+                                </div>
+                                <div class="card-body">
+                                   <div class="chart-area">
+                                        <canvas id="doughnutChart" height="250"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -423,20 +509,44 @@
             var ctx = document.getElementById("lineChart").getContext("2d");
 
                 lineChart = new Chart(ctx, {
-                    type : "line",
-                    data : {
-                        labels : {{ labels |safe }},
-                        datasets : [
-                            {
-                                label: "Number of Questions",
-                                data: {{ values |safe }},
-                                fill : true,
-                                borderColor : "rgb(75,192,192)",
-                                lineTension : 0.1
-                            }
-                        ]
-                    }
-                });
+                        type : "bar",
+                        data : {
+                            labels : {{ labels |safe }},
+                            datasets : [
+                                {
+                                    label: "Number of Questions",
+                                    data: {{ values |safe }},
+                                    fill : true,
+                                    backgroundColor: "rgb(75,192,192,0.61)",
+                                    lineTension : 1,
+                                    order : 2
+                                },
+                                {
+                                    data: {{ halfMonthValues |safe }},
+                                    fill : true,
+                                    type: "line",
+                                    borderColor : "rgb(220,20,60)",
+                                    lineTension : 0,
+                                    order : 1
+                                }
+                            ]
+                        },
+                        options: {
+                            elements: {
+                                point:{
+                                    radius: 0
+                                }
+                            },
+                            legend: {
+                                labels: {
+                                    filter: function(legendItem, chartData) {
+                                        return legendItem.datasetIndex !== 1;
+
+                                    }
+                                }
+}
+                        }
+                    });
             
             $('input[name = lineRadioOptions]').change(function () {
 
@@ -448,7 +558,7 @@
 
 
                     lineChart = new Chart(ctx, {
-                        type : "line",
+                        type : "bar",
                         data : {
                             labels : {{ labels |safe }},
                             datasets : [
@@ -456,10 +566,34 @@
                                     label: "Number of Questions",
                                     data: {{ values |safe }},
                                     fill : true,
-                                    borderColor : "rgb(75,192,192)",
-                                    lineTension : 0.1
+                                    backgroundColor: "rgba(75,192,192,0.61)",
+                                    lineTension : 1,
+                                    order : 2
+                                },
+                                {
+                                    data: {{ halfMonthValues |safe }},
+                                    fill : true,
+                                    type: "line",
+                                    borderColor : "rgb(220,20,60)",
+                                    lineTension : 1,
+                                    order : 1
                                 }
                             ]
+                        },
+                        options: {
+                            elements: {
+                                point:{
+                                    radius: 0
+                                }
+                            },
+                            legend: {
+                                labels: {
+                                    filter: function(legendItem, chartData) {
+                                        return legendItem.datasetIndex !== 1;
+
+                                    }
+                                }
+}
                         }
                     });
                 }else{
@@ -770,6 +904,36 @@
                         pointBorderColor: '#fff',
                         pointHoverBackgroundColor: '#fff',
                         pointHoverBorderColor: 'rgb(255, 99, 132)'
+                    }
+                ]
+            }
+        });
+
+    </script>
+
+    <!-- Doughnut Chart script -->
+    <script>
+
+        var ctx = document.getElementById("doughnutChart").getContext("2d");
+
+        Chart.defaults.scale.ticks.beginAtZero = true;
+        Chart.defaults.global.defaultFontSize = 14;
+
+
+        var radarChart = new Chart(ctx, {
+            type : "doughnut",
+            data : {
+                labels : ['Yes','No'],
+                datasets : [
+                    {
+                        label: "Technology Percentage",
+                        data: {{ snippetData |safe }},
+                        fill: true,
+                        backgroundColor: [
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 99, 132)'
+
+                        ]
                     }
                 ]
             }

@@ -24,11 +24,19 @@ def index():
     latitudes = []
     longitudes = []
     coordinates = []
+    comments = []
+    answers = []
+    votes = []
+    code_snippets = []
     added_values = []
 
     for question in questions:
         dates.append(question['timestamps'][:10])
         record_tags = question['tag'].split()
+        comments.append(question['comments'])
+        answers.append(question['answers'])
+        votes.append(int(question['votes']))
+        code_snippets.append(int(question['code_snippet']))
         if question['latitude'] != 'None':
             latLng =  [question['latitude'],question['longitude']]
             coordinates.append(latLng)
@@ -36,6 +44,24 @@ def index():
             longitudes.append(question['longitude'])
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
+
+
+    numberOfComments = sum(comments)
+    avgNumberOfComments = format((numberOfComments/questions.count()),'.3f')
+    numberOfAnswers = sum(answers)
+    avgNumberOfAnswers = format((numberOfAnswers/questions.count()),'.3f')
+    numberOfVotes = sum(votes)
+    avgNumberOfVotes = format((numberOfVotes / questions.count()), '.3f')
+
+    yesCounter = 0
+    noCounter = 0
+    for snippet in code_snippets:
+        if snippet == 1:
+            yesCounter+=1
+        else:
+            noCounter+=1
+
+    snippetData = [yesCounter,noCounter]
 
     sorted_dates = sorted(dates, key=lambda d: tuple(map(int, d.split('-'))))
 
@@ -58,6 +84,27 @@ def index():
 
     labels = list(dates_and_values.keys())  # lineChart labels
     values = list(dates_and_values.values())  # lineChart values
+
+    counter = 0
+    days = 0
+    previous_value = 0
+    halfMonthValues = []
+    for key,value in dates_and_values.items():
+        counter+=value
+        if days ==7:
+            difference = abs((counter/7)-previous_value)
+            for i in range(7):
+                dummy = counter/7
+                if previous_value < dummy:
+                    previous_value=previous_value+(difference/7)
+                    halfMonthValues.append(previous_value)
+                else:
+                    previous_value = previous_value - (difference/7)
+                    halfMonthValues.append(previous_value)
+            counter = 0
+            days = 0
+        days+=1
+
 
     added_values = values.copy()
 
@@ -128,7 +175,10 @@ def index():
 
 
 
+
     return render_template('index.html', questions=questions, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes,
-                           radar_values=radar_values,added_values=added_values)
+                           radar_values=radar_values,added_values=added_values,avgNumberOfAnswers=avgNumberOfAnswers,
+                           avgNumberOfComments=avgNumberOfComments,avgNumberOfVotes=avgNumberOfVotes,
+                           snippetData=snippetData,halfMonthValues=halfMonthValues)
