@@ -409,6 +409,52 @@
                         </div>
                     </div>
 
+                    <div class="row">
+
+                        <!-- Content Column -->
+
+
+                        <div class="col-lg-8 mb-4">
+
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3" id="fifthChart">
+                                    <h6 class="m-0 font-weight-bold text-primary">Top 10 Most Voted Questions</h6>
+                                </div>
+                                <div class="card-body">
+                                   <div class="chart-area">
+
+                                        <div>
+                                            <table class="table table-striped" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                      <th width="5%" scope="col">#</th>
+                                                      <th width="85%" scope="col">Title</th>
+                                                      <th width="10%" scope="col" >Votes</th>
+                                                    </tr>
+                                                  </thead>
+                                                {% set count = namespace(value=1) %}
+                                                {%for key,value in top_10_sorted_ids_and_votes.items()%}
+                                                     <tr>
+                                                        <th width="5%" scope="row">{{ count.value }} </th>
+                                                        <td width="85%" class="col-md-2"><a href="{{ key }}" target="_blank">{{ value[1] }}  </a> </td>
+                                                        <td width="10%"class="col-md-2" >{{ value[0] }}    <i class="fas fa-arrow-up" style="color: green"></i></td>
+                                                     </tr>
+                                                    {% set count.value = count.value + 1 %}
+                                                {% endfor %}
+
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
                 </div>
                 <!-- /.container-fluid -->
 

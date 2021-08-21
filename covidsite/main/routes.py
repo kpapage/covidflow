@@ -5,6 +5,7 @@ from covidsite.extensions import mongo
 from itertools import islice
 
 from collections import Counter
+import re
 
 main = Blueprint('main', __name__)
 
@@ -28,6 +29,7 @@ def index():
     answers = []
     votes = []
     code_snippets = []
+    ids_and_votes = {}
     added_values = []
 
     for question in questions:
@@ -36,6 +38,9 @@ def index():
         comments.append(question['comments'])
         answers.append(question['answers'])
         votes.append(int(question['votes']))
+        q_id = question['question_id']
+        q_link = "https://stackoverflow.com/questions/" + str(re.sub("[^0-9]", "",q_id))
+        ids_and_votes.update({q_link :[ int(question['votes']),question['question_title']]})
         code_snippets.append(int(question['code_snippet']))
         if question['latitude'] != 'None':
             latLng =  [question['latitude'],question['longitude']]
@@ -45,6 +50,10 @@ def index():
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
 
+
+    sorted_ids_and_votes= dict(
+        sorted(ids_and_votes.items(), reverse=True, key=lambda item: item[1]))
+    top_10_sorted_ids_and_votes = dict(islice(sorted_ids_and_votes.items(),10))
 
     numberOfComments = sum(comments)
     avgNumberOfComments = format((numberOfComments/questions.count()),'.3f')
@@ -181,4 +190,5 @@ def index():
                            barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes,
                            radar_values=radar_values,added_values=added_values,avgNumberOfAnswers=avgNumberOfAnswers,
                            avgNumberOfComments=avgNumberOfComments,avgNumberOfVotes=avgNumberOfVotes,
-                           snippetData=snippetData,halfMonthValues=halfMonthValues)
+                           snippetData=snippetData,halfMonthValues=halfMonthValues,
+                           top_10_sorted_ids_and_votes = top_10_sorted_ids_and_votes)
