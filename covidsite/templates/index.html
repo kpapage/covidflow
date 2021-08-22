@@ -22,7 +22,66 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static',filename='sb-admin-2.min.css') }}" rel="stylesheet">
+    <style>
+        .custom-select {
+  position: relative;
+  font-family: Arial;
+}
 
+.custom-select select {
+  display: none; /*hide original SELECT element: */
+}
+
+.select-selected {
+  background-color: DodgerBlue;
+}
+
+/* Style the arrow inside the select element: */
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+}
+
+/* Point the arrow upwards when the select box is open (active): */
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #fff transparent;
+  top: 7px;
+}
+
+/* style the items (options), including the selected item: */
+.select-items div,.select-selected {
+  color: #ffffff;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+}
+
+/* Style items (options): */
+.select-items {
+  position: absolute;
+  background-color: DodgerBlue;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+/* Hide the items when the select box is closed: */
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+    </style>
 
 
 </head>
@@ -346,8 +405,7 @@
                         <div class=" col-xl-12 ">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="fourthChart">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="fourthChart">
                                     <h6 class="m-0 font-weight-bold text-primary">User World Map</h6>
 
                                     <div class="form-check form-check-inline">
@@ -409,7 +467,12 @@
                         </div>
                     </div>
 
-                    <div class="row">
+
+
+
+
+
+                        <div class="row">
 
                         <!-- Content Column -->
 
@@ -417,14 +480,22 @@
                         <div class="col-lg-8 mb-4">
 
                             <div class="card shadow mb-4">
-                                <div class="card-header py-3" id="fifthChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Top 10 Most Voted Questions</h6>
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="fourthChart">
+                                      <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By</h6>
+                                        <div>
+                                           <select class="custom-select" id="topSelect" onchange="update()">
+                                              <option value="Votes" >Votes</option>
+                                              <option value="Answers">Answers</option>
+                                              <option value="Comments">Comments</option>
+                                          </select>
+                                        </div>
+
                                 </div>
                                 <div class="card-body">
-                                   <div class="chart-area">
+                                   <div class="topTable">
 
-                                        <div>
-                                            <table class="table table-striped" width="100%">
+
+                                            <table class="table table-striped" id="topTenTable" width="100%">
                                                 <thead>
                                                     <tr>
                                                       <th width="5%" scope="col">#</th>
@@ -432,18 +503,10 @@
                                                       <th width="10%" scope="col" >Votes</th>
                                                     </tr>
                                                   </thead>
-                                                {% set count = namespace(value=1) %}
-                                                {%for key,value in top_10_sorted_ids_and_votes.items()%}
-                                                     <tr>
-                                                        <th width="5%" scope="row">{{ count.value }} </th>
-                                                        <td width="85%" class="col-md-2"><a href="{{ key }}" target="_blank">{{ value[1] }}  </a> </td>
-                                                        <td width="10%"class="col-md-2" >{{ value[0] }}    <i class="fas fa-arrow-up" style="color: green"></i></td>
-                                                     </tr>
-                                                    {% set count.value = count.value + 1 %}
-                                                {% endfor %}
+
 
                                             </table>
-                                        </div>
+
 
                                     </div>
                                 </div>
@@ -482,25 +545,93 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        'use strict'
+        var tbl = document.getElementById('topTenTable');
+        var tblBody =  document.createElement("tbody");
+
+        let topTen = {{ top_10_sorted_ids_and_votes | safe }}
+        var count = 1;
+        for(const [key,value] of Object.entries(topTen)){
+            var row = document.createElement("tr");
+
+            var cell1 = document.createElement("th");
+            var cellText1 = document.createTextNode(count);
+            cell1.appendChild(cellText1);
+            row.appendChild(cell1);
+
+            var link = document.createElement("a");
+            link.setAttribute("href", key)
+            link.setAttribute("target", "blank_")
+            var linkText = document.createTextNode(value[1]);
+            link.appendChild(linkText)
+
+            var cell2 = document.createElement("td");
+            cell2.appendChild(link);
+            row.appendChild(cell2);
+
+            var cell3 = document.createElement("td");
+            var cellText3 = document.createTextNode(value [0]);
+            cell3.appendChild(cellText3);
+            row.appendChild(cell3);
+
+            tblBody.appendChild(row);
+            tbl.appendChild(tblBody);
+
+            count++;
+        }
+        function update(){
+
+            $("#topTenTable").empty();
+            var select = document.getElementById('topSelect').value;
+            if (select === "Votes"){
+                topTen = {{ top_10_sorted_ids_and_votes | safe }}
+            }else if(select === "Answers"){
+                topTen = {{ top_10_sorted_ids_and_answers | safe }}
+            }else{
+                topTen = {{ top_10_sorted_ids_and_comments | safe }}
+            }
+
+
+            var tbl = document.getElementById('topTenTable');
+            var tblBody =  document.createElement("tbody");
+
+
+            var count = 1;
+            for(const [key,value] of Object.entries(topTen)){
+                var row = document.createElement("tr");
+
+                var cell1 = document.createElement("th");
+                var cellText1 = document.createTextNode(count);
+                cell1.appendChild(cellText1);
+                row.appendChild(cell1);
+
+                var link = document.createElement("a");
+                link.setAttribute("href", key)
+                link.setAttribute("target", "blank_")
+                var linkText = document.createTextNode(value[1]);
+                link.appendChild(linkText)
+
+                var cell2 = document.createElement("td");
+                cell2.appendChild(link);
+                row.appendChild(cell2);
+
+                var cell3 = document.createElement("td");
+                var cellText3 = document.createTextNode(value [0]);
+                cell3.appendChild(cellText3);
+                row.appendChild(cell3);
+
+                tblBody.appendChild(row);
+                tbl.appendChild(tblBody);
+
+                count++;
+            }
+        }
+
+
+
+
+    </script>
 
     <!-- Chart.js-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
