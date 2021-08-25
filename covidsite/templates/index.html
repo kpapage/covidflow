@@ -23,66 +23,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static',filename='sb-admin-2.min.css') }}" rel="stylesheet">
-    <style>
-        .custom-select {
-  position: relative;
-  font-family: Arial;
-}
 
-.custom-select select {
-  display: none; /*hide original SELECT element: */
-}
-
-.select-selected {
-  background-color: DodgerBlue;
-}
-
-/* Style the arrow inside the select element: */
-.select-selected:after {
-  position: absolute;
-  content: "";
-  top: 14px;
-  right: 10px;
-  width: 0;
-  height: 0;
-  border: 6px solid transparent;
-  border-color: #fff transparent transparent transparent;
-}
-
-/* Point the arrow upwards when the select box is open (active): */
-.select-selected.select-arrow-active:after {
-  border-color: transparent transparent #fff transparent;
-  top: 7px;
-}
-
-/* style the items (options), including the selected item: */
-.select-items div,.select-selected {
-  color: #ffffff;
-  padding: 8px 16px;
-  border: 1px solid transparent;
-  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-  cursor: pointer;
-}
-
-/* Style items (options): */
-.select-items {
-  position: absolute;
-  background-color: DodgerBlue;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 99;
-}
-
-/* Hide the items when the select box is closed: */
-.select-hide {
-  display: none;
-}
-
-.select-items div:hover, .same-as-selected {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-    </style>
 
 
 </head>
@@ -374,7 +315,7 @@
                                 <div class="card-header py-3" id="secondChart">
                                     <h6 class="m-0 font-weight-bold text-primary">WordCloud of Most Used Tags
                                     <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                         <span class="tooltiptext">This wordcloud contains the tags that were mostly preffered
+                                         <span class="tooltiptext">This wordcloud contains the tags that were mostly preferred
                                          from developers when labelling their questions</span>
                                      </div></h6>
                                 </div>
@@ -482,43 +423,79 @@
                         <!-- Content Column -->
 
 
-                        <div class="col-lg-8 mb-4">
+                            <div class="col-lg-8 mb-4">
 
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="fourthChart">
-                                      <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By</h6>
-                                        <div>
-                                           <select class="custom-select" id="topSelect" onchange="update()">
-                                              <option value="Votes" >Votes</option>
-                                              <option value="Answers">Answers</option>
-                                              <option value="Comments">Comments</option>
-                                          </select>
-                                        </div>
-
-                                </div>
-                                <div class="card-body">
-                                   <div class="topTable">
-
-
-                                            <table class="table table-striped" id="topTenTable" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                      <th width="5%" scope="col">#</th>
-                                                      <th width="85%" scope="col">Title</th>
-                                                      <th width="10%" scope="col" >Votes</th>
-                                                    </tr>
-                                                  </thead>
-
-
-                                            </table>
-
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="seventhChart">
+                                          <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By</h6>
+                                            <div>
+                                               <select class="custom-select" id="topSelect" onchange="update()">
+                                                  <option value="Votes" >Votes</option>
+                                                  <option value="Answers">Answers</option>
+                                                  <option value="Comments">Comments</option>
+                                              </select>
+                                            </div>
 
                                     </div>
+                                    <div class="card-body">
+                                       <div class="topTable">
+
+
+                                                <table class="table table-striped" id="topTenTable" width="100%">
+{#                                                    <thead>#}
+{#                                                        <tr>#}
+{#                                                          <th width="5%" scope="col">#</th>#}
+{#                                                          <th width="85%" scope="col">Title</th>#}
+{#                                                          <th width="10%" scope="col" >Votes</th>#}
+{#                                                        </tr>#}
+{#                                                      </thead>#}
+
+
+                                                </table>
+
+
+                                        </div>
+                                    </div>
                                 </div>
+
+
+
+
                             </div>
 
 
-                        </div>
+                            <div class="col-lg-4 mb-4">
+
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="seventhChart">
+                                          <h6 class="m-0 font-weight-bold text-primary">Top 10 Users</h6>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="topTableUsers">
+
+
+                                                <table class="table table-striped" id="topTenTableUsers" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                          <th width="5%" scope="col">#</th>
+                                                          <th width="85%" scope="col">Username</th>
+                                                          <th width="10%" scope="col" >Questions</th>
+                                                        </tr>
+                                                    </thead>
+
+
+
+                                                </table>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
 
 
                     </div>
@@ -552,7 +529,66 @@
 
     <script>
         'use strict'
+        var tbl = document.getElementById('topTenTableUsers');
+        var tblBody =  document.createElement("tbody");
+
+        var topTenUsers = {{ top_10_distinct_users | safe }}
+        var count = 1;
+        for(const [key,value] of Object.entries(topTenUsers)){
+            var row = document.createElement("tr");
+
+            var cell1 = document.createElement("th");
+            var cellText1 = document.createTextNode(count);
+            cell1.appendChild(cellText1);
+            row.appendChild(cell1);
+
+            var link = document.createElement("a");
+            link.setAttribute("href", key)
+            link.setAttribute("target", "blank_")
+            var linkText = document.createTextNode(key.split('/')[5]);
+            link.appendChild(linkText)
+
+            var cell2 = document.createElement("td");
+            cell2.appendChild(link);
+            row.appendChild(cell2);
+
+            var cell3 = document.createElement("td");
+            var cellText3 = document.createTextNode(value);
+            cell3.appendChild(cellText3);
+            row.appendChild(cell3);
+
+            tblBody.appendChild(row);
+            tbl.appendChild(tblBody);
+
+            count++;
+        }
+    </script>
+
+    <script>
+        'use strict'
         var tbl = document.getElementById('topTenTable');
+        var tblHead = document.createElement("thead");
+
+        var hrow = document.createElement("tr");
+
+        var hcell1 = document.createElement("th");
+        var hcellText1 = document.createTextNode("#");
+        hcell1.appendChild(hcellText1);
+        hrow.appendChild(hcell1);
+
+        var hcell2 = document.createElement("th");
+        var hcellText2 = document.createTextNode("Title");
+        hcell2.appendChild(hcellText2);
+        hrow.appendChild(hcell2);
+
+        var hcell3 = document.createElement("th");
+        var hcellText3 = document.createTextNode("Votes");
+        hcell3.appendChild(hcellText3);
+        hrow.appendChild(hcell3);
+
+        tblHead.appendChild(hrow);
+        tbl.appendChild(tblHead);
+
         var tblBody =  document.createElement("tbody");
 
         let topTen = {{ top_10_sorted_ids_and_votes | safe }}
@@ -590,15 +626,43 @@
             $("#topTenTable").empty();
             var select = document.getElementById('topSelect').value;
             if (select === "Votes"){
+                var name = "Votes";
                 topTen = {{ top_10_sorted_ids_and_votes | safe }}
             }else if(select === "Answers"){
+                var name = "Answers";
                 topTen = {{ top_10_sorted_ids_and_answers | safe }}
             }else{
+                var name = "Comments";
                 topTen = {{ top_10_sorted_ids_and_comments | safe }}
             }
 
 
             var tbl = document.getElementById('topTenTable');
+
+            var tblHead = document.createElement("thead");
+
+            var hrow = document.createElement("tr");
+
+            var hcell1 = document.createElement("th");
+            var hcellText1 = document.createTextNode("#");
+            hcell1.appendChild(hcellText1);
+            hrow.appendChild(hcell1);
+
+            var hcell2 = document.createElement("th");
+            var hcellText2 = document.createTextNode("Title");
+            hcell2.appendChild(hcellText2);
+            hrow.appendChild(hcell2);
+
+            var hcell3 = document.createElement("th");
+            var hcellText3 = document.createTextNode(name);
+            hcell3.appendChild(hcellText3);
+            hrow.appendChild(hcell3);
+
+            tblHead.appendChild(hrow);
+            tbl.appendChild(tblHead);
+
+
+
             var tblBody =  document.createElement("tbody");
 
 

@@ -32,11 +32,14 @@ def index():
     ids_and_votes = {}
     ids_and_answers = {}
     ids_and_comments = {}
+    usernames = []
     added_values = []
 
     for question in questions:
         dates.append(question['timestamps'][:10])
         record_tags = question['tag'].split()
+        if question['owner_id'] != 'No Owner ID':
+            usernames.append(question['owner_id'])
         comments.append(question['comments'])
         answers.append(question['answers'])
         votes.append(int(question['votes']))
@@ -54,6 +57,10 @@ def index():
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
 
+    distinct_users = Counter(usernames)
+    sorted_distinct_users = dict(sorted(distinct_users.items(), reverse=True, key=lambda item: item[1]))
+    top_10_distinct_users = dict(islice(sorted_distinct_users.items(),10))
+    print(top_10_distinct_users)
 
     sorted_ids_and_votes= dict(
         sorted(ids_and_votes.items(), reverse=True, key=lambda item: item[1]))
@@ -205,4 +212,5 @@ def index():
                            snippetData=snippetData,halfMonthValues=halfMonthValues,
                            top_10_sorted_ids_and_votes = top_10_sorted_ids_and_votes,
                            top_10_sorted_ids_and_answers = top_10_sorted_ids_and_answers,
-                           top_10_sorted_ids_and_comments = top_10_sorted_ids_and_comments)
+                           top_10_sorted_ids_and_comments = top_10_sorted_ids_and_comments,
+                           top_10_distinct_users = top_10_distinct_users)
