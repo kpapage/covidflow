@@ -33,6 +33,9 @@ def index():
     ids_and_answers = {}
     ids_and_comments = {}
     usernames = []
+    locations = []
+    location_name = []
+    location_question = []
     added_values = []
 
     for question in questions:
@@ -54,13 +57,21 @@ def index():
             coordinates.append(latLng)
             latitudes.append(question['latitude'])
             longitudes.append(question['longitude'])
+            locations.append(question['location'])
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
 
+    disctinct_locations = Counter(locations)
+    for key,value in disctinct_locations.items():
+        location_name.append(key)
+        location_question.append(value)
+
+    for i in range(len(location_name)):
+        print(location_name[i],location_question[i])
     distinct_users = Counter(usernames)
     sorted_distinct_users = dict(sorted(distinct_users.items(), reverse=True, key=lambda item: item[1]))
     top_10_distinct_users = dict(islice(sorted_distinct_users.items(),10))
-    print(top_10_distinct_users)
+
 
     sorted_ids_and_votes= dict(
         sorted(ids_and_votes.items(), reverse=True, key=lambda item: item[1]))
@@ -213,4 +224,5 @@ def index():
                            top_10_sorted_ids_and_votes = top_10_sorted_ids_and_votes,
                            top_10_sorted_ids_and_answers = top_10_sorted_ids_and_answers,
                            top_10_sorted_ids_and_comments = top_10_sorted_ids_and_comments,
-                           top_10_distinct_users = top_10_distinct_users)
+                           top_10_distinct_users = top_10_distinct_users, location_name = location_name,
+                           location_question= location_question,locations = locations)

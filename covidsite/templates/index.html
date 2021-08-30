@@ -296,7 +296,12 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="firstChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Line Chart Of Covid-19 Related Searches</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Line Chart Of Covid-19 Related Searches
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                         <span class="tooltiptext">In the Daily Line Chart, the x-axis represents the dates that the question were asked
+                                         by the users and the y-axis represents the number of questions that were asked at that date, while in the
+                                             Cumulative Chart the y-axis represents the daily increase of the number of questions.</span>
+                                     </div></h6>
 
                                     <div class="form-check form-check-inline">
                                       <input class="form-check-input" type="radio" name="lineRadioOptions" id="lineRadio1" value="daily" checked="checked">
@@ -346,7 +351,10 @@
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3" id="thirdChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Barchart of Most Used Tags</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Barchart of Most Used Tags
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                         <span class="tooltiptext">This Bar Chart shows the top 10 tags used by the users</span>
+                                     </div></h6>
                                 </div>
                                 <div class="card-body">
                                    <div class="chart-area">
@@ -398,7 +406,11 @@
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3" id="fifthChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Radar Chart of Most Used Technologies</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Radar Chart of Most Used Technologies
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                         <span class="tooltiptext">This Radar Chart highlights the most searched for technology fields
+                                         based on the tags, the users chose</span>
+                                     </div></h6>
                                 </div>
                                 <div class="card-body">
                                    <div class="chart-area">
@@ -1038,11 +1050,17 @@
 
             const longitude = {{ longitudes | safe }};
 
+            const locations = {{ locations | safe }};
 
+            const location_name = {{ location_name | safe }};
+
+            const location_question = {{ location_question | safe }};
 
             var i;
 
+
             for(i=0;i<latitude.length;i++){
+                var j;
 
                 const circle = L.circle([latitude[i], longitude[i]], {
                     color: 'red',
@@ -1050,7 +1068,22 @@
                     fillOpacity: 0.5,
                     radius: 1500
                 }).addTo(mymap);
+                for(j=0;j<location_name.length;j++){
+                    if(locations[i] === location_name[j]){
+                        circle.bindPopup("Location: "+ location_name[j]+"<br> Questions: "+location_question[j]);
+
+                        circle.on('mouseover', function (e) {
+                            this.openPopup();
+                        });
+                        circle.on('mouseout', function (e) {
+                            this.closePopup();
+                        });
+                    }
+
+                }
             }
+
+
 
             var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
                 corner2 = L.latLng(-90.17871349622823, -289.14062500000006),
