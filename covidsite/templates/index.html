@@ -1035,7 +1035,9 @@
 
             document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
 
-            const mymap = L.map('mapid').setView([0, 0], 1.5);
+            const mymap = L.map('mapid', {
+                scrollWheelZoom: false
+            }).setView([0, 0], 1.5);
 
             const attribution =
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
@@ -1132,7 +1134,9 @@
 
                     document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
 
-                    const mymap = L.map('mapid').setView([0, 0], 1.5);
+                    const mymap = L.map('mapid', {
+                        scrollWheelZoom: false
+                    }).setView([0, 0], 1.5);
 
                     const attribution =
                             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
@@ -1147,11 +1151,17 @@
 
                     const longitude = {{ longitudes | safe }};
 
+                    const locations = {{ locations | safe }};
+
+                    const location_name = {{ location_name | safe }};
+
+                    const location_question = {{ location_question | safe }};
 
 
                     var i;
 
                     for(i=0;i<latitude.length;i++){
+                        var j;
 
                         const circle = L.circle([latitude[i], longitude[i]], {
                             color: 'red',
@@ -1159,6 +1169,19 @@
                             fillOpacity: 0.5,
                             radius: 1500
                         }).addTo(mymap);
+                        for(j=0;j<location_name.length;j++){
+                            if(locations[i] === location_name[j]){
+                                circle.bindPopup("Location: "+ location_name[j]+"<br> Questions: "+location_question[j]);
+
+                                circle.on('mouseover', function (e) {
+                                    this.openPopup();
+                                });
+                                circle.on('mouseout', function (e) {
+                                    this.closePopup();
+                                });
+                            }
+
+                        }
                     }
 
                     var corner1 = L.latLng(90.17871349622823, 289.49218750000006),

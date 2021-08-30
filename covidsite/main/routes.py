@@ -36,7 +36,7 @@ def index():
     locations = []
     location_name = []
     location_question = []
-    added_values = []
+
 
     for question in questions:
         dates.append(question['timestamps'][:10])
@@ -66,8 +66,6 @@ def index():
         location_name.append(key)
         location_question.append(value)
 
-    for i in range(len(location_name)):
-        print(location_name[i],location_question[i])
     distinct_users = Counter(usernames)
     sorted_distinct_users = dict(sorted(distinct_users.items(), reverse=True, key=lambda item: item[1]))
     top_10_distinct_users = dict(islice(sorted_distinct_users.items(),10))
