@@ -455,6 +455,18 @@
                                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="seventhChart">
                                           <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By</h6>
                                             <div>
+                                               <select class="custom-select" id="classSelect" onchange="update()">
+                                                  <option value="All" >All</option>
+                                                  <option value="Languages">Languages</option>
+                                                  <option value="Web Frameworks">Frameworks</option>
+                                                  <option value="Big Data - ML" >Big Data - ML</option>
+                                                  <option value="Databases">Databases</option>
+                                                  <option value="Platforms">Platforms</option>
+                                                  <option value="Collaboration Tools" >Collaboration Tools</option>
+                                                  <option value="Developer Tools">Developer Tools</option>
+                                              </select>
+                                            </div>
+                                            <div>
                                                <select class="custom-select" id="topSelect" onchange="update()">
                                                   <option value="Votes" >Votes</option>
                                                   <option value="Answers">Answers</option>
@@ -523,6 +535,9 @@
 
                             </div>
 
+
+                    </div>
+                    <div id="some">
 
                     </div>
 
@@ -650,17 +665,101 @@
         function update(){
 
             $("#topTenTable").empty();
+            var selectClass = document.getElementById('classSelect').value;
             var select = document.getElementById('topSelect').value;
-            if (select === "Votes"){
-                var name = "Votes";
-                topTen = {{ top_10_sorted_ids_and_votes | safe }}
-            }else if(select === "Answers"){
-                var name = "Answers";
-                topTen = {{ top_10_sorted_ids_and_answers | safe }}
-            }else{
-                var name = "Comments";
-                topTen = {{ top_10_sorted_ids_and_comments | safe }}
+            var techClass;
+            var items;
+            if(selectClass === "Languages"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_languages_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_languages_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_languages_comments | safe }}
+                }
+            }else if(selectClass === "Web Frameworks"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_web_frameworks_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_web_frameworks_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_web_frameworks_comments | safe }}
+                }
+            }else if(selectClass === "Big Data - ML"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_big_data_ml_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_big_data_ml_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_big_data_ml_comments | safe }}
+                }
+            }else if(selectClass === "Databases"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_databases_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_databases_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_databases_comments | safe }}
+                }
+            }else if(selectClass === "Platforms"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_platforms_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_platforms_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_platforms_comments | safe }}
+                }
+            }else if(selectClass === "Collaboration Tools"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_collaboration_tools_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_collaboration_tools_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_collaboration_tools_comments | safe }}
+                }
+            }else if(selectClass === "Developer Tools"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_dev_tools_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_dev_tools_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_dev_tools_comments | safe }}
+                }
+            }else if(selectClass === "All"){
+                if (select === "Votes"){
+                    var name = "Votes";
+                    topTen = {{ top_10_sorted_ids_and_votes | safe }}
+                }else if(select === "Answers"){
+                    var name = "Answers";
+                    topTen = {{ top_10_sorted_ids_and_answers | safe }}
+                }else{
+                    var name = "Comments";
+                    topTen = {{ top_10_sorted_ids_and_comments | safe }}
+                }
             }
+
+
 
 
             var tbl = document.getElementById('topTenTable');
@@ -704,7 +803,11 @@
                 var link = document.createElement("a");
                 link.setAttribute("href", key)
                 link.setAttribute("target", "blank_")
-                var linkText = document.createTextNode(value[1]);
+                if(selectClass === "All"){
+                    var linkText = document.createTextNode(value[1]);
+                }else{
+                   var linkText = document.createTextNode(value[3]);
+                }
                 link.appendChild(linkText)
 
                 var cell2 = document.createElement("td");
@@ -712,7 +815,19 @@
                 row.appendChild(cell2);
 
                 var cell3 = document.createElement("td");
-                var cellText3 = document.createTextNode(value [0]);
+                if(selectClass === "All"){
+                    var cellText3 = document.createTextNode(value [0]);
+                }else{
+                    if (select === "Votes"){
+                        var cellText3 = document.createTextNode(value [0]);
+                    }else if(select === "Answers"){
+                        var cellText3 = document.createTextNode(value [1]);
+                    }else{
+                        var cellText3 = document.createTextNode(value [2]);
+                    }
+                }
+
+
                 cell3.appendChild(cellText3);
                 row.appendChild(cell3);
 

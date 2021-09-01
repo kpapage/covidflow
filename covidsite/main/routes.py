@@ -14,7 +14,8 @@ main = Blueprint('main', __name__)
 def index():
     covidCollection = mongo.db.questions
     questions = covidCollection.find()  #load questions from collection
-
+    techCollection = mongo.db.technologies_list
+    technologies = techCollection.find()
     users = len(covidCollection.distinct('owner_id'))
 
     dates = []
@@ -36,11 +37,24 @@ def index():
     locations = []
     location_name = []
     location_question = []
+    languages = {}
+    web_frameworks = {}
+    big_data_ml = {}
+    databases = {}
+    platforms = {}
+    collaboration_tools = {}
+    dev_tools = {}
+
+    fields_and_techs = {}
+    for technology in technologies:
+        fields_and_techs.update({technology['field'].lower():technology['technology']})
 
 
     for question in questions:
         dates.append(question['timestamps'][:10])
         record_tags = question['tag'].split()
+        dif_tags = list(set(record_tags))
+
         if question['owner_id'] != 'No Owner ID':
             usernames.append(question['owner_id'])
         comments.append(question['comments'])
@@ -51,6 +65,30 @@ def index():
         ids_and_votes.update({q_link :[ int(question['votes']),question['question_title']]})
         ids_and_answers.update({q_link: [int(question['answers']), question['question_title']]})
         ids_and_comments.update({q_link: [int(question['comments']), question['question_title']]})
+        #########################
+        for q_tag in dif_tags:
+            if fields_and_techs.get(q_tag) == 'Languages':
+                languages.update({q_link:[int(question['votes']),int(question['answers']),int(question['comments']),
+                                          question['question_title']]})
+            if fields_and_techs.get(q_tag) == 'Web Frameworks':
+                web_frameworks.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
+                                           question['question_title']]})
+            if fields_and_techs.get(q_tag) == 'Big Data - ML':
+                big_data_ml.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
+                                           question['question_title']]})
+            if fields_and_techs.get(q_tag) == 'Databases':
+                databases.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
+                                           question['question_title']]})
+            if fields_and_techs.get(q_tag) == 'Platforms':
+                platforms.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
+                                           question['question_title']]})
+            if fields_and_techs.get(q_tag) == 'Collaboration Tools':
+                collaboration_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
+                                           question['question_title']]})
+            if fields_and_techs.get(q_tag) == 'Developer Tools':
+                dev_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
+                                           question['question_title']]})
+        #########################
         code_snippets.append(int(question['code_snippet']))
         if question['latitude'] != 'None':
             latLng =  [question['latitude'],question['longitude']]
@@ -61,10 +99,87 @@ def index():
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
 
-    disctinct_locations = Counter(locations)
-    for key,value in disctinct_locations.items():
+
+    distinct_locations = Counter(locations)
+    for key,value in distinct_locations.items():
         location_name.append(key)
         location_question.append(value)
+
+    ############################
+    sorted_language_votes=dict(sorted(languages.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_languages_votes = dict(islice(sorted_language_votes.items(),10))
+
+    sorted_language_answers = dict(sorted(languages.items(), reverse=True, key=lambda item: item[1][1]))
+    top_10_languages_answers = dict(islice(sorted_language_answers.items(), 10))
+
+    sorted_language_comments = dict(sorted(languages.items(), reverse=True, key=lambda item: item[1][2]))
+    top_10_languages_comments = dict(islice(sorted_language_comments.items(), 10))
+
+
+
+    sorted_web_frameworks_votes = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_web_frameworks_votes = dict(islice(sorted_web_frameworks_votes.items(), 10))
+
+    sorted_web_frameworks_answers = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][1]))
+    top_10_web_frameworks_answers = dict(islice(sorted_web_frameworks_answers.items(), 10))
+
+    sorted_web_frameworks_comments = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][2]))
+    top_10_web_frameworks_comments = dict(islice(sorted_web_frameworks_comments.items(), 10))
+
+
+    sorted_big_data_ml_votes = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_big_data_ml_votes = dict(islice(sorted_big_data_ml_votes.items(), 10))
+
+    sorted_big_data_ml_answers = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][1]))
+    top_10_big_data_ml_answers = dict(islice(sorted_big_data_ml_answers.items(), 10))
+
+    sorted_big_data_ml_comments = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][2]))
+    top_10_big_data_ml_comments = dict(islice(sorted_big_data_ml_comments.items(), 10))
+
+
+    sorted_databases_votes = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_databases_votes = dict(islice(sorted_databases_votes.items(), 10))
+
+    sorted_databases_answers = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][1]))
+    top_10_databases_answers = dict(islice(sorted_databases_answers.items(), 10))
+
+    sorted_databases_comments = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][2]))
+    top_10_databases_comments = dict(islice(sorted_databases_comments.items(), 10))
+
+
+    sorted_platforms_votes = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_platforms_votes = dict(islice(sorted_platforms_votes.items(), 10))
+
+    sorted_platforms_answers = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][1]))
+    top_10_platforms_answers = dict(islice(sorted_platforms_answers.items(), 10))
+
+    sorted_platforms_comments = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][2]))
+    top_10_platforms_comments = dict(islice(sorted_platforms_comments.items(), 10))
+
+
+    sorted_collaboration_tools_votes = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_collaboration_tools_votes = dict(islice(sorted_collaboration_tools_votes.items(), 10))
+
+    sorted_collaboration_tools_answers = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][1]))
+    top_10_collaboration_tools_answers = dict(islice(sorted_collaboration_tools_answers.items(), 10))
+
+    sorted_collaboration_tools_comments = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][2]))
+    top_10_collaboration_tools_comments = dict(islice(sorted_collaboration_tools_comments.items(), 10))
+
+    ##############################################
+
+    sorted_dev_tools_votes = dict(
+        sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_dev_tools_votes = dict(islice(sorted_dev_tools_votes.items(), 10))
+
+    sorted_dev_tools_answers = dict(
+        sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][1]))
+    top_10_dev_tools_answers = dict(islice(sorted_dev_tools_answers.items(), 10))
+
+    sorted_dev_tools_comments = dict(
+        sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][2]))
+    top_10_dev_tools_comments = dict(islice(sorted_dev_tools_comments.items(), 10))
+
 
     distinct_users = Counter(usernames)
     sorted_distinct_users = dict(sorted(distinct_users.items(), reverse=True, key=lambda item: item[1]))
@@ -173,17 +288,15 @@ def index():
     for i in range(len(coordinates_values)):
         latLngInt.append([coordinates_latitude[i],coordinates_longitude[i],normalized_coordinates_values[i]])
 
-    techCollection = mongo.db.technologies_list
-    technologies = techCollection.find()
 
-    fields_and_techs ={}
+
+
     distinct_tags = []
     radar_values = [0,0,0,0,0,0,0] #[languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
 
 
-    for technology in technologies:
-        fields_and_techs.update({technology['field'].lower():technology['technology']})
+
 
     for tag in tags:
         if tag in fields_and_techs.keys():
@@ -213,6 +326,7 @@ def index():
 
 
 
+
     return render_template('index.html', questions=questions, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes,
@@ -223,4 +337,15 @@ def index():
                            top_10_sorted_ids_and_answers = top_10_sorted_ids_and_answers,
                            top_10_sorted_ids_and_comments = top_10_sorted_ids_and_comments,
                            top_10_distinct_users = top_10_distinct_users, location_name = location_name,
-                           location_question= location_question,locations = locations)
+                           location_question= location_question,locations = locations,top_10_languages_votes = top_10_languages_votes,
+                           top_10_languages_answers = top_10_languages_answers,top_10_languages_comments = top_10_languages_comments,
+                           top_10_web_frameworks_votes = top_10_web_frameworks_votes,top_10_web_frameworks_answers = top_10_web_frameworks_answers,
+                           top_10_web_frameworks_comments= top_10_web_frameworks_comments,top_10_big_data_ml_votes = top_10_big_data_ml_votes,
+                           top_10_big_data_ml_answers=top_10_big_data_ml_answers,top_10_big_data_ml_comments = top_10_big_data_ml_comments,
+                           top_10_databases_votes =top_10_databases_votes,top_10_databases_answers = top_10_databases_answers,
+                           top_10_databases_comments = top_10_databases_comments,top_10_platforms_votes = top_10_platforms_votes,
+                           top_10_platforms_answers = top_10_platforms_answers, top_10_platforms_comments = top_10_platforms_comments,
+                           top_10_collaboration_tools_votes = top_10_collaboration_tools_votes,top_10_collaboration_tools_answers = top_10_collaboration_tools_answers,
+                           top_10_collaboration_tools_comments = top_10_collaboration_tools_comments,top_10_dev_tools_votes = top_10_dev_tools_votes,
+                           top_10_dev_tools_answers = top_10_dev_tools_answers,top_10_dev_tools_comments = top_10_dev_tools_comments
+                           )
