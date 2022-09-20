@@ -17,7 +17,7 @@ def index():
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
     users = len(covidCollection.distinct('owner_id'))
-
+    question_number = len(covidCollection.distinct('_id'))
     dates = []
     dates_and_values = {}
     tags = []
@@ -199,12 +199,11 @@ def index():
     top_10_sorted_ids_and_comments = dict(islice(sorted_ids_and_comments.items(), 10))
 
     numberOfComments = sum(comments)
-    avgNumberOfComments = format((numberOfComments/questions.count()),'.3f')
+    avgNumberOfComments = format((numberOfComments/question_number),'.3f')
     numberOfAnswers = sum(answers)
-    avgNumberOfAnswers = format((numberOfAnswers/questions.count()),'.3f')
+    avgNumberOfAnswers = format((numberOfAnswers/question_number),'.3f')
     numberOfVotes = sum(votes)
-    avgNumberOfVotes = format((numberOfVotes / questions.count()), '.3f')
-
+    avgNumberOfVotes = format((numberOfVotes / question_number), '.3f')
     yesCounter = 0
     noCounter = 0
     for snippet in code_snippets:
@@ -216,6 +215,7 @@ def index():
     snippetData = [yesCounter,noCounter]
 
     sorted_dates = sorted(dates, key=lambda d: tuple(map(int, d.split('-'))))
+    print(sorted_dates)
 
     for i in range(len(sorted_dates)):
         dates_and_values[sorted_dates[i]] = sorted_dates.count(sorted_dates[i])  # dict for the lineChart
@@ -321,10 +321,6 @@ def index():
 
     for i in range(len(radar_values)):
         radar_values[i]=radar_values[i]/len(distinct_tags)
-
-
-
-
 
 
     return render_template('index.html', questions=questions, users=users, labels=labels, values=values,
