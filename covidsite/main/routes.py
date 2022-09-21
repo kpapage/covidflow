@@ -215,7 +215,6 @@ def index():
     snippetData = [yesCounter,noCounter]
 
     sorted_dates = sorted(dates, key=lambda d: tuple(map(int, d.split('-'))))
-    print(sorted_dates)
 
     for i in range(len(sorted_dates)):
         dates_and_values[sorted_dates[i]] = sorted_dates.count(sorted_dates[i])  # dict for the lineChart
@@ -345,3 +344,7 @@ def index():
                            top_10_collaboration_tools_comments = top_10_collaboration_tools_comments,top_10_dev_tools_votes = top_10_dev_tools_votes,
                            top_10_dev_tools_answers = top_10_dev_tools_answers,top_10_dev_tools_comments = top_10_dev_tools_comments
                            )
+
+@main.route('/get_lda')
+def get_map():
+    return render_template('lda_PCI_9_Topics_Titles.html')

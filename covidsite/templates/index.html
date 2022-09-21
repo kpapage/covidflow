@@ -9,607 +9,716 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>COVID-Vis Dashboard</title>
 
     <!-- Custom fonts for this template-->
-    <link  href="{{ url_for('static',filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link  href="{{ url_for('static',filename='tooltip.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static',filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet"
+          type="text/css">
+    <link href="{{ url_for('static',filename='tooltip.css') }}" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static',filename='sb-admin-2.min.css') }}" rel="stylesheet">
 
 
-
 </head>
 
 <body id="page-top">
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion " id="accordionSidebar">
+        <br>
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
+            <div class="sidebar-brand-text mx-3">CovidVis</div>
+        </a>
+        <br>
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
-
-            <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion " id="accordionSidebar">
-            <br>
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
-                <div class="sidebar-brand-text mx-3">CovidVis</div>
-            </a>
-            <br>
+        <!-- Nav Item - Dashboard -->
+        <div class="sticky-top">
             <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-
-
-
-
-            <div class="sticky-top">
-                 <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    Charts
-                </div>
-               <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#firstChart" >
-                        <span>Line Chart Of Covid-19 Related Searches</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#secondChart" >
-                        <span>Wordcloud Of Most Used Tags</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#thirdChart" >
-                        <span>Barchart Of Most Used Tags</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#fourthChart" >
-                        <span>User World Map</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#fifthChart" >
-                        <span>Radar Chart Of Most Used Tags</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#sixthChart" >
-                        <span>Doughnut Chart of Questions Containing Code Snippets</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#seventhChart" >
-                        <span>Top 10 Questions</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#eighthChart" >
-                        <span>Top 10 Users</span>
-                    </a>
-                </li>
-
-                    <!-- Sidebar Toggler (Sidebar) -->
-                <div class="text-center d-none d-md-inline" style="padding-left: 60px;">
-                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
-                </div>
+            <hr class="sidebar-divider">
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Charts
             </div>
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#firstChart">
+                    <span>Line Chart Of Covid-19 Related Searches</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#secondChart">
+                    <span>Wordcloud Of Most Used Tags</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#thirdChart">
+                    <span>Barchart Of Most Used Tags</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#fourthChart">
+                    <span>User World Map</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#fifthChart">
+                    <span>Radar Chart Of Most Used Tags</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#sixthChart">
+                    <span>Doughnut Chart of Questions Containing Code Snippets</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#seventhChart">
+                    <span>Top 10 Questions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#eighthChart">
+                    <span>Top 10 Users</span>
+                </a>
+            </li>
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline" style="padding-left: 60px;">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </div>
+    </ul>
+    <!-- End of Sidebar -->
 
-
-
-        </ul>
-        <!-- End of Sidebar -->
-
-
-
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <nav class="navbar navbar-expand navbar-light bg-gray topbar mb-4 static-top ">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
-                    <!-- Page Heading -->
-                    <div class="navbar-brand">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                    </div>
-
-
-                </nav>
-
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Number of Questions Card  -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Number Of Questions</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">4189</div>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand navbar-light bg-gray topbar mb-4 static-top ">
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <!-- Page Heading -->
+                <div class="navbar-brand">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                </div>
+            </nav>
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Number of Questions Card  -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Number Of Questions
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-question fa-2x text-gray-300"></i>
-                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">4189</div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Number of Users Card  -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Number Of Users</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ users }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-user fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Last Updated Card  -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Last Updated</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">2021-11-1</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Current Date</div>
-                                            <div id="date" class="h5 mb-0 font-weight-bold text-gray-800"></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
-                                        </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-question fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Number of Questions Card  -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                Average Number Of Comments</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfComments }}</div>
+                    <!-- Number of Users Card  -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Number Of Users
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comment fa-2x text-gray-300"></i>
-                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ users }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-user fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Number of Users Card  -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-secondary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
-                                                Average Number Of Answers</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfAnswers }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-reply fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-light shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
-                                                Average Number Of Votes</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfVotes }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-arrow-up fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-
                         </div>
                     </div>
-
-
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class=" col-xl-12 ">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="firstChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Line Chart Of Covid-19 Related Searches
+                    <!-- Last Updated Card  -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                            Last Updated
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">2022-9-19</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pending Requests Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Current Date
+                                        </div>
+                                        <div id="date" class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Number of Questions Card  -->
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Average Number Of Comments
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfComments }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comment fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Number of Users Card  -->
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="card border-left-secondary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                            Average Number Of Answers
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfAnswers }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-reply fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="card border-left-light shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                            Average Number Of Votes
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ avgNumberOfVotes }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-arrow-up fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pending Requests Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                    </div>
+                </div>
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Area Chart -->
+                    <div class=" col-xl-12 ">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                    id="firstChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Line Chart Of Covid-19 Related Searches
                                     <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                         <span class="tooltiptext">In the Daily Line Chart, the x-axis represents the dates that the question were asked
+                                        <span class="tooltiptext">In the Daily Line Chart, the x-axis represents the dates that the question were asked
                                          by the users and the y-axis represents the number of questions that were asked at that date, while in the
                                              Cumulative Chart the y-axis represents the daily increase of the number of questions.</span>
-                                     </div></h6>
+                                    </div>
+                                </h6>
 
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="lineRadioOptions" id="lineRadio1" value="daily" checked="checked">
-                                      <label class="form-check-label" for="lineRadio1">Daily</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="lineRadioOptions" id="lineRadio2" value="cumulative" >
-                                      <label class="form-check-label" for="lineRadio2">Cumulative</label>
-                                    </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="lineRadioOptions" id="lineRadio1"
+                                           value="daily" checked="checked">
+                                    <label class="form-check-label" for="lineRadio1">Daily</label>
                                 </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="lineChart"  ></canvas>
-                                    </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="lineRadioOptions" id="lineRadio2"
+                                           value="cumulative">
+                                    <label class="form-check-label" for="lineRadio2">Cumulative</label>
+                                </div>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="lineChart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Project Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3" id="secondChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">WordCloud of Most Used Tags
+                </div>
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Content Column -->
+                    <div class="col-lg-6 mb-4">
+                        <!-- Project Card Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3" id="secondChart">
+                                <h6 class="m-0 font-weight-bold text-primary">WordCloud of Most Used Tags
                                     <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                         <span class="tooltiptext">This wordcloud contains the tags that were mostly preferred
+                                        <span class="tooltiptext">This wordcloud contains the tags that were mostly preferred
                                          from developers when labelling their questions</span>
-                                     </div></h6>
-                                </div>
-                                <div class="card-body">
-                                   <div class="chart-area" id="wordCloudArea" >
-                                       <div id="wordCloud"></div>
-                                   </div>
+                                    </div>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area" id="wordCloudArea">
+                                    <div id="wordCloud"></div>
                                 </div>
                             </div>
-
                         </div>
-
-                        <div class="col-lg-6 mb-4">
-
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3" id="thirdChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Barchart of Most Used Tags
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3" id="thirdChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Barchart of Most Used Tags
                                     <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                         <span class="tooltiptext">This Bar Chart shows the top 10 tags used by the users</span>
-                                     </div></h6>
-                                </div>
-                                <div class="card-body">
-                                   <div class="chart-area">
-                                        <canvas id="barChart"  height="250"></canvas>
+                                        <span class="tooltiptext">This Bar Chart shows the top 10 tags used by the users</span>
                                     </div>
-                                </div>
+                                </h6>
                             </div>
-
-
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class=" col-xl-12 ">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="fourthChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">User World Map</h6>
-
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="pointMap" checked="checked">
-                                      <label class="form-check-label" for="inlineRadio1">Point Map</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="heatMap" >
-                                      <label class="form-check-label" for="inlineRadio2">Heat Map</label>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area" id="map">
-
-                                    </div>
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="barChart" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
-
                     </div>
+                </div>
+                <div class="row">
+                    <!-- Area Chart -->
+                    <div class=" col-xl-12 ">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                 id="fourthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">User World Map</h6>
 
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-
-
-                        <div class="col-lg-6 mb-4">
-
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3" id="fifthChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Radar Chart of Most Used Technologies
-                                    <div style="z-index: 10000 !important;" class="tooltip2"><i class="fas fa-info-circle"></i>
-                                         <span class="tooltiptext">This Radar Chart highlights the most searched for technology fields
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                           id="inlineRadio1" value="pointMap" checked="checked">
+                                    <label class="form-check-label" for="inlineRadio1">Point Map</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                           id="inlineRadio2" value="heatMap">
+                                    <label class="form-check-label" for="inlineRadio2">Heat Map</label>
+                                </div>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area" id="map">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Content Column -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3" id="fifthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Radar Chart of Most Used Technologies
+                                    <div style="z-index: 10000 !important;" class="tooltip2"><i
+                                            class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext">This Radar Chart highlights the most searched for technology fields
                                          based on the tags, the users chose</span>
-                                     </div></h6>
-                                </div>
-                                <div class="card-body">
-                                   <div class="chart-area">
-                                        <canvas id="radarChart" height="250"></canvas>
                                     </div>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="radarChart" height="250"></canvas>
                                 </div>
                             </div>
-
-
-                        </div>
-
-                        <div class="col-lg-6 mb-4">
-
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3" id="sixthChart">
-                                    <h6 class="m-0 font-weight-bold text-primary">Doughnut Chart of Questions Containing Code Snippets </h6>
-                                </div>
-                                <div class="card-body">
-                                   <div class="chart-area">
-                                        <canvas id="doughnutChart" height="250"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-
-
                         </div>
                     </div>
-
-
-
-
-
-
-                        <div class="row">
-
-                        <!-- Content Column -->
-
-
-                            <div class="col-lg-8 mb-4">
-
-                                <div class="card shadow mb-4">
-                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="seventhChart">
-                                          <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By</h6>
-                                            <div>
-                                               <select class="custom-select" id="classSelect" onchange="update()">
-                                                  <option value="All" >All</option>
-                                                  <option value="Languages">Languages</option>
-                                                  <option value="Web Frameworks">Frameworks</option>
-                                                  <option value="Big Data - ML" >Big Data - ML</option>
-                                                  <option value="Databases">Databases</option>
-                                                  <option value="Platforms">Platforms</option>
-                                                  <option value="Collaboration Tools" >Collaboration Tools</option>
-                                                  <option value="Developer Tools">Developer Tools</option>
-                                              </select>
-                                            </div>
-                                            <div>
-                                               <select class="custom-select" id="topSelect" onchange="update()">
-                                                  <option value="Votes" >Votes</option>
-                                                  <option value="Answers">Answers</option>
-                                                  <option value="Comments">Comments</option>
-                                              </select>
-                                            </div>
-
-                                    </div>
-                                    <div class="card-body">
-                                       <div class="topTable">
-
-
-                                                <table class="table table-striped" id="topTenTable" width="100%">
-{#                                                    <thead>#}
-{#                                                        <tr>#}
-{#                                                          <th width="5%" scope="col">#</th>#}
-{#                                                          <th width="85%" scope="col">Title</th>#}
-{#                                                          <th width="10%" scope="col" >Votes</th>#}
-{#                                                        </tr>#}
-{#                                                      </thead>#}
-
-
-                                                </table>
-
-
-                                        </div>
-                                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3" id="sixthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Doughnut Chart of Questions Containing
+                                    Code Snippets </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="doughnutChart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Content Column -->
+                    <div class="col-lg-8 mb-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                 id="seventhChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By</h6>
+                                <div>
+                                    <select class="custom-select" id="classSelect" onchange="update()">
+                                        <option value="All">All</option>
+                                        <option value="Languages">Languages</option>
+                                        <option value="Web Frameworks">Frameworks</option>
+                                        <option value="Big Data - ML">Big Data - ML</option>
+                                        <option value="Databases">Databases</option>
+                                        <option value="Platforms">Platforms</option>
+                                        <option value="Collaboration Tools">Collaboration Tools</option>
+                                        <option value="Developer Tools">Developer Tools</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select class="custom-select" id="topSelect" onchange="update()">
+                                        <option value="Votes">Votes</option>
+                                        <option value="Answers">Answers</option>
+                                        <option value="Comments">Comments</option>
+                                    </select>
                                 </div>
 
-
-
-
                             </div>
+                            <div class="card-body">
+                                <div class="topTable">
+                                    <table class="table table-striped" id="topTenTable" width="100%">
+                                        {#                                                    <thead>#}
+                                        {#                                                        <tr>#}
+                                        {#                                                          <th width="5%" scope="col">#</th>#}
+                                        {#                                                          <th width="85%" scope="col">Title</th>#}
+                                        {#                                                          <th width="10%" scope="col" >Votes</th>#}
+                                        {#                                                        </tr>#}
+                                        {#                                                      </thead>#}
 
-
-                            <div class="col-lg-4 mb-4">
-
-                                <div class="card shadow mb-4">
-                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="eighthChart">
-                                          <h6 class="m-0 font-weight-bold text-primary">Top 10 Users</h6>
-                                    </div>
-                                    <div class="card-body">
-                                       <div class="topTableUsers">
-
-
-                                                <table class="table table-striped" id="topTenTableUsers" width="100%">
-                                                    <thead>
-                                                        <tr>
-                                                          <th width="5%" scope="col">#</th>
-                                                          <th width="85%" scope="col">Username</th>
-                                                          <th width="10%" scope="col" >Questions</th>
-                                                        </tr>
-                                                    </thead>
-
-
-
-                                                </table>
-
-
-                                        </div>
-                                    </div>
+                                    </table>
                                 </div>
-
-
-
-
                             </div>
-
-
+                        </div>
                     </div>
-                    <div id="some">
+                    <div class="col-lg-4 mb-4">
 
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                 id="eighthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Top 10 Users</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="topTableUsers">
+                                    <table class="table table-striped" id="topTenTableUsers" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th width="5%" scope="col">#</th>
+                                            <th width="85%" scope="col">Username</th>
+                                            <th width="10%" scope="col">Questions</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="row">
+                    <h6 class="m-0 font-weight-bold text-primary">Topics Derived from Questions
+                        <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">This figure contains the topics produced from the application of
+                            a topic modelling algorithm on the question texts. The larger the circle, the most discussed
+                            is a topic while the distances between topics indicate how similar (or dissimilar) they are.</span>
+                        </div>
+                    </h6>
+                    <div class="card-body">
+                        <iframe style="width: 1500px;height: 650px;" frameborder="0"
+                                src="/get_lda"></iframe>
+                    </div>
+                </div>
+                <div id="some">
 
                 </div>
-                <!-- /.container-fluid -->
 
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
+            <!-- /.container-fluid -->
 
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2020</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
 
     </div>
-    <!-- End of Page Wrapper -->
+    <!-- End of Content Wrapper -->
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+</div>
+<!-- End of Page Wrapper -->
 
-    <script>
-        'use strict'
-        var tbl = document.getElementById('topTenTableUsers');
-        var tblBody =  document.createElement("tbody");
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
 
-        var topTenUsers = {{ top_10_distinct_users | safe }}
-        var count = 1;
-        for(const [key,value] of Object.entries(topTenUsers)){
-            var row = document.createElement("tr");
+<script>
+    'use strict'
+    var tbl = document.getElementById('topTenTableUsers');
+    var tblBody = document.createElement("tbody");
 
-            var cell1 = document.createElement("th");
-            var cellText1 = document.createTextNode(count);
-            cell1.appendChild(cellText1);
-            row.appendChild(cell1);
+    var topTenUsers =
+    {{ top_10_distinct_users | safe }}
+    var count = 1;
+    for (const [key, value] of Object.entries(topTenUsers)) {
+        var row = document.createElement("tr");
 
-            var link = document.createElement("a");
-            link.setAttribute("href", key)
-            link.setAttribute("target", "blank_")
-            var linkText = document.createTextNode(key.split('/')[5]);
-            link.appendChild(linkText)
+        var cell1 = document.createElement("th");
+        var cellText1 = document.createTextNode(count);
+        cell1.appendChild(cellText1);
+        row.appendChild(cell1);
 
-            var cell2 = document.createElement("td");
-            cell2.appendChild(link);
-            row.appendChild(cell2);
+        var link = document.createElement("a");
+        link.setAttribute("href", key)
+        link.setAttribute("target", "blank_")
+        var linkText = document.createTextNode(key.split('/')[5]);
+        link.appendChild(linkText)
 
-            var cell3 = document.createElement("td");
-            var cellText3 = document.createTextNode(value);
-            cell3.appendChild(cellText3);
-            row.appendChild(cell3);
+        var cell2 = document.createElement("td");
+        cell2.appendChild(link);
+        row.appendChild(cell2);
 
-            tblBody.appendChild(row);
-            tbl.appendChild(tblBody);
+        var cell3 = document.createElement("td");
+        var cellText3 = document.createTextNode(value);
+        cell3.appendChild(cellText3);
+        row.appendChild(cell3);
 
-            count++;
+        tblBody.appendChild(row);
+        tbl.appendChild(tblBody);
+
+        count++;
+    }
+</script>
+
+<script>
+    'use strict'
+    var tbl = document.getElementById('topTenTable');
+    var tblHead = document.createElement("thead");
+
+    var hrow = document.createElement("tr");
+
+    var hcell1 = document.createElement("th");
+    var hcellText1 = document.createTextNode("#");
+    hcell1.appendChild(hcellText1);
+    hrow.appendChild(hcell1);
+
+    var hcell2 = document.createElement("th");
+    var hcellText2 = document.createTextNode("Title");
+    hcell2.appendChild(hcellText2);
+    hrow.appendChild(hcell2);
+
+    var hcell3 = document.createElement("th");
+    var hcellText3 = document.createTextNode("Votes");
+    hcell3.appendChild(hcellText3);
+    hrow.appendChild(hcell3);
+
+    tblHead.appendChild(hrow);
+    tbl.appendChild(tblHead);
+
+    var tblBody = document.createElement("tbody");
+
+    let topTen =
+    {{ top_10_sorted_ids_and_votes | safe }}
+    var count = 1;
+    for (const [key, value] of Object.entries(topTen)) {
+        var row = document.createElement("tr");
+
+        var cell1 = document.createElement("th");
+        var cellText1 = document.createTextNode(count);
+        cell1.appendChild(cellText1);
+        row.appendChild(cell1);
+
+        var link = document.createElement("a");
+        link.setAttribute("href", key)
+        link.setAttribute("target", "blank_")
+        var linkText = document.createTextNode(value[1]);
+        link.appendChild(linkText)
+
+        var cell2 = document.createElement("td");
+        cell2.appendChild(link);
+        row.appendChild(cell2);
+
+        var cell3 = document.createElement("td");
+        var cellText3 = document.createTextNode(value [0]);
+        cell3.appendChild(cellText3);
+        row.appendChild(cell3);
+
+        tblBody.appendChild(row);
+        tbl.appendChild(tblBody);
+
+        count++;
+    }
+
+    function update() {
+
+        $("#topTenTable").empty();
+        var selectClass = document.getElementById('classSelect').value;
+        var select = document.getElementById('topSelect').value;
+        var techClass;
+        var items;
+        if (selectClass === "Languages") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_languages_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_languages_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_languages_comments | safe }}
+            }
+        } else if (selectClass === "Web Frameworks") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_web_frameworks_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_web_frameworks_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_web_frameworks_comments | safe }}
+            }
+        } else if (selectClass === "Big Data - ML") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_big_data_ml_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_big_data_ml_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_big_data_ml_comments | safe }}
+            }
+        } else if (selectClass === "Databases") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_databases_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_databases_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_databases_comments | safe }}
+            }
+        } else if (selectClass === "Platforms") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_platforms_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_platforms_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_platforms_comments | safe }}
+            }
+        } else if (selectClass === "Collaboration Tools") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_collaboration_tools_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_collaboration_tools_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_collaboration_tools_comments | safe }}
+            }
+        } else if (selectClass === "Developer Tools") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_dev_tools_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_dev_tools_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_dev_tools_comments | safe }}
+            }
+        } else if (selectClass === "All") {
+            if (select === "Votes") {
+                var name = "Votes";
+                topTen =
+                {{ top_10_sorted_ids_and_votes | safe }}
+            } else if (select === "Answers") {
+                var name = "Answers";
+                topTen =
+                {{ top_10_sorted_ids_and_answers | safe }}
+            } else {
+                var name = "Comments";
+                topTen =
+                {{ top_10_sorted_ids_and_comments | safe }}
+            }
         }
-    </script>
 
-    <script>
-        'use strict'
+
         var tbl = document.getElementById('topTenTable');
+
         var tblHead = document.createElement("thead");
 
         var hrow = document.createElement("tr");
@@ -625,18 +734,19 @@
         hrow.appendChild(hcell2);
 
         var hcell3 = document.createElement("th");
-        var hcellText3 = document.createTextNode("Votes");
+        var hcellText3 = document.createTextNode(name);
         hcell3.appendChild(hcellText3);
         hrow.appendChild(hcell3);
 
         tblHead.appendChild(hrow);
         tbl.appendChild(tblHead);
 
-        var tblBody =  document.createElement("tbody");
 
-        let topTen = {{ top_10_sorted_ids_and_votes | safe }}
+        var tblBody = document.createElement("tbody");
+
+
         var count = 1;
-        for(const [key,value] of Object.entries(topTen)){
+        for (const [key, value] of Object.entries(topTen)) {
             var row = document.createElement("tr");
 
             var cell1 = document.createElement("th");
@@ -647,7 +757,11 @@
             var link = document.createElement("a");
             link.setAttribute("href", key)
             link.setAttribute("target", "blank_")
-            var linkText = document.createTextNode(value[1]);
+            if (selectClass === "All") {
+                var linkText = document.createTextNode(value[1]);
+            } else {
+                var linkText = document.createTextNode(value[3]);
+            }
             link.appendChild(linkText)
 
             var cell2 = document.createElement("td");
@@ -655,7 +769,19 @@
             row.appendChild(cell2);
 
             var cell3 = document.createElement("td");
-            var cellText3 = document.createTextNode(value [0]);
+            if (selectClass === "All") {
+                var cellText3 = document.createTextNode(value [0]);
+            } else {
+                if (select === "Votes") {
+                    var cellText3 = document.createTextNode(value [0]);
+                } else if (select === "Answers") {
+                    var cellText3 = document.createTextNode(value [1]);
+                } else {
+                    var cellText3 = document.createTextNode(value [2]);
+                }
+            }
+
+
             cell3.appendChild(cellText3);
             row.appendChild(cell3);
 
@@ -664,715 +790,560 @@
 
             count++;
         }
-        function update(){
-
-            $("#topTenTable").empty();
-            var selectClass = document.getElementById('classSelect').value;
-            var select = document.getElementById('topSelect').value;
-            var techClass;
-            var items;
-            if(selectClass === "Languages"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_languages_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_languages_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_languages_comments | safe }}
-                }
-            }else if(selectClass === "Web Frameworks"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_web_frameworks_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_web_frameworks_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_web_frameworks_comments | safe }}
-                }
-            }else if(selectClass === "Big Data - ML"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_big_data_ml_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_big_data_ml_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_big_data_ml_comments | safe }}
-                }
-            }else if(selectClass === "Databases"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_databases_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_databases_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_databases_comments | safe }}
-                }
-            }else if(selectClass === "Platforms"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_platforms_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_platforms_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_platforms_comments | safe }}
-                }
-            }else if(selectClass === "Collaboration Tools"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_collaboration_tools_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_collaboration_tools_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_collaboration_tools_comments | safe }}
-                }
-            }else if(selectClass === "Developer Tools"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_dev_tools_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_dev_tools_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_dev_tools_comments | safe }}
-                }
-            }else if(selectClass === "All"){
-                if (select === "Votes"){
-                    var name = "Votes";
-                    topTen = {{ top_10_sorted_ids_and_votes | safe }}
-                }else if(select === "Answers"){
-                    var name = "Answers";
-                    topTen = {{ top_10_sorted_ids_and_answers | safe }}
-                }else{
-                    var name = "Comments";
-                    topTen = {{ top_10_sorted_ids_and_comments | safe }}
-                }
-            }
+    }
 
 
+</script>
 
+<!-- Chart.js-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 
-            var tbl = document.getElementById('topTenTable');
+<!-- D3.js Word Cloud -->
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="{{ url_for('static',filename='js/d3.layout.cloud.js') }}"></script>
 
-            var tblHead = document.createElement("thead");
+<!-- Leaflet.js -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
 
-            var hrow = document.createElement("tr");
+<!-- Leaflet-Heat.js -->
+<script src="{{ url_for('static',filename='js/leaflet-heat.js') }}"></script>
 
-            var hcell1 = document.createElement("th");
-            var hcellText1 = document.createTextNode("#");
-            hcell1.appendChild(hcellText1);
-            hrow.appendChild(hcell1);
+<!-- Bootstrap core JavaScript-->
+<script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-            var hcell2 = document.createElement("th");
-            var hcellText2 = document.createTextNode("Title");
-            hcell2.appendChild(hcellText2);
-            hrow.appendChild(hcell2);
+<!-- Core plugin JavaScript-->
+<script src="{{ url_for('static',filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-            var hcell3 = document.createElement("th");
-            var hcellText3 = document.createTextNode(name);
-            hcell3.appendChild(hcellText3);
-            hrow.appendChild(hcell3);
+<!-- Custom scripts for all pages-->
+<script src="{{ url_for('static',filename='js/sb-admin-2.min.js') }}"></script>
 
-            tblHead.appendChild(hrow);
-            tbl.appendChild(tblHead);
+<!-- Page level plugins -->
+<script scr="{{ url_for('static',filename='vendor/chart.js/Chart.min.js') }}"></script>
 
+<!-- Page level custom scripts -->
+<script scr="{{ url_for('static',filename='js/demo/chart-area-demo.js') }}"></script>
+<script scr="{{ url_for('static',filename='js/demo/chart-pie-demo.js') }}"></script>
 
+<!-- date script -->
+<script>
 
-            var tblBody =  document.createElement("tbody");
+    var today = new Date();
 
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
-            var count = 1;
-            for(const [key,value] of Object.entries(topTen)){
-                var row = document.createElement("tr");
+    document.getElementById("date").innerHTML = date;
 
-                var cell1 = document.createElement("th");
-                var cellText1 = document.createTextNode(count);
-                cell1.appendChild(cellText1);
-                row.appendChild(cell1);
+</script>
 
-                var link = document.createElement("a");
-                link.setAttribute("href", key)
-                link.setAttribute("target", "blank_")
-                if(selectClass === "All"){
-                    var linkText = document.createTextNode(value[1]);
-                }else{
-                   var linkText = document.createTextNode(value[3]);
-                }
-                link.appendChild(linkText)
+<!-- linechart script -->
+<script>
 
-                var cell2 = document.createElement("td");
-                cell2.appendChild(link);
-                row.appendChild(cell2);
+    $(document).ready(function () {
 
-                var cell3 = document.createElement("td");
-                if(selectClass === "All"){
-                    var cellText3 = document.createTextNode(value [0]);
-                }else{
-                    if (select === "Votes"){
-                        var cellText3 = document.createTextNode(value [0]);
-                    }else if(select === "Answers"){
-                        var cellText3 = document.createTextNode(value [1]);
-                    }else{
-                        var cellText3 = document.createTextNode(value [2]);
+        var lineChart;
+
+        var ctx = document.getElementById("lineChart").getContext("2d");
+
+        lineChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: {{ labels |safe }},
+                datasets: [
+                    {
+                        label: "Number of Questions",
+                        data: {{ values |safe }},
+                        fill: true,
+                        backgroundColor: "rgb(75,192,192,0.61)",
+                        lineTension: 1,
+                        order: 2
+                    },
+                    {
+                        data: {{ halfMonthValues |safe }},
+                        fill: true,
+                        type: "line",
+                        borderColor: "rgb(220,20,60)",
+                        lineTension: 0,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                elements: {
+                    point: {
+                        radius: 0
+                    }
+                },
+                legend: {
+                    labels: {
+                        filter: function (legendItem, chartData) {
+                            return legendItem.datasetIndex !== 1;
+
+                        }
                     }
                 }
+            }
+        });
+
+        $('input[name = lineRadioOptions]').change(function () {
+
+            lineChart.destroy()
+
+            var radio = $(this).val();
+
+            if (radio === 'daily') {
 
 
-                cell3.appendChild(cellText3);
-                row.appendChild(cell3);
+                lineChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: {{ labels |safe }},
+                        datasets: [
+                            {
+                                label: "Number of Questions",
+                                data: {{ values |safe }},
+                                fill: true,
+                                backgroundColor: "rgba(75,192,192,0.61)",
+                                lineTension: 1,
+                                order: 2
+                            },
+                            {
+                                data: {{ halfMonthValues |safe }},
+                                fill: true,
+                                type: "line",
+                                borderColor: "rgb(220,20,60)",
+                                lineTension: 1,
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        elements: {
+                            point: {
+                                radius: 0
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                filter: function (legendItem, chartData) {
+                                    return legendItem.datasetIndex !== 1;
 
-                tblBody.appendChild(row);
-                tbl.appendChild(tblBody);
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
 
-                count++;
+
+                lineChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: {{ labels |safe }},
+                        datasets: [
+                            {
+                                label: "Increasing Number of Questions",
+                                data: {{ added_values |safe }},
+                                fill: true,
+                                borderColor: "rgb(246,99,112)",
+                                lineTension: 0.1
+                            }
+                        ]
+                    }
+                });
+            }
+        })
+
+
+    })
+
+
+</script>
+
+<!-- wordcloud script -->
+<script>
+    $(window).resize(function () {
+
+        'use strict';
+        d3.select("svg").remove();
+
+        var dataScale = d3.scale.linear().range([20, 80]);
+
+
+        const data = {{ list_of_tags_and_values | safe }};
+
+        var width = document.getElementById('wordCloud').offsetWidth, height = 500;
+
+        if (document.getElementById('wordCloud').offsetWidth < 400) {
+            dataScale = d3.scale.linear().range([10, 40]);
+            height = 300;
+        }
+
+        var fill = d3.scale.category20();
+
+        dataScale.domain([
+            d3.min(data, function (d) {
+                return d.size;
+            }),
+            d3.max(data, function (d) {
+                return d.size;
+            })
+        ]);
+
+        d3.layout.cloud().size([width, height])
+            .words(data)
+            .padding(0)
+            {#.rotate(function() { return ~~(Math.random() * 2) * 90; })#}
+            .font("Impact")
+            .fontSize(function (d) {
+                return dataScale(d.size);
+            })
+            .on("end", draw)
+            .start();
+
+        function draw(words) {
+            d3.select("#wordCloud").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+                .selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function (d) {
+                    return d.size + "px";
+                })
+                .style("font-family", "Impact")
+                .style("fill", function (d, i) {
+                    return fill(i);
+                })
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function (d) {
+                    return d.text;
+                });
+        }
+    });
+
+    'use strict';
+
+    var dataScale = d3.scale.linear().range([20, 80]);
+    const data = {{ list_of_tags_and_values | safe }};
+    var width = document.getElementById('wordCloud').offsetWidth, height = 500;
+    var fill = d3.scale.category20();
+    dataScale.domain([
+        d3.min(data, function (d) {
+            return d.size;
+        }),
+        d3.max(data, function (d) {
+            return d.size;
+        })
+    ]);
+    d3.layout.cloud().size([width, height])
+        .words(data)
+        .padding(0)
+        .font("Impact")
+        .fontSize(function (d) {
+            return dataScale(d.size);
+        })
+        .on("end", draw)
+        .start();
+
+    function draw(words) {
+        d3.select("#wordCloud").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+            .selectAll("text")
+            .data(words)
+            .enter().append("text")
+            .style("font-size", function (d) {
+                return d.size + "px";
+            })
+            .style("font-family", "Impact")
+            .style("fill", function (d, i) {
+                return fill(i);
+            })
+            .attr("text-anchor", "middle")
+            .attr("transform", function (d) {
+                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .text(function (d) {
+                return d.text;
+            });
+    }
+
+</script>
+
+<!-- barchart script -->
+<script>
+
+    var ctx = document.getElementById("barChart").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+
+    var barChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: {{ barChartLabels |safe }},
+            datasets: [
+                {
+                    label: "Top 10 Technologies",
+                    data: {{ barChartValues |safe }},
+                    backgroundColor: [
+                        'rgba(51, 28, 71, 0.5)',
+                        'rgba(51, 99, 71, 0.5)',
+                        'rgb(255,99,71)',
+                        'rgba(0, 152, 77, 0.7)',
+                        'rgba(0, 39, 77, 0.7)',
+                        'rgba(242, 39, 77, 0.7)',
+                        'rgba(242, 39, 77, 0.8)',
+                        'rgba(0, 183, 140, 0.8)',
+                        'rgba(0, 107, 140, 1)',
+                        'rgba(255, 107, 59, 0.7)'
+                    ]
+                }
+            ],
+            options: {
+                responsive: false
+            }
+        }
+    });
+
+</script>
+
+<!-- map script -->
+
+<script>
+
+    $(document).ready(function () {
+
+        document.getElementById('map').innerHTML = "<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
+
+        const mymap = L.map('mapid', {
+            scrollWheelZoom: false
+        }).setView([0, 0], 1.5);
+
+        const attribution =
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+        const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
+
+        const tiles = L.tileLayer(tileUrl, {attribution, noWrap: true});
+
+        tiles.addTo(mymap);
+
+        const latitude = {{ latitudes | safe }};
+
+        const longitude = {{ longitudes | safe }};
+
+        const locations = {{ locations | safe }};
+
+        const location_name = {{ location_name | safe }};
+
+        const location_question = {{ location_question | safe }};
+
+        var i;
+
+
+        for (i = 0; i < latitude.length; i++) {
+            var j;
+
+            const circle = L.circle([latitude[i], longitude[i]], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 1500
+            }).addTo(mymap);
+            for (j = 0; j < location_name.length; j++) {
+                if (locations[i] === location_name[j]) {
+                    circle.bindPopup("Location: " + location_name[j] + "<br> Questions: " + location_question[j]);
+
+                    circle.on('mouseover', function (e) {
+                        this.openPopup();
+                    });
+                    circle.on('mouseout', function (e) {
+                        this.closePopup();
+                    });
+                }
+
             }
         }
 
 
+        var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
+            corner2 = L.latLng(-90.17871349622823, -289.14062500000006),
+            bounds = L.latLngBounds(corner1, corner2);
+
+        mymap.setMaxBounds(bounds);
+
+        $('input[name=inlineRadioOptions]').change(function () {
+            var radio = $(this).val();
 
 
-    </script>
+            if (radio === "heatMap") {
 
-    <!-- Chart.js-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+                document.getElementById('map').innerHTML = "<div id='mapid' style='height: 800px; background: rgb(38,38,38);'>"
 
-    <!-- D3.js Word Cloud -->
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="{{ url_for('static',filename='js/d3.layout.cloud.js') }}"></script>
+                const mymap = L.map('mapid').setView([0, 0], 1.5);
 
-    <!-- Leaflet.js -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-   crossorigin=""></script>
-
-    <!-- Leaflet-Heat.js -->
-    <script src="{{ url_for('static',filename='js/leaflet-heat.js') }}"></script>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="{{ url_for('static',filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="{{ url_for('static',filename='js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page level plugins -->
-    <script scr="{{ url_for('static',filename='vendor/chart.js/Chart.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    <script scr="{{ url_for('static',filename='js/demo/chart-area-demo.js') }}"></script>
-    <script scr="{{ url_for('static',filename='js/demo/chart-pie-demo.js') }}"></script >
-
-    <!-- date script -->
-    <script>
-
-    var today = new Date();
-
-    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-
-    document.getElementById("date").innerHTML = date;
-
-    </script>
-
-    <!-- linechart script -->
-    <script>
-        
-        $(document).ready(function (){
-
-            var lineChart;
-
-            var ctx = document.getElementById("lineChart").getContext("2d");
-
-                lineChart = new Chart(ctx, {
-                        type : "bar",
-                        data : {
-                            labels : {{ labels |safe }},
-                            datasets : [
-                                {
-                                    label: "Number of Questions",
-                                    data: {{ values |safe }},
-                                    fill : true,
-                                    backgroundColor: "rgb(75,192,192,0.61)",
-                                    lineTension : 1,
-                                    order : 2
-                                },
-                                {
-                                    data: {{ halfMonthValues |safe }},
-                                    fill : true,
-                                    type: "line",
-                                    borderColor : "rgb(220,20,60)",
-                                    lineTension : 0,
-                                    order : 1
-                                }
-                            ]
-                        },
-                        options: {
-                            elements: {
-                                point:{
-                                    radius: 0
-                                }
-                            },
-                            legend: {
-                                labels: {
-                                    filter: function(legendItem, chartData) {
-                                        return legendItem.datasetIndex !== 1;
-
-                                    }
-                                }
-}
-                        }
-                    });
-            
-            $('input[name = lineRadioOptions]').change(function () {
-
-                lineChart.destroy()
-
-                var radio = $(this).val();
-
-                if(radio==='daily'){
-
-
-                    lineChart = new Chart(ctx, {
-                        type : "bar",
-                        data : {
-                            labels : {{ labels |safe }},
-                            datasets : [
-                                {
-                                    label: "Number of Questions",
-                                    data: {{ values |safe }},
-                                    fill : true,
-                                    backgroundColor: "rgba(75,192,192,0.61)",
-                                    lineTension : 1,
-                                    order : 2
-                                },
-                                {
-                                    data: {{ halfMonthValues |safe }},
-                                    fill : true,
-                                    type: "line",
-                                    borderColor : "rgb(220,20,60)",
-                                    lineTension : 1,
-                                    order : 1
-                                }
-                            ]
-                        },
-                        options: {
-                            elements: {
-                                point:{
-                                    radius: 0
-                                }
-                            },
-                            legend: {
-                                labels: {
-                                    filter: function(legendItem, chartData) {
-                                        return legendItem.datasetIndex !== 1;
-
-                                    }
-                                }
-}
-                        }
-                    });
-                }else{
-
-
-                    lineChart = new Chart(ctx, {
-                        type : "line",
-                        data : {
-                            labels : {{ labels |safe }},
-                            datasets : [
-                                {
-                                    label: "Increasing Number of Questions",
-                                    data: {{ added_values |safe }},
-                                    fill : true,
-                                    borderColor : "rgb(246,99,112)",
-                                    lineTension : 0.1
-                                }
-                            ]
-                        }
-                    });
-                }
-            })
-            
-
-        })
-
-        
-
-    </script>
-
-    <!-- wordcloud script -->
-    <script>
-        $(window).resize(function () {
-
-            'use strict';
-            d3.select("svg").remove();
-
-          var dataScale = d3.scale.linear().range([20,80]);
-
-
-
-          const data= {{ list_of_tags_and_values | safe }};
-
-          var width= document.getElementById('wordCloud').offsetWidth,height= 500;
-
-          if (document.getElementById('wordCloud').offsetWidth<400){
-              dataScale = d3.scale.linear().range([10,40]);
-              height = 300;
-          }
-
-          var fill = d3.scale.category20();
-
-          dataScale.domain([
-              d3.min(data,function (d) {return d.size;}),
-              d3.max(data,function (d) {return d.size;})
-          ]);
-
-          d3.layout.cloud().size([width, height])
-              .words(data)
-              .padding(0)
-              {#.rotate(function() { return ~~(Math.random() * 2) * 90; })#}
-              .font("Impact")
-              .fontSize(function(d) { return dataScale(d.size); })
-              .on("end", draw)
-              .start();
-
-          function draw(words) {
-            d3.select("#wordCloud").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-              .append("g")
-                .attr("transform", "translate("+(width/2)+","+(height/2)+")")
-              .selectAll("text")
-                .data(words)
-              .enter().append("text")
-                .style("font-size", function(d) { return d.size + "px"; })
-                .style("font-family", "Impact")
-                .style("fill", function(d, i) { return fill(i); })
-                .attr("text-anchor", "middle")
-                .attr("transform", function(d) {
-                  return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                })
-                .text(function(d) { return d.text; });
-          }
-        });
-
-        'use strict';
-
-      var dataScale = d3.scale.linear().range([20,80]);
-      const data= {{ list_of_tags_and_values | safe }};
-      var width= document.getElementById('wordCloud').offsetWidth,height= 500;
-      var fill = d3.scale.category20();
-      dataScale.domain([
-          d3.min(data,function (d) {return d.size;}),
-          d3.max(data,function (d) {return d.size;})
-      ]);
-      d3.layout.cloud().size([width, height])
-          .words(data)
-          .padding(0)
-          .font("Impact")
-          .fontSize(function(d) { return dataScale(d.size); })
-          .on("end", draw)
-          .start();
-      function draw(words) {
-        d3.select("#wordCloud").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-          .append("g")
-            .attr("transform", "translate("+(width/2)+","+(height/2)+")")
-          .selectAll("text")
-            .data(words)
-          .enter().append("text")
-            .style("font-size", function(d) { return d.size + "px"; })
-            .style("font-family", "Impact")
-            .style("fill", function(d, i) { return fill(i); })
-            .attr("text-anchor", "middle")
-            .attr("transform", function(d) {
-              return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-            })
-            .text(function(d) { return d.text; });
-      }
-
-    </script>
-
-    <!-- barchart script -->
-    <script>
-
-        var ctx = document.getElementById("barChart").getContext("2d");
-
-        Chart.defaults.scale.ticks.beginAtZero = true;
-
-        var barChart = new Chart(ctx, {
-            type : "bar",
-            data : {
-                labels : {{ barChartLabels |safe }},
-                datasets : [
-                    {
-                        label: "Top 10 Technologies",
-                        data: {{ barChartValues |safe }},
-                        backgroundColor: [
-                          'rgba(51, 28, 71, 0.5)',
-                          'rgba(51, 99, 71, 0.5)',
-                          'rgb(255,99,71)',
-                          'rgba(0, 152, 77, 0.7)',
-                          'rgba(0, 39, 77, 0.7)',
-                          'rgba(242, 39, 77, 0.7)',
-                          'rgba(242, 39, 77, 0.8)',
-                            'rgba(0, 183, 140, 0.8)',
-                            'rgba(0, 107, 140, 1)',
-                            'rgba(255, 107, 59, 0.7)'
-                        ]
-                    }
-                ],
-                options: {
-                    responsive: false
-                }
-            }
-        });
-
-    </script>
-
-    <!-- map script -->
-
-    <script>
-
-        $(document).ready(function () {
-
-            document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
-
-            const mymap = L.map('mapid', {
-                scrollWheelZoom: false
-            }).setView([0, 0], 1.5);
-
-            const attribution =
+                const attribution =
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-            const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
+                const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
 
-            const tiles = L.tileLayer(tileUrl,{attribution,noWrap: true});
+                const tiles = L.tileLayer(tileUrl, {attribution, noWrap: true});
 
-            tiles.addTo(mymap);
+                tiles.addTo(mymap);
 
-            const latitude = {{ latitudes | safe }};
-
-            const longitude = {{ longitudes | safe }};
-
-            const locations = {{ locations | safe }};
-
-            const location_name = {{ location_name | safe }};
-
-            const location_question = {{ location_question | safe }};
-
-            var i;
+                var latLngInt = {{ latLngInt |safe}};
 
 
-            for(i=0;i<latitude.length;i++){
-                var j;
-
-                const circle = L.circle([latitude[i], longitude[i]], {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.5,
-                    radius: 1500
-                }).addTo(mymap);
-                for(j=0;j<location_name.length;j++){
-                    if(locations[i] === location_name[j]){
-                        circle.bindPopup("Location: "+ location_name[j]+"<br> Questions: "+location_question[j]);
-
-                        circle.on('mouseover', function (e) {
-                            this.openPopup();
-                        });
-                        circle.on('mouseout', function (e) {
-                            this.closePopup();
-                        });
-                    }
-
-                }
-            }
+                var heat = L.heatLayer(
+                    latLngInt,
+                    {
+                        radius: 25,
+                        minOpacity: 0.2,
+                        gradient: {0.025: 'blue', 0.2: 'lime', 0.7: 'red'}
+                    }).addTo(mymap);
 
 
-
-            var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
-                corner2 = L.latLng(-90.17871349622823, -289.14062500000006),
-                bounds = L.latLngBounds(corner1, corner2);
-
-            mymap.setMaxBounds(bounds);
-
-            $('input[name=inlineRadioOptions]').change(function () {
-                var radio = $(this).val();
-
-
-
-                if(radio === "heatMap"){
-
-                    document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'>"
-
-                    const mymap = L.map('mapid').setView([0, 0], 1.5);
-
-                    const attribution =
-                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
-
-                    const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
-
-                    const tiles = L.tileLayer(tileUrl,{attribution,noWrap: true});
-
-                    tiles.addTo(mymap);
-
-                    var latLngInt = {{ latLngInt |safe}};
-
-
-                    var heat = L.heatLayer(
-                        latLngInt,
-                        {
-                            radius: 25 ,
-                            minOpacity : 0.2,
-                            gradient : {0.025: 'blue', 0.2: 'lime', 0.7: 'red'}
-                        }).addTo(mymap);
-
-
-                    var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
+                var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
                     corner2 = L.latLng(-90.17871349622823, -289.14062500000006),
                     bounds = L.latLngBounds(corner1, corner2);
 
-                    mymap.setMaxBounds(bounds);
-                }else{
+                mymap.setMaxBounds(bounds);
+            } else {
 
-                    document.getElementById('map').innerHTML ="<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
+                document.getElementById('map').innerHTML = "<div id='mapid' style='height: 800px; background: rgb(38,38,38);'></div>"
 
-                    const mymap = L.map('mapid', {
-                        scrollWheelZoom: false
-                    }).setView([0, 0], 1.5);
+                const mymap = L.map('mapid', {
+                    scrollWheelZoom: false
+                }).setView([0, 0], 1.5);
 
-                    const attribution =
-                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+                const attribution =
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-                    const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
+                const tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
 
-                    const tiles = L.tileLayer(tileUrl,{attribution,noWrap: true});
+                const tiles = L.tileLayer(tileUrl, {attribution, noWrap: true});
 
-                    tiles.addTo(mymap);
+                tiles.addTo(mymap);
 
-                    const latitude = {{ latitudes | safe }};
+                const latitude = {{ latitudes | safe }};
 
-                    const longitude = {{ longitudes | safe }};
+                const longitude = {{ longitudes | safe }};
 
-                    const locations = {{ locations | safe }};
+                const locations = {{ locations | safe }};
 
-                    const location_name = {{ location_name | safe }};
+                const location_name = {{ location_name | safe }};
 
-                    const location_question = {{ location_question | safe }};
+                const location_question = {{ location_question | safe }};
 
 
-                    var i;
+                var i;
 
-                    for(i=0;i<latitude.length;i++){
-                        var j;
+                for (i = 0; i < latitude.length; i++) {
+                    var j;
 
-                        const circle = L.circle([latitude[i], longitude[i]], {
-                            color: 'red',
-                            fillColor: '#f03',
-                            fillOpacity: 0.5,
-                            radius: 1500
-                        }).addTo(mymap);
-                        for(j=0;j<location_name.length;j++){
-                            if(locations[i] === location_name[j]){
-                                circle.bindPopup("Location: "+ location_name[j]+"<br> Questions: "+location_question[j]);
+                    const circle = L.circle([latitude[i], longitude[i]], {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.5,
+                        radius: 1500
+                    }).addTo(mymap);
+                    for (j = 0; j < location_name.length; j++) {
+                        if (locations[i] === location_name[j]) {
+                            circle.bindPopup("Location: " + location_name[j] + "<br> Questions: " + location_question[j]);
 
-                                circle.on('mouseover', function (e) {
-                                    this.openPopup();
-                                });
-                                circle.on('mouseout', function (e) {
-                                    this.closePopup();
-                                });
-                            }
-
+                            circle.on('mouseover', function (e) {
+                                this.openPopup();
+                            });
+                            circle.on('mouseout', function (e) {
+                                this.closePopup();
+                            });
                         }
-                    }
 
-                    var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
+                    }
+                }
+
+                var corner1 = L.latLng(90.17871349622823, 289.49218750000006),
                     corner2 = L.latLng(-90.17871349622823, -289.14062500000006),
                     bounds = L.latLngBounds(corner1, corner2);
 
-                    mymap.setMaxBounds(bounds);
+                mymap.setMaxBounds(bounds);
+            }
+
+        });
+    });
+</script>
+
+<!-- Radar Chart script -->
+<script>
+
+    var ctx = document.getElementById("radarChart").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+    Chart.defaults.global.defaultFontSize = 14;
+
+
+    var radarChart = new Chart(ctx, {
+        type: "radar",
+        data: {
+            labels: ['Languages', 'Web Frameworks', 'Big Data - ML', 'Databases', 'Platforms', 'Collaboration Tools',
+                'Developer Tools'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ radar_values |safe }},
+                    fill: true,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    pointBackgroundColor: 'rgb(255, 99, 132)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(255, 99, 132)'
                 }
+            ]
+        }
+    });
 
-            });
-        });
-    </script>
+</script>
 
-    <!-- Radar Chart script -->
-    <script>
+<!-- Doughnut Chart script -->
+<script>
 
-        var ctx = document.getElementById("radarChart").getContext("2d");
+    var ctx = document.getElementById("doughnutChart").getContext("2d");
 
-        Chart.defaults.scale.ticks.beginAtZero = true;
-        Chart.defaults.global.defaultFontSize = 14;
-
-
-        var radarChart = new Chart(ctx, {
-            type : "radar",
-            data : {
-                labels : ['Languages','Web Frameworks','Big Data - ML','Databases','Platforms','Collaboration Tools',
-                    'Developer Tools'],
-                datasets : [
-                    {
-                        label: "Technology Percentage",
-                        data: {{ radar_values |safe }},
-                        fill: true,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        pointBackgroundColor: 'rgb(255, 99, 132)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgb(255, 99, 132)'
-                    }
-                ]
-            }
-        });
-
-    </script>
-
-    <!-- Doughnut Chart script -->
-    <script>
-
-        var ctx = document.getElementById("doughnutChart").getContext("2d");
-
-        Chart.defaults.scale.ticks.beginAtZero = true;
-        Chart.defaults.global.defaultFontSize = 14;
+    Chart.defaults.scale.ticks.beginAtZero = true;
+    Chart.defaults.global.defaultFontSize = 14;
 
 
-        var radarChart = new Chart(ctx, {
-            type : "doughnut",
-            data : {
-                labels : ['Yes','No'],
-                datasets : [
-                    {
-                        label: "Technology Percentage",
-                        data: {{ snippetData |safe }},
-                        fill: true,
-                        backgroundColor: [
-                            'rgb(54, 162, 235)',
-                            'rgb(255, 99, 132)'
+    var radarChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ['Yes', 'No'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ snippetData |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 99, 132)'
 
-                        ]
-                    }
-                ]
-            }
-        });
+                    ]
+                }
+            ]
+        }
+    });
 
-    </script>
+</script>
 
 </body>
 

@@ -1,7 +1,6 @@
 from flask import Flask
 
 from .main.routes import main
-
 from .extensions import mongo
 
 
