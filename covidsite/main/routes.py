@@ -1,19 +1,32 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 
 from covidsite.extensions import mongo
 
 from itertools import islice
 
 from collections import Counter
+
 import re
+
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
 
-@main.route('/')
+@main.route('/',methods = ['GET','POST'])
 def index():
     covidCollection = mongo.db.questions
-    questions = covidCollection.find()  #load questions from collection
+    if request.method == "POST":
+        dates_to_search = request.get_json()
+        date_from = dates_to_search[0]['dateFrom']
+        date_to = dates_to_search[1]['dateTo']
+
+        questions = covidCollection.find({'timestamps': {'$gte' : date_from, '$lte' : date_to}})  #load questions from collection
+        # for question in questions:
+        #     print(question)
+    else:
+        questions = covidCollection.find()  #load questions from collection
+
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
     users = len(covidCollection.distinct('owner_id'))
@@ -301,6 +314,7 @@ def index():
         if tag in fields_and_techs.keys():
             if tag not in distinct_tags:
                 distinct_tags.append(tag)
+    
 
     for tag in distinct_tags:
         if fields_and_techs.get(tag)== 'Languages':

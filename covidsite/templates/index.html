@@ -91,6 +91,11 @@
                     <span>Top 10 Users</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#ninthChart">
+                    <span>Topics Derived From Questions</span>
+                </a>
+            </li>
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline" style="padding-left: 60px;">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -455,20 +460,59 @@
                     </div>
                 </div>
                 <div class="row">
-                    <h6 class="m-0 font-weight-bold text-primary">Topics Derived from Questions
-                        <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                            <span class="tooltiptext">This figure contains the topics produced from the application of
-                            a topic modelling algorithm on the question texts. The larger the circle, the most discussed
-                            is a topic while the distances between topics indicate how similar (or dissimilar) they are.</span>
-                        </div>
-                    </h6>
-                    <div class="card-body">
-                        <iframe style="width: 1500px;height: 650px;" frameborder="0"
-                                src="/get_lda"></iframe>
+                    <div class=" col-xl-12 ">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Topics Derived from Questions
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext">This figure contains the topics produced from the application of
+                                            a topic modelling algorithm on the question texts. The larger the circle, the most discussed
+                                            is a topic while the distances between topics indicate how similar (or dissimilar) they are.
+                                        </span>
+                                    </div>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <iframe style="width: 100%;height: 900px; " frameborder="0"
+                                        src="/get_lda"></iframe>
+                            </div>
+                        </div>                    
                     </div>
                 </div>
-                <div id="some">
-
+                <div class="row">
+                    <div class=" col-xl-12 ">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">See Data For Specific Time Windows
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext">to be added
+                                        </span>
+                                    </div>
+                                </h6>
+                            </div>                          
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class=" col-xl-5 ">
+                                        <div class="md-form md-outline input-with-post-icon datepicker">
+                                            <input placeholder="Select date" type="date" id="dateFrom" class="form-control">
+                                            <label for="example">Date From</label>
+                                        </div>
+                                    </div>
+                                    <div class=" col-xl-5 ">
+                                        <div class="md-form md-outline input-with-post-icon datepicker">
+                                            <input placeholder="Select date" type="date" id="dateTo" class="form-control">
+                                            <label for="example">Date To</label>
+                                        </div>
+                                    </div>
+                                    <div class=" col-xl-2 ">
+                                        <button type="button" class="btn btn-primary" id="datepicker">Search</button>
+                                    </div>                               
+                                </div>
+                            </div>
+                        </div>                    
+                    </div>
                 </div>
 
             </div>
@@ -1343,6 +1387,31 @@
         }
     });
 
+</script>
+
+<script>
+    document.getElementById('datepicker').onclick = function() {
+        var dateFrom = document.getElementById('dateFrom').value;
+        var dateTo = document.getElementById('dateTo').value;
+        var server_data = [
+            {"dateFrom" : dateFrom},
+            {"dateTo"   : dateTo  }
+        ];
+
+        $.ajax({
+            type: "POST",
+            url: "/",
+            data: JSON.stringify(server_data),
+            contentType: "application/json",
+            dataType: 'json',
+            success: function(response) {
+                document.write(response);
+            },
+            error: function(data) {
+                console.log(data['responseText']);
+            }
+        });
+    };
 </script>
 
 </body>
