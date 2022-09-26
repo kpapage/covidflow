@@ -254,6 +254,40 @@
                     <div class="col-xl-3 col-md-6 mb-4">
                     </div>
                 </div>
+                <div class="row">
+                    <div class=" col-xl-12 ">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">See Data For Specific Time Windows
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext">to be added
+                                        </span>
+                                    </div>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class=" col-xl-5 ">
+                                        <div class="md-form md-outline input-with-post-icon datepicker">
+                                            <input placeholder="Select date" type="date" id="dateFrom" class="form-control">
+                                            <label for="example">Date From</label>
+                                        </div>
+                                    </div>
+                                    <div class=" col-xl-5 ">
+                                        <div class="md-form md-outline input-with-post-icon datepicker">
+                                            <input placeholder="Select date" type="date" id="dateTo" class="form-control">
+                                            <label for="example">Date To</label>
+                                        </div>
+                                    </div>
+                                    <div class=" col-xl-2 ">
+                                        <button type="button" class="btn btn-primary" id="datepicker" >Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Content Row -->
                 <div class="row">
                     <!-- Area Chart -->
@@ -480,40 +514,7 @@
                         </div>                    
                     </div>
                 </div>
-                <div class="row">
-                    <div class=" col-xl-12 ">
-                        <div class="card shadow mb-4">
-                            <!-- Card Header - Dropdown -->
-                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
-                                <h6 class="m-0 font-weight-bold text-primary">See Data For Specific Time Windows
-                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext">to be added
-                                        </span>
-                                    </div>
-                                </h6>
-                            </div>                          
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class=" col-xl-5 ">
-                                        <div class="md-form md-outline input-with-post-icon datepicker">
-                                            <input placeholder="Select date" type="date" id="dateFrom" class="form-control">
-                                            <label for="example">Date From</label>
-                                        </div>
-                                    </div>
-                                    <div class=" col-xl-5 ">
-                                        <div class="md-form md-outline input-with-post-icon datepicker">
-                                            <input placeholder="Select date" type="date" id="dateTo" class="form-control">
-                                            <label for="example">Date To</label>
-                                        </div>
-                                    </div>
-                                    <div class=" col-xl-2 ">
-                                        <button type="button" class="btn btn-primary" id="datepicker">Search</button>
-                                    </div>                               
-                                </div>
-                            </div>
-                        </div>                    
-                    </div>
-                </div>
+
 
             </div>
             <!-- /.container-fluid -->
@@ -1397,20 +1398,7 @@
             {"dateFrom" : dateFrom},
             {"dateTo"   : dateTo  }
         ];
-
-        $.ajax({
-            type: "POST",
-            url: "/",
-            data: JSON.stringify(server_data),
-            contentType: "application/json",
-            dataType: 'json',
-            success: function(response) {
-                document.write(response);
-            },
-            error: function(data) {
-                console.log(data['responseText']);
-            }
-        });
+        window.location.href = './get_dates?dateFrom=' + dateFrom + '&dateTo=' + dateTo;
     };
 </script>
 
