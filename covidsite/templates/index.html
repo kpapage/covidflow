@@ -35,7 +35,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion " id="accordionSidebar">
         <br>
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
             <div class="sidebar-brand-text mx-3">CovidVis</div>
         </a>
         <br>
@@ -131,7 +131,7 @@
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Number Of Questions
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">4189</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ questions.count() }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-question fa-2x text-gray-300"></i>
@@ -254,7 +254,7 @@
                     <div class="col-xl-3 col-md-6 mb-4">
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="position: sticky;">
                     <div class=" col-xl-12 ">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
