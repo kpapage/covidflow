@@ -17,14 +17,15 @@ pip install flask
 ```
 flask run
 ```
-7. Visit the localhost:5000 url on your browser and the **_COVID-Vis Dashboard_**  will be located there
+7. Visit the http://localhost:5000/ url on your browser and the **_COVID-Vis Dashboard_**  will be located there
 
 
 
 ## About the Project
-COVID-Vis, a collective dashboard of SO data that cleverly presents and visualizes the technological trends extracted from SO data, during COVID-19. More specifically, COVID-Vis comprises an efficient platform that aims to:
-A) Accumulate data of multiple forms (geographical coordinates, unstructured text, numerical);
-B) Store and analyze the collected data;
-C) Visualize the data using appropriate tools and packages;
-D) Present the data in an efficient manner.
-The COVID-Vis platform is based on our previous works [11,13] on the same subject and contributes to the current developed solutions for COVID-19 by offering an alternative perspective on the race for studying and analyzing the pandemic. More specifically, it highlights prominent technologies that are utilized for the analysis of COVID related data, indicating technological directions for future projects and providing a roadmap of technological demand during the pandemic era.
+COVID-Vis is a collective dashboard of SO data that cleverly presents and visualizes the technological trends extracted from SO data, during COVID-19. More specifically, COVID-Vis comprises an efficient platform that aims to:
+1. Accumulate data of multiple forms (geographical coordinates, unstructured text, numerical)
+2. Store and analyze the collected data
+3. Visualize the data using appropriate tools and packages
+4. Present the data in an efficient manner
+
+The COVID-Vis platform contributes to the current developed solutions for COVID-19 by offering an alternative perspective on the race for studying and analyzing the pandemic. More specifically, it highlights prominent technologies that are utilized for the analysis of COVID related data, indicating technological directions for future projects and providing a roadmap of technological demand during the pandemic era.
