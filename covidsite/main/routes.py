@@ -23,6 +23,8 @@ def index():
     users = len(covidCollection.distinct('owner_id'))
     question_number = len(covidCollection.distinct('_id'))
     dates = []
+    date_from = '2020-01-01'
+    date_to = '2022-09-19'
     dates_and_values = {}
     tags = []
     tags_and_values = {}
@@ -53,8 +55,9 @@ def index():
     for technology in technologies:
         fields_and_techs.update({technology['field'].lower():technology['technology']})
 
-
+    question_count = 0
     for question in questions:
+        question_count+=1
         dates.append(question['timestamps'][:10])
         record_tags = question['tag'].split()
         dif_tags = list(set(record_tags))
@@ -326,7 +329,7 @@ def index():
     for i in range(len(radar_values)):
         radar_values[i]=radar_values[i]/len(distinct_tags)
 
-    return render_template('index.html', questions=questions, users=users, labels=labels, values=values,
+    return render_template('index.html', questions=questions, question_count = question_count, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes,
                            radar_values=radar_values,added_values=added_values,avgNumberOfAnswers=avgNumberOfAnswers,
@@ -346,7 +349,8 @@ def index():
                            top_10_platforms_answers = top_10_platforms_answers, top_10_platforms_comments = top_10_platforms_comments,
                            top_10_collaboration_tools_votes = top_10_collaboration_tools_votes,top_10_collaboration_tools_answers = top_10_collaboration_tools_answers,
                            top_10_collaboration_tools_comments = top_10_collaboration_tools_comments,top_10_dev_tools_votes = top_10_dev_tools_votes,
-                           top_10_dev_tools_answers = top_10_dev_tools_answers,top_10_dev_tools_comments = top_10_dev_tools_comments
+                           top_10_dev_tools_answers = top_10_dev_tools_answers,top_10_dev_tools_comments = top_10_dev_tools_comments,
+                           date_from=date_from, date_to=date_to
                            )
 
 @main.route('/get_lda')
@@ -355,14 +359,13 @@ def get_map():
 
 @main.route('/get_dates', methods=['GET'])
 def fetch():
-
     covidCollection = mongo.db.questions
     date_from = request.args.get('dateFrom')
     date_to = request.args.get('dateTo')
     questions = covidCollection.find({'timestamps': {'$gte' : date_from, '$lte' : date_to}})  #load questions from collection
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
-    users = len(covidCollection.distinct('owner_id'))
+    users = len(questions.distinct('owner_id'))
     question_number = len(covidCollection.distinct('_id'))
     dates = []
     dates_and_values = {}
@@ -395,7 +398,9 @@ def fetch():
     for technology in technologies:
         fields_and_techs.update({technology['field'].lower(): technology['technology']})
 
+    question_count = 0
     for question in questions:
+        question_count+=1
         dates.append(question['timestamps'][:10])
         record_tags = question['tag'].split()
         dif_tags = list(set(record_tags))
@@ -657,7 +662,7 @@ def fetch():
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
 
-    return render_template('index.html', questions=questions, users=users, labels=labels, values=values,
+    return render_template('index.html', questions=questions, question_count = question_count, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues, latLngInt=latLngInt, latitudes=latitudes,
                            longitudes=longitudes,
@@ -690,5 +695,5 @@ def fetch():
                            top_10_collaboration_tools_comments=top_10_collaboration_tools_comments,
                            top_10_dev_tools_votes=top_10_dev_tools_votes,
                            top_10_dev_tools_answers=top_10_dev_tools_answers,
-                           top_10_dev_tools_comments=top_10_dev_tools_comments
+                           top_10_dev_tools_comments=top_10_dev_tools_comments, date_from = date_from, date_to = date_to
                            )

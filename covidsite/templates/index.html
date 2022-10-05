@@ -131,7 +131,7 @@
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Number Of Questions
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">4189</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ question_count }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-question fa-2x text-gray-300"></i>
@@ -270,13 +270,13 @@
                                 <div class="row">
                                     <div class=" col-xl-5 ">
                                         <div class="md-form md-outline input-with-post-icon datepicker">
-                                            <input placeholder="Select date" type="date" id="dateFrom" class="form-control">
+                                            <input placeholder="Select date" type="date" id="dateFrom" class="form-control" value="{{ date_from }}">
                                             <label for="example">Date From</label>
                                         </div>
                                     </div>
                                     <div class=" col-xl-5 ">
                                         <div class="md-form md-outline input-with-post-icon datepicker">
-                                            <input placeholder="Select date" type="date" id="dateTo" class="form-control">
+                                            <input placeholder="Select date" type="date" id="dateTo" class="form-control" value="{{ date_to }}">
                                             <label for="example">Date To</label>
                                         </div>
                                     </div>
