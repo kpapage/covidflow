@@ -22,7 +22,7 @@ def scrape_site_questions(tag):
     driver = webdriver.Chrome(
         executable_path='chromedriver_win32/chromedriver.exe'
         , options=options)
-    searchdate = "2021-11-2..2022-9-19"
+    searchdate = "2022-9-20..2022-11-28"
     print("Extracting question data about {}".format(tag))
     driver.get("https://stackoverflow.com/search?page=1&tab=Relevance&q={}%20created%3a{}".format(tag, searchdate))
     results_text = driver.find_element_by_css_selector(".flex--item.fl1.fs-body3.mr12").text

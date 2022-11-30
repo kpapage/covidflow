@@ -2,7 +2,6 @@ import openpyxl
 import pandas as pd
 import pymongo
 
-
 title = []
 question_id = []
 tags = []
@@ -19,9 +18,11 @@ code_snippet = []
 comments = []
 answers = []
 closed = []
-data = pd.read_excel('collected_covid.xlsx')
-for index,row in data.iterrows():
-    if row['Closed'] == 0:
+deleted = []
+data = pd.read_excel('final_questions.xlsx')
+
+for index, row in data.iterrows():
+    if row['Filter'] == 1:
         title.append(row['Title'])
         question_id.append(row['Id'])
         timestamps.append(row['Timestamp'])
@@ -37,21 +38,21 @@ for index,row in data.iterrows():
         comments.append(row['Comments'])
         answers.append(row['Answers'])
         closed.append(row['Closed'])
-
+        deleted.append(row['Deleted'])
 
 cluster = pymongo.MongoClient("mongodb://localhost:27017/")
-db = cluster["COVID-db"] 
+db = cluster["COVID-db"]
 collection = db["questions"]
-last=db.questions.find().sort('_id',pymongo.DESCENDING).limit(1)[0]['_id']+1
+last = db.questions.find().sort('_id', pymongo.DESCENDING).limit(1)[0]['_id'] + 1
 
 for id in question_id:
     print(id)
- 
+
 for i in range(len(title)):
-    print(last+i)  
+    print(last + i)
     db.questions.insert_one({
 
-        "_id": int(last+i),
+        "_id": int(last + i),
 
         "timestamps": timestamps[i],
 
@@ -80,10 +81,14 @@ for i in range(len(title)):
         "comments": comments[i],
 
         "answers": answers[i],
-        
+
         "closed": closed[i],
 
-        "first_answer": 'Not'
+        "first_answer": 'Not',
+
+        "filter": 1,
+
+        "deleted": deleted[i]
     })
 
-    
+

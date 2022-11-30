@@ -67,21 +67,24 @@ for question in question_id:
         views = driver.find_element_by_xpath('//*[contains(@title,"Viewed")]')
         lista.append(views.get_attribute('title'))
         print(lista)
-        if lista[3] == 0:
-            collection.update_one(
-                {"question_id" : question },
-                {"$set":
-                    {
-                        "votes" : lista[0],
-                        "comments" : lista[1],
-                        "answers" : lista[2],
-                        "closed" : lista[3],
-                        "views" : lista[4],
-                    }
+        collection.update_one(
+            {"question_id" : question },
+            {"$set":
+                {
+                    "votes" : lista[0],
+                    "comments" : lista[1],
+                    "answers" : lista[2],
+                    "closed" : lista[3],
+                    "views" : lista[4],
                 }
-            )
-        else:
-            collection.delete_one({"question_id": question})
+            }
+        )
     except NoSuchElementException:
-        collection.delete_one({"question_id" : question})
-        print("deleted question : " ,question)
+        collection.update_one(
+            {"question_id": question},
+            {"$set":
+                {
+                    "deleted": 1,
+                }
+            }
+        )
