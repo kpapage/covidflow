@@ -17,8 +17,6 @@ collection = db["questions"]
 questions = collection.find()
 question_id = []
 
-for question in questions:
-    question_id.append(question['question_id'])
 
 options = webdriver.ChromeOptions()
 options.add_argument("user-data-dir=C:\\Users\giou2\\AppData\\Local\\Google\\Chrome\\User Data")
@@ -29,7 +27,7 @@ driver = webdriver.Chrome(
 
 for question in question_id:
     lista = []  # [votes,comments,answers,closed,views,first_date]
-    url = "https://stackoverflow.com/questions/"+question.split("-")[2]
+    url = "https://stackoverflow.com/questions/"+question['question_id'].split("-")[2]
     try:
         driver.get(url)
         question_text = driver.find_element_by_id('question')
