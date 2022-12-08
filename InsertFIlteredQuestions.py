@@ -19,7 +19,7 @@ comments = []
 answers = []
 closed = []
 deleted = []
-data = pd.read_excel('final_questions.xlsx')
+data = pd.read_excel('groundtruthEXTRA.xlsx')
 
 for index, row in data.iterrows():
     if row['Filter'] == 1:
