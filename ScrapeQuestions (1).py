@@ -59,8 +59,9 @@ def scrape_site_questions(tag):
                     metadata.append(owner.get_attribute('href'))
                 except (NoSuchElementException, IndexError):
                     metadata.append('No Owner ID')
-                time.sleep(3)
+                time.sleep(1)
                 questions[id] = metadata
+                print(questions[id])
             for id in questions.keys():
                 if id not in covered_ids:
                     split = id.split('-')
@@ -80,7 +81,6 @@ def scrape_site_questions(tag):
                     questions[id].append(views.get_attribute('title'))
                     try:
                         answers = driver.find_elements(By.XPATH, "//div[contains(@class, 'answercell')]")
-                        time.sleep(2)
                         timestamps = []
                         for answer in answers:
                             timestamp = answer.find_element(By.XPATH,"//span[contains(@class, 'relativetime')]")
@@ -234,7 +234,7 @@ def scrape_site_questions(tag):
 
 print('Extracting Question Data')
 #
-tags = ["corona-virus","sars-cov","2019-ncov","coronavirus","covid*"]
+tags = ["sars-cov","2019-ncov","corona-virus","coronavirus","covid*"]
 
 for tag in tags:
     scrape_site_questions(tag)
