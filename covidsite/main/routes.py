@@ -2,13 +2,15 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 
 from covidsite.extensions import mongo
 
-from itertools import islice
+from itertools import islice, combinations
 
 from collections import Counter
 
 import re
 
 from datetime import datetime
+
+import numpy as np
 
 main = Blueprint('main', __name__)
 
@@ -17,6 +19,7 @@ main = Blueprint('main', __name__)
 def index():
     covidCollection = mongo.db.questions
     questions = covidCollection.find()  #load questions from collection
+    questions = list(questions)
 
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
@@ -235,6 +238,8 @@ def index():
     best_sorted_tags_and_values = dict(islice(sorted_tags_and_values.items(), 80))  # top 80 for wordCloud
 
     top_ten_tags_and_values_barchart = dict(islice(sorted_tags_and_values.items(), 10))  # top 10 for barChart
+    top_ten_tags = list(top_ten_tags_and_values_barchart.keys()) # to 10 tag names for the chord diagram
+        
 
     for key, value in best_sorted_tags_and_values.items():  # map the dict for the wordCloud
         d = {"text": key, "size": value}
@@ -329,6 +334,26 @@ def index():
     for i in range(len(radar_values)):
         radar_values[i]=radar_values[i]/len(distinct_tags)
 
+    #creation of chord diagram matrix
+    tag_link_matrix = np.zeros((10,10)).astype(int)
+    tags_to_be_linked = []
+
+    for question in questions:
+        record_tags = question['tag'].split()
+        if [i for i in top_ten_tags if i in record_tags] :
+            for tag in record_tags:
+                if tag in top_ten_tags:
+                    tags_to_be_linked.append(top_ten_tags.index(tag))
+            if len(tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(tags_to_be_linked,2))
+                for combination in combinations_of_tags:
+                    if combination[0]!= combination[1]:
+                        tag_link_matrix[combination[0],combination[1]] += 1
+                        tag_link_matrix[combination[1],combination[0]] += 1
+            tags_to_be_linked.clear()
+    
+    list_tag_link_matrix = np.array2string(tag_link_matrix, separator=",")
+
     return render_template('index.html', questions=questions, question_count = question_count, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes,
@@ -350,7 +375,7 @@ def index():
                            top_10_collaboration_tools_votes = top_10_collaboration_tools_votes,top_10_collaboration_tools_answers = top_10_collaboration_tools_answers,
                            top_10_collaboration_tools_comments = top_10_collaboration_tools_comments,top_10_dev_tools_votes = top_10_dev_tools_votes,
                            top_10_dev_tools_answers = top_10_dev_tools_answers,top_10_dev_tools_comments = top_10_dev_tools_comments,
-                           date_from=date_from, date_to=date_to
+                           date_from = date_from, date_to = date_to, list_tag_link_matrix = list_tag_link_matrix, top_ten_tags = top_ten_tags
                            )
 
 @main.route('/get_lda')
@@ -367,6 +392,7 @@ def fetch():
     technologies = techCollection.find()
     users = len(questions.distinct('owner_id'))
     question_number = len(covidCollection.distinct('_id'))
+    questions = list(questions)
     dates = []
     dates_and_values = {}
     tags = []
@@ -579,6 +605,7 @@ def fetch():
     best_sorted_tags_and_values = dict(islice(sorted_tags_and_values.items(), 80))  # top 80 for wordCloud
 
     top_ten_tags_and_values_barchart = dict(islice(sorted_tags_and_values.items(), 10))  # top 10 for barChart
+    top_ten_tags = list(top_ten_tags_and_values_barchart.keys()) # to 10 tag names for the chord diagram
 
     for key, value in best_sorted_tags_and_values.items():  # map the dict for the wordCloud
         d = {"text": key, "size": value}
@@ -662,6 +689,27 @@ def fetch():
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
 
+
+    #creation of chord diagram matrix
+    tag_link_matrix = np.zeros((10,10)).astype(int)
+    tags_to_be_linked = []
+
+    for question in questions:
+        record_tags = question['tag'].split()
+        if [i for i in top_ten_tags if i in record_tags] :
+            for tag in record_tags:
+                if tag in top_ten_tags:
+                    tags_to_be_linked.append(top_ten_tags.index(tag))
+            if len(tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(tags_to_be_linked,2))
+                for combination in combinations_of_tags:
+                    if combination[0]!= combination[1]:
+                        tag_link_matrix[combination[0],combination[1]] += 1
+                        tag_link_matrix[combination[1],combination[0]] += 1
+            tags_to_be_linked.clear()
+    
+    list_tag_link_matrix = np.array2string(tag_link_matrix, separator=",")
+
     return render_template('index.html', questions=questions, question_count = question_count, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues, latLngInt=latLngInt, latitudes=latitudes,
@@ -695,5 +743,6 @@ def fetch():
                            top_10_collaboration_tools_comments=top_10_collaboration_tools_comments,
                            top_10_dev_tools_votes=top_10_dev_tools_votes,
                            top_10_dev_tools_answers=top_10_dev_tools_answers,
-                           top_10_dev_tools_comments=top_10_dev_tools_comments, date_from = date_from, date_to = date_to
+                           top_10_dev_tools_comments=top_10_dev_tools_comments, date_from = date_from, date_to = date_to,
+                           list_tag_link_matrix = list_tag_link_matrix, top_ten_tags = top_ten_tags
                            )
