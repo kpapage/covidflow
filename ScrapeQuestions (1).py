@@ -15,6 +15,7 @@ def scrape_site_questions(tag):
     import math
     import openpyxl
     from geopy.geocoders import Nominatim
+    from datetime import datetime
     from openpyxl.styles import Alignment
     options = webdriver.ChromeOptions()
     options.add_argument("user-data-dir=C:\\Users\giou2\\AppData\\Local\\Google\\Chrome\\User Data")
@@ -22,40 +23,39 @@ def scrape_site_questions(tag):
     driver = webdriver.Chrome(
         executable_path='chromedriver_win32/chromedriver.exe'
         , options=options)
-    searchdate = "2022-9-20..2022-11-28"
+    searchdate = "2020-01-26..2022-12-8"
     print("Extracting question data about {}".format(tag))
-    driver.get("https://stackoverflow.com/search?page=1&tab=Relevance&q={}%20created%3a{}".format(tag, searchdate))
-    results_text = driver.find_element_by_css_selector(".flex--item.fl1.fs-body3.mr12").text
+    driver.get("https://stackoverflow.com/search?page=1&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(tag, searchdate,'is','question'))
+    results_text = driver.find_element(By.CSS_SELECTOR, ".flex--item.fl1.fs-body3.mr12").text
     numberOfResults = float(re.sub("[^0-9]", "", results_text))
     pages = math.ceil(numberOfResults / 15)
+    print(pages)
     questions = {}
     covered_ids = []
     processed_ids = []
     for i in range(pages):
-        driver.get("https://stackoverflow.com/search?page={}&tab=Relevance&q={}%20created%3a{}".format(i+1,tag, searchdate))
+        driver.get("https://stackoverflow.com/search?page={}&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(i+1, tag, searchdate,'is','question'))
         try:
-            lists = driver.find_elements_by_xpath('//*[contains(@id, "question-summary")]')
+            lists = driver.find_elements(By.XPATH, '//*[contains(@id, "question-summary")]')
             for listitem in lists:
                 metadata = []
                 id = listitem.get_attribute('id')
-                tags = listitem.find_elements_by_css_selector('.js-post-tag-list-item')
+                tags = listitem.find_elements(By.CSS_SELECTOR, '.js-post-tag-list-item')
                 tag_list = []
                 for tagg in tags:
                     tag_list.append(tagg.text)
                 metadata.append(tag_list)
-                timestamp = listitem.find_element_by_css_selector('.relativetime')
+                timestamp = listitem.find_element(By.CSS_SELECTOR, '.relativetime')
                 metadata.append(timestamp.get_attribute('title'))
-
-                items = listitem.find_elements_by_css_selector('.s-post-summary--stats-item-number')
+                items = listitem.find_elements(By.CSS_SELECTOR, '.s-post-summary--stats-item-number')
                 item_list = []
                 for item in items:
                     item_list.append(item.text)
                 metadata.append(str(item_list[0]))
                 metadata.append(item_list[1])
-                # df6.append(item_list[2])
                 try:
-                    owner_id = listitem.find_element_by_css_selector('.s-user-card--link.d-flex.gs4')
-                    owner = owner_id.find_element_by_css_selector('.flex--item')
+                    owner_id = listitem.find_element(By.CSS_SELECTOR, '.s-user-card--link.d-flex.gs4')
+                    owner = owner_id.find_element(By.CSS_SELECTOR, '.flex--item')
                     metadata.append(owner.get_attribute('href'))
                 except (NoSuchElementException, IndexError):
                     metadata.append('No Owner ID')
@@ -68,62 +68,84 @@ def scrape_site_questions(tag):
                     driver.get('https://stackoverflow.com/questions/{}'.format(idd))
                     time.sleep(2)
                     try:
-                        header = driver.find_element_by_id('question-header')
-                        title = header.find_element_by_class_name('question-hyperlink').text
+                        header = driver.find_element(By.ID, 'question-header')
+                        title = header.find_element(By.CLASS_NAME, 'question-hyperlink').text
                         questions[id].append(title)
                     except NoSuchElementException:
                         print('Question not found/deleted')
                         questions = removekey(questions, id)
                         continue
-                    question_text = driver.find_element_by_id('question')
-                    views = driver.find_element_by_xpath('//*[contains(@title,"Viewed")]')
+                    question_text = driver.find_element(By.ID, 'question')
+                    views = driver.find_element(By.XPATH, '//*[contains(@title,"Viewed")]')
                     questions[id].append(views.get_attribute('title'))
                     try:
-                        code_snippet = question_text.find_element_by_tag_name('code')
+                        answers = driver.find_elements(By.XPATH, "//div[contains(@class, 'answercell')]")
+                        time.sleep(2)
+                        timestamps = []
+                        for answer in answers:
+                            timestamp = answer.find_element(By.XPATH,"//span[contains(@class, 'relativetime')]")
+                            timestamps.append(timestamp.get_attribute('title'))
+                        if not timestamps:
+                            questions[id].append('No answers')
+                        if len(timestamps) == 1:
+                            questions[id].append(timestamps[0])
+                        else:
+                            max = -10
+                            for timestamp in timestamps:
+                                d = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%SZ")
+                                sum = d.year + d.month + d.day + d.hour + d.minute + d.second
+                                if sum > max:
+                                    first_answer = timestamp
+                                    questions[id].append(first_answer)
+                    except NoSuchElementException:
+                        questions[id].append('No answers')
+                    try:
+                        code_snippet = question_text.find_element(By.TAG_NAME, 'code')
                         questions[id].append(1)
                     except (NoSuchElementException, IndexError, StaleElementReferenceException):
                         questions[id].append(0)
                     try:
-                        comments_link = question_text.find_element_by_css_selector(".js-show-link.comments-link")
+                        comments_link = question_text.find_element(By.CSS_SELECTOR, ".js-show-link.comments-link")
                         driver.execute_script("arguments[0].click();", comments_link)
                         time.sleep(3)
-                        comment_number = question_text.find_elements_by_class_name("comment-copy")
+                        comment_number = question_text.find_elements(By.CLASS_NAME, "comment-copy")
                         questions[id].append(len(comment_number))
                     except (NoSuchElementException, IndexError, StaleElementReferenceException):
                         try:
-                            comment_number = question_text.find_elements_by_class_name("comment-copy")
+                            comment_number = question_text.find_elements(By.CLASS_NAME, "comment-copy")
                             questions[id].append(len(comment_number))
                         except (NoSuchElementException, IndexError, StaleElementReferenceException):
                             questions[id].append('No comments')
                     try:
-                        closed_date = driver.find_element_by_xpath('//*[contains(@class,"s-notice")]')
+                        closed_date = driver.find_element(By.XPATH, '//*[contains(@class,"s-notice")]')
                         if closed_date.is_displayed():
                             questions[id].append(1)
                         else:
                             questions[id].append(0)
                     except (NoSuchElementException, IndexError, StaleElementReferenceException):
                         questions[id].append(0)
-                    post = question_text.find_element_by_class_name('js-post-body')
+                    post = question_text.find_element(By.CLASS_NAME, 'js-post-body')
                     body = []
-                    bodies = post.find_elements_by_xpath('//*[contains(@class,"js-post-body")]//descendant::p')
+                    bodies = post.find_elements(By.XPATH,'//*[contains(@class,"js-post-body")]//descendant::p')
                     for bodyitem in bodies:
                         body.append(bodyitem.text)
                     body_joined = '.'.join(body)
                     questions[id].append(body_joined)
                     try:
-                        user_div = question_text.find_element_by_css_selector('.post-signature.owner.flex--item')
-                        user_div2 = user_div.find_element_by_class_name('user-details')
-                        user_link = user_div2.find_element_by_tag_name('a')
+                        user_div = question_text.find_element(By.CSS_SELECTOR, '.post-signature.owner.flex--item')
+                        user_div2 = user_div.find_element(By.CLASS_NAME, 'user-details')
+                        user_link = user_div2.find_element(By.TAG_NAME, 'a')
                         driver.execute_script("arguments[0].click();", user_link)
                         time.sleep(3)
                         try:
-                            user_location = driver.find_element_by_css_selector('.wmx2.truncate')
+                            user_location = driver.find_element(By.CSS_SELECTOR, '.wmx2.truncate')
                             questions[id].append(user_location.text)
                         except NoSuchElementException:
                             questions[id].append('No location')
                     except NoSuchElementException:
                         questions[id].append('No location')
                     covered_ids.append(id)
+                    questions[id].append(0) #for deleted
         except NoSuchElementException:
             print('No questions in this page!')
 
@@ -204,12 +226,15 @@ def scrape_site_questions(tag):
                 questions[i][0] = one_tag
                 processed_ids.append(i)
         final = pd.DataFrame.from_dict(questions, orient='index')
-        final.to_excel('collected_covid.xlsx'.format(tag))
+        if tag == 'covid*':
+            final.to_excel('collected_covid.xlsx')
+        else:
+            final.to_excel('collected_{}.xlsx'.format(tag))
     print('Completed data extraction for {}'.format(tag))
 
 print('Extracting Question Data')
 #
-tags = ["covid*"]
+tags = ["corona-virus","sars-cov","2019-ncov","coronavirus","covid*"]
 
 for tag in tags:
     scrape_site_questions(tag)
