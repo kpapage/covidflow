@@ -387,7 +387,8 @@ def fetch():
     covidCollection = mongo.db.questions
     date_from = request.args.get('dateFrom')
     date_to = request.args.get('dateTo')
-    questions = covidCollection.find({'timestamps': {'$gte' : date_from, '$lte' : date_to}})  #load questions from collection
+    closed = int(request.args.get('inclClosed'))
+    questions = covidCollection.find({'timestamps': {'$gte' : date_from, '$lte' : date_to}  , 'closed': {'$in': [0 , closed]}})
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
     users = len(questions.distinct('owner_id'))

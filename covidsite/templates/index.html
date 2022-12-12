@@ -256,36 +256,41 @@
                 </div>
                 <div class="row">
                     <div class=" col-xl-12 ">
-                        <div class="card shadow mb-4">
-                            <!-- Card Header - Dropdown -->
-                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
-                                <h6 class="m-0 font-weight-bold text-primary">See Data For Specific Time Windows
-                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext">to be added
-                                        </span>
-                                    </div>
-                                </h6>
+                      <div class="card shadow mb-4">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
+                          <h6 class="m-0 font-weight-bold text-primary">See Data For Specific Time Windows
+                            <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                              <span class="tooltiptext">to be added
+                              </span>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class=" col-xl-5 ">
-                                        <div class="md-form md-outline input-with-post-icon datepicker">
-                                            <input placeholder="Select date" type="date" id="dateFrom" class="form-control" value="{{ date_from }}">
-                                            <label for="example">Date From</label>
-                                        </div>
-                                    </div>
-                                    <div class=" col-xl-5 ">
-                                        <div class="md-form md-outline input-with-post-icon datepicker">
-                                            <input placeholder="Select date" type="date" id="dateTo" class="form-control" value="{{ date_to }}">
-                                            <label for="example">Date To</label>
-                                        </div>
-                                    </div>
-                                    <div class=" col-xl-2 ">
-                                        <button type="button" class="btn btn-primary" id="datepicker" >Search</button>
-                                    </div>
-                                </div>
-                            </div>
+                          </h6>
                         </div>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class=" col-xl-5 ">
+                              <div class="md-form md-outline input-with-post-icon datepicker">
+                                <input placeholder="Select date" type="date" id="dateFrom" class="form-control" value="{{ date_from }}">
+                                <label for="example">Date From</label>
+                              </div>
+                            </div>
+                            <div class=" col-xl-5 ">
+                              <div class="md-form md-outline input-with-post-icon datepicker">
+                                <input placeholder="Select date" type="date" id="dateTo" class="form-control" value="{{ date_to }}">
+                                <label for="example">Date To</label>
+                              </div>
+                            </div>
+                            <div class=" col-xl-2 ">
+                              <button type="button" class="btn btn-primary" id="datepicker" >Search</button>
+                              <br>
+                              <br>
+                              <input type="checkbox" class="form-check-input" id="includeClosedQuestionsCheckbox">
+                              <label class="form-check-label" for="includeClosedQuestionsCheckbox">Include closed questions</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                 </div>
                 <!-- Content Row -->
@@ -1576,11 +1581,12 @@ svg.selectAll("path.chord")
     document.getElementById('datepicker').onclick = function() {
         var dateFrom = document.getElementById('dateFrom').value;
         var dateTo = document.getElementById('dateTo').value;
+        var closed = document.getElementById('includeClosedQuestionsCheckbox').checked ? 1 : 0;
         var server_data = [
             {"dateFrom" : dateFrom},
             {"dateTo"   : dateTo  }
         ];
-        window.location.href = './get_dates?dateFrom=' + dateFrom + '&dateTo=' + dateTo;
+        window.location.href = './get_dates?dateFrom=' + dateFrom + '&dateTo=' + dateTo + '&inclClosed=' + closed;
     };
 </script>
 
