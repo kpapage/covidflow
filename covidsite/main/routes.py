@@ -20,6 +20,13 @@ def index():
     covidCollection = mongo.db.questions
     questions = covidCollection.find()  #load questions from collection
     questions = list(questions)
+    closed_questions = list([q for q in questions if q['closed'] == 1])
+    deleted_questions = list([q for q in questions if q['deleted'] == 1])
+    all_questions = questions + closed_questions + deleted_questions
+
+
+
+
 
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
@@ -304,6 +311,8 @@ def index():
 
     distinct_tags = []
     radar_values = [0,0,0,0,0,0,0] #[languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_open_values = [0,0,0,0,0,0,0] #[languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_closed_values = [0,0,0,0,0,0,0] #[languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
 
 
@@ -334,6 +343,54 @@ def index():
     for i in range(len(radar_values)):
         radar_values[i]=radar_values[i]/len(distinct_tags)
 
+    #Creation of the stacked bar chart values.
+    for question in questions:
+        if question['closed'] == 1:
+            for tag in question['tag'].split(' '):
+                if tag in fields_and_techs.keys():
+                    if fields_and_techs.get(tag) == 'Languages':
+                        stacked_closed_values[0] = stacked_closed_values[0] + 1
+                    elif fields_and_techs.get(tag) == 'Web Frameworks':
+                        stacked_closed_values[1] = stacked_closed_values[1] + 1
+                    elif fields_and_techs.get(tag) == 'Big Data - ML':
+                        stacked_closed_values[2] = stacked_closed_values[2] + 1
+                    elif fields_and_techs.get(tag) == 'Databases':
+                        stacked_closed_values[3] = stacked_closed_values[3] + 1
+                    elif fields_and_techs.get(tag) == 'Platforms':
+                        stacked_closed_values[4] = stacked_closed_values[4] + 1
+                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                        stacked_closed_values[5] = stacked_closed_values[5] + 1
+                    elif fields_and_techs.get(tag) == 'Developer Tools':
+                        stacked_closed_values[6] = stacked_closed_values[6] + 1
+        else:
+            for tag in question['tag'].split(' '):
+                if tag in fields_and_techs.keys():
+                    if fields_and_techs.get(tag) == 'Languages':
+                        stacked_open_values[0] = stacked_open_values[0] + 1
+                    elif fields_and_techs.get(tag) == 'Web Frameworks':
+                        stacked_open_values[1] = stacked_open_values[1] + 1
+                    elif fields_and_techs.get(tag) == 'Big Data - ML':
+                        stacked_open_values[2] = stacked_open_values[2] + 1
+                    elif fields_and_techs.get(tag) == 'Databases':
+                        stacked_open_values[3] = stacked_open_values[3] + 1
+                    elif fields_and_techs.get(tag) == 'Platforms':
+                        stacked_open_values[4] = stacked_open_values[4] + 1
+                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                        stacked_open_values[5] = stacked_open_values[5] + 1
+                    elif fields_and_techs.get(tag) == 'Developer Tools':
+                        stacked_open_values[6] = stacked_open_values[6] + 1
+
+
+    # Distinct technologies
+    distinct_technologies = []
+    for tech in fields_and_techs.values():
+        if tech not in distinct_technologies:
+            distinct_technologies.append(tech)
+
+
+
+
+
     #creation of chord diagram matrix
     tag_link_matrix = np.zeros((10,10)).astype(int)
     tags_to_be_linked = []
@@ -357,6 +414,8 @@ def index():
     return render_template('index.html', questions=questions, question_count = question_count, users=users, labels=labels, values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues,latLngInt=latLngInt,latitudes=latitudes,longitudes=longitudes,
+                           distinct_technologies= distinct_technologies,
+                           stacked_open_values=stacked_open_values,stacked_closed_values=stacked_closed_values,
                            radar_values=radar_values,added_values=added_values,avgNumberOfAnswers=avgNumberOfAnswers,
                            avgNumberOfComments=avgNumberOfComments,avgNumberOfVotes=avgNumberOfVotes,
                            snippetData=snippetData,halfMonthValues=halfMonthValues,
@@ -388,7 +447,8 @@ def fetch():
     date_from = request.args.get('dateFrom')
     date_to = request.args.get('dateTo')
     closed = int(request.args.get('inclClosed'))
-    questions = covidCollection.find({'timestamps': {'$gte' : date_from, '$lte' : date_to}  , 'closed': {'$in': [0 , closed]}})
+    # 'closed': {'$in': [0 , closed]} OR 'deleted': {'$in': [0 , closed]}
+    questions = covidCollection.find({'timestamps': {'$gte' : date_from, '$lte' : date_to}  , 'closed': {'$in': [0 , closed]} , 'deleted': {'$in': [0 , closed]} })
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
     users = len(questions.distinct('owner_id'))
@@ -665,6 +725,9 @@ def fetch():
 
     distinct_tags = []
     radar_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_open_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_closed_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+
 
     for tag in tags:
         if tag in fields_and_techs.keys():
@@ -690,6 +753,48 @@ def fetch():
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
 
+    # Creation of the stacked bar chart values.
+    for question in questions:
+        if question['closed'] == 1:
+            for tag in question['tags']:
+                if tag in fields_and_techs.keys():
+                    if fields_and_techs.get(tag) == 'Languages':
+                        stacked_closed_values[0] = stacked_closed_values[0] + 1
+                    elif fields_and_techs.get(tag) == 'Web Frameworks':
+                        stacked_closed_values[1] = stacked_closed_values[1] + 1
+                    elif fields_and_techs.get(tag) == 'Big Data - ML':
+                        stacked_closed_values[2] = stacked_closed_values[2] + 1
+                    elif fields_and_techs.get(tag) == 'Databases':
+                        stacked_closed_values[3] = stacked_closed_values[3] + 1
+                    elif fields_and_techs.get(tag) == 'Platforms':
+                        stacked_closed_values[4] = stacked_closed_values[4] + 1
+                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                        stacked_closed_values[5] = stacked_closed_values[5] + 1
+                    elif fields_and_techs.get(tag) == 'Developer Tools':
+                        stacked_closed_values[6] = stacked_closed_values[6] + 1
+        else:
+            for tag in question['tags']:
+                if tag in fields_and_techs.keys():
+                    if fields_and_techs.get(tag) == 'Languages':
+                        stacked_open_values[0] = stacked_open_values[0] + 1
+                    elif fields_and_techs.get(tag) == 'Web Frameworks':
+                        stacked_open_values[1] = stacked_open_values[1] + 1
+                    elif fields_and_techs.get(tag) == 'Big Data - ML':
+                        stacked_open_values[2] = stacked_open_values[2] + 1
+                    elif fields_and_techs.get(tag) == 'Databases':
+                        stacked_open_values[3] = stacked_open_values[3] + 1
+                    elif fields_and_techs.get(tag) == 'Platforms':
+                        stacked_open_values[4] = stacked_open_values[4] + 1
+                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                        stacked_open_values[5] = stacked_open_values[5] + 1
+                    elif fields_and_techs.get(tag) == 'Developer Tools':
+                        stacked_open_values[6] = stacked_open_values[6] + 1
+
+    # Distinct technologies
+    distinct_technologies = []
+    for tech in fields_and_techs.values():
+        if tech not in distinct_technologies:
+            distinct_technologies.append(tech)
 
     #creation of chord diagram matrix
     tag_link_matrix = np.zeros((10,10)).astype(int)
@@ -715,6 +820,8 @@ def fetch():
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues, latLngInt=latLngInt, latitudes=latitudes,
                            longitudes=longitudes,
+                           distinct_technologies=distinct_technologies,
+                           stacked_open_values=stacked_open_values, stacked_closed_values=stacked_closed_values,
                            radar_values=radar_values, added_values=added_values,
                            avgNumberOfAnswers=avgNumberOfAnswers,
                            avgNumberOfComments=avgNumberOfComments, avgNumberOfVotes=avgNumberOfVotes,
