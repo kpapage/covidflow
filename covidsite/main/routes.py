@@ -19,10 +19,11 @@ main = Blueprint('main', __name__)
 def index():
     covidCollection = mongo.db.questions
     questions = covidCollection.find()  # load questions from collection
-    questions = list(questions)
-    closed_questions = list([q for q in questions if q['closed'] == 1])
-    deleted_questions = list([q for q in questions if q['deleted'] == 1])
-    all_questions = questions + closed_questions + deleted_questions
+    all_questions = list(questions)
+    closed_questions = list([q for q in all_questions if q['closed'] == 1])
+    deleted_questions = list([q for q in all_questions if q['deleted'] == 1])
+    questions = list([q for q in all_questions if q['closed'] == 0 and q['deleted'] == 0])
+
 
 
     techCollection = mongo.db.technologies_list
@@ -300,8 +301,8 @@ def index():
     radar_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
     stacked_open_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
-    stacked_closed_values = [0, 0, 0, 0, 0, 0,
-                             0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_closed_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_deleted_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
     for tag in tags:
         if tag in fields_and_techs.keys():
@@ -329,40 +330,22 @@ def index():
 
     # Creation of the stacked bar chart values.
     for question in questions:
-        if question['closed'] == 1:
-            for tag in question['tag'].split(' '):
-                if tag in fields_and_techs.keys():
-                    if fields_and_techs.get(tag) == 'Languages':
-                        stacked_closed_values[0] = stacked_closed_values[0] + 1
-                    elif fields_and_techs.get(tag) == 'Web Frameworks':
-                        stacked_closed_values[1] = stacked_closed_values[1] + 1
-                    elif fields_and_techs.get(tag) == 'Big Data - ML':
-                        stacked_closed_values[2] = stacked_closed_values[2] + 1
-                    elif fields_and_techs.get(tag) == 'Databases':
-                        stacked_closed_values[3] = stacked_closed_values[3] + 1
-                    elif fields_and_techs.get(tag) == 'Platforms':
-                        stacked_closed_values[4] = stacked_closed_values[4] + 1
-                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
-                        stacked_closed_values[5] = stacked_closed_values[5] + 1
-                    elif fields_and_techs.get(tag) == 'Developer Tools':
-                        stacked_closed_values[6] = stacked_closed_values[6] + 1
-        else:
-            for tag in question['tag'].split(' '):
-                if tag in fields_and_techs.keys():
-                    if fields_and_techs.get(tag) == 'Languages':
-                        stacked_open_values[0] = stacked_open_values[0] + 1
-                    elif fields_and_techs.get(tag) == 'Web Frameworks':
-                        stacked_open_values[1] = stacked_open_values[1] + 1
-                    elif fields_and_techs.get(tag) == 'Big Data - ML':
-                        stacked_open_values[2] = stacked_open_values[2] + 1
-                    elif fields_and_techs.get(tag) == 'Databases':
-                        stacked_open_values[3] = stacked_open_values[3] + 1
-                    elif fields_and_techs.get(tag) == 'Platforms':
-                        stacked_open_values[4] = stacked_open_values[4] + 1
-                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
-                        stacked_open_values[5] = stacked_open_values[5] + 1
-                    elif fields_and_techs.get(tag) == 'Developer Tools':
-                        stacked_open_values[6] = stacked_open_values[6] + 1
+        for tag in question['tag'].split(' '):
+            if tag in fields_and_techs.keys():
+                if fields_and_techs.get(tag) == 'Languages':
+                    stacked_open_values[0] = stacked_open_values[0] + 1
+                elif fields_and_techs.get(tag) == 'Web Frameworks':
+                    stacked_open_values[1] = stacked_open_values[1] + 1
+                elif fields_and_techs.get(tag) == 'Big Data - ML':
+                    stacked_open_values[2] = stacked_open_values[2] + 1
+                elif fields_and_techs.get(tag) == 'Databases':
+                    stacked_open_values[3] = stacked_open_values[3] + 1
+                elif fields_and_techs.get(tag) == 'Platforms':
+                    stacked_open_values[4] = stacked_open_values[4] + 1
+                elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                    stacked_open_values[5] = stacked_open_values[5] + 1
+                elif fields_and_techs.get(tag) == 'Developer Tools':
+                    stacked_open_values[6] = stacked_open_values[6] + 1
 
     # Distinct technologies
     distinct_technologies = []
@@ -397,6 +380,7 @@ def index():
                            longitudes=longitudes,
                            distinct_technologies=distinct_technologies,
                            stacked_open_values=stacked_open_values, stacked_closed_values=stacked_closed_values,
+                           stacked_deleted_values=stacked_deleted_values,
                            radar_values=radar_values, added_values=added_values, avgNumberOfAnswers=avgNumberOfAnswers,
                            avgNumberOfComments=avgNumberOfComments, avgNumberOfVotes=avgNumberOfVotes,
                            snippetData=snippetData, halfMonthValues=halfMonthValues,
@@ -442,13 +426,27 @@ def fetch():
     date_from = request.args.get('dateFrom')
     date_to = request.args.get('dateTo')
     closed = int(request.args.get('inclClosed'))
-    questions = covidCollection.find(
-        {'timestamps': {'$gte': date_from, '$lte': date_to}, 'closed': {'$in': [0, closed]}})
+    if closed == 1: # all questions
+        query = {'timestamps': {'$gte': date_from, '$lte': date_to}}
+    elif closed == 0: # only open questions
+        query = {
+            "$and": [
+                {"timestamps": {"$gte": date_from, "$lte": date_to}},
+                {"$and": [
+                    {"closed": closed},
+                    {"deleted": closed}
+                ]}
+            ]
+        }
+
+    questions = covidCollection.find(query)  #load questions from collection
+
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
     users = len(questions.distinct('owner_id'))
     question_number = len(covidCollection.distinct('_id'))
     questions = list(questions)
+
     dates = []
     dates_and_values = {}
     tags = []
@@ -722,8 +720,8 @@ def fetch():
     radar_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
     stacked_open_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
-    stacked_closed_values = [0, 0, 0, 0, 0, 0,
-                             0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_closed_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
+    stacked_deleted_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
     for tag in tags:
         if tag in fields_and_techs.keys():
@@ -749,42 +747,62 @@ def fetch():
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
 
-    # Creation of the stacked bar chart values.
-    for question in questions:
-        if question['closed'] == 1:
-            for tag in question['tag'].split(' '):
-                if tag in fields_and_techs.keys():
-                    if fields_and_techs.get(tag) == 'Languages':
-                        stacked_closed_values[0] = stacked_closed_values[0] + 1
-                    elif fields_and_techs.get(tag) == 'Web Frameworks':
-                        stacked_closed_values[1] = stacked_closed_values[1] + 1
-                    elif fields_and_techs.get(tag) == 'Big Data - ML':
-                        stacked_closed_values[2] = stacked_closed_values[2] + 1
-                    elif fields_and_techs.get(tag) == 'Databases':
-                        stacked_closed_values[3] = stacked_closed_values[3] + 1
-                    elif fields_and_techs.get(tag) == 'Platforms':
-                        stacked_closed_values[4] = stacked_closed_values[4] + 1
-                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
-                        stacked_closed_values[5] = stacked_closed_values[5] + 1
-                    elif fields_and_techs.get(tag) == 'Developer Tools':
-                        stacked_closed_values[6] = stacked_closed_values[6] + 1
-        else:
-            for tag in question['tag'].split(' '):
-                if tag in fields_and_techs.keys():
-                    if fields_and_techs.get(tag) == 'Languages':
-                        stacked_open_values[0] = stacked_open_values[0] + 1
-                    elif fields_and_techs.get(tag) == 'Web Frameworks':
-                        stacked_open_values[1] = stacked_open_values[1] + 1
-                    elif fields_and_techs.get(tag) == 'Big Data - ML':
-                        stacked_open_values[2] = stacked_open_values[2] + 1
-                    elif fields_and_techs.get(tag) == 'Databases':
-                        stacked_open_values[3] = stacked_open_values[3] + 1
-                    elif fields_and_techs.get(tag) == 'Platforms':
-                        stacked_open_values[4] = stacked_open_values[4] + 1
-                    elif fields_and_techs.get(tag) == 'Collaboration Tools':
-                        stacked_open_values[5] = stacked_open_values[5] + 1
-                    elif fields_and_techs.get(tag) == 'Developer Tools':
-                        stacked_open_values[6] = stacked_open_values[6] + 1
+        # Creation of the stacked bar chart values.
+        for question in questions:
+            if closed == 1:
+                if question['closed'] == 1:
+                    for tag in question['tag'].split(' '):
+                        if tag in fields_and_techs.keys():
+                            if fields_and_techs.get(tag) == 'Languages':
+                                stacked_closed_values[0] = stacked_closed_values[0] + 1
+                            elif fields_and_techs.get(tag) == 'Web Frameworks':
+                                stacked_closed_values[1] = stacked_closed_values[1] + 1
+                            elif fields_and_techs.get(tag) == 'Big Data - ML':
+                                stacked_closed_values[2] = stacked_closed_values[2] + 1
+                            elif fields_and_techs.get(tag) == 'Databases':
+                                stacked_closed_values[3] = stacked_closed_values[3] + 1
+                            elif fields_and_techs.get(tag) == 'Platforms':
+                                stacked_closed_values[4] = stacked_closed_values[4] + 1
+                            elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                                stacked_closed_values[5] = stacked_closed_values[5] + 1
+                            elif fields_and_techs.get(tag) == 'Developer Tools':
+                                stacked_closed_values[6] = stacked_closed_values[6] + 1
+
+                if question['deleted'] == 1:
+                    for tag in question['tag'].split(' '):
+                        if tag in fields_and_techs.keys():
+                            if fields_and_techs.get(tag) == 'Languages':
+                                stacked_deleted_values[0] = stacked_deleted_values[0] + 1
+                            elif fields_and_techs.get(tag) == 'Web Frameworks':
+                                stacked_deleted_values[1] = stacked_deleted_values[1] + 1
+                            elif fields_and_techs.get(tag) == 'Big Data - ML':
+                                stacked_deleted_values[2] = stacked_deleted_values[2] + 1
+                            elif fields_and_techs.get(tag) == 'Databases':
+                                stacked_deleted_values[3] = stacked_deleted_values[3] + 1
+                            elif fields_and_techs.get(tag) == 'Platforms':
+                                stacked_deleted_values[4] = stacked_deleted_values[4] + 1
+                            elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                                stacked_deleted_values[5] = stacked_deleted_values[5] + 1
+                            elif fields_and_techs.get(tag) == 'Developer Tools':
+                                stacked_deleted_values[6] = stacked_deleted_values[6] + 1
+
+            if question['closed'] == 0 and question['deleted'] == 0:
+                for tag in question['tag'].split(' '):
+                    if tag in fields_and_techs.keys():
+                        if fields_and_techs.get(tag) == 'Languages':
+                            stacked_open_values[0] = stacked_open_values[0] + 1
+                        elif fields_and_techs.get(tag) == 'Web Frameworks':
+                            stacked_open_values[1] = stacked_open_values[1] + 1
+                        elif fields_and_techs.get(tag) == 'Big Data - ML':
+                            stacked_open_values[2] = stacked_open_values[2] + 1
+                        elif fields_and_techs.get(tag) == 'Databases':
+                            stacked_open_values[3] = stacked_open_values[3] + 1
+                        elif fields_and_techs.get(tag) == 'Platforms':
+                            stacked_open_values[4] = stacked_open_values[4] + 1
+                        elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                            stacked_open_values[5] = stacked_open_values[5] + 1
+                        elif fields_and_techs.get(tag) == 'Developer Tools':
+                            stacked_open_values[6] = stacked_open_values[6] + 1
 
     # Distinct technologies
     distinct_technologies = []
@@ -823,6 +841,7 @@ def fetch():
                            longitudes=longitudes,
                            distinct_technologies=distinct_technologies,
                            stacked_open_values=stacked_open_values, stacked_closed_values=stacked_closed_values,
+                           stacked_deleted_values=stacked_deleted_values,
                            radar_values=radar_values, added_values=added_values,
                            avgNumberOfAnswers=avgNumberOfAnswers,
                            avgNumberOfComments=avgNumberOfComments, avgNumberOfVotes=avgNumberOfVotes,

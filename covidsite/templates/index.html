@@ -296,7 +296,7 @@
                             <div class=" col-xl-2 ">
 
                               <input type="checkbox" class="form-check-input" id="includeClosedQuestionsCheckbox">
-                              <label class="form-check-label" for="includeClosedQuestionsCheckbox">Include closed questions</label>
+                              <label class="form-check-label" for="includeClosedQuestionsCheckbox">Include closed/deleted questions</label>
 
 
                             </div>
@@ -1450,30 +1450,43 @@
 
 
    // Parse the data returned from render_template()
-    var technologies = {{ distinct_technologies | safe }};
-    var data_open = {{ stacked_open_values | safe }};
+    var technologies = {{ distinct_technologies | safe }}
+    var data_open = {{ stacked_open_values | safe }}
     var data_closed = {{ stacked_closed_values | safe }};
+    var data_deleted = {{ stacked_deleted_values | safe }};
+
+    technologies.unshift("All");
+    data_open.unshift(data_open.reduce((a, b) => a + b, 0));
+    data_closed.unshift(data_closed.reduce((a, b) => a + b, 0));
+    data_deleted.unshift(data_deleted.reduce((a, b) => a + b, 0));
 
 
 
-
+    console.log(technologies);
+   // var data_by_tech = [{"Technology": "All", "Open": data_open.reduce((a, b) => a + b, 0), "Closed": data_closed.reduce((a, b) => a + b, 0), "Deleted": data_deleted.reduce((a, b) => a + b, 0)}];
     var data_by_tech = [];
     for (var i = 0; i < technologies.length; i++) {
         data_by_tech.push({
             "Technology": technologies[i],
             "Open": data_open[i],
-            "Closed": data_closed[i]
+            "Closed": data_closed[i],
+            "Deleted": data_deleted[i]
         });
     }
+
+    console.log(data_by_tech);
+
 
 
 
     // List of subgroups = header of the csv files = soil condition here
     var subgroups = d3.keys(data_by_tech[0])
   //  delete subgroups[0]
+    console.log(subgroups)
 
     // List of groups = species here = value of the first column called group -> I show them on the X axis
     var groups = d3.map(data_by_tech, function(d){return(d.Technology)}).keys()
+
 
     console.log(groups)
 
@@ -1488,28 +1501,81 @@
 
     // Add Y axis
     var y = d3.scaleLinear()
-        .domain([0, 5000])
+        .domain([0, 20000])
         .range([ height, 0 ]);
     svg.append("g")
         .call(d3.axisLeft(y));
 
-    var xSubgroup = d3.scaleBand()
+    /*var xSubgroup = d3.scaleBand()
         .domain(subgroups)
         .range([0, x.bandwidth()])
         .padding([0.05])
 
+     */
+
     // color palette = one color per subgroup
     var color = d3.scaleOrdinal()
         .domain(subgroups)
-        .range(['#e41a1c','#4daf4a'])
+        .range(['#e5493b','#1cc689','#f4c03e'])
 
     //stack the data? --> stack per subgroup
     var stackedData = d3.stack()
         .keys(subgroups)
         (data_by_tech)
 
+    var tooltip = d3.select("#QbTechChart")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+
+    var mouseover = function(d) {
+        var subgroupName = d3.select(this.parentNode).datum().key;
+        var subgroupValue = d.data[subgroupName];
+        tooltip
+            .html( subgroupName + " : " + subgroupValue)
+            .style("opacity", 1)
+    }
+
+    var mousemove = function(d) {
+        tooltip
+            .style("left", (d3.mouse(this)[0]+70) + "px")
+            .style("top", (d3.mouse(this)[1]) + "px")
+    }
+
+    var mouseleave = function(d) {
+        tooltip
+            .style("opacity", 0)
+    }
+
     // Show the bars
     svg.append("g")
+        .selectAll("g")
+        // Enter in the stack data = loop key per key = group per group
+        .data(stackedData)
+        .enter().append("g")
+        .attr("fill", function(d) { return color(d.key); })
+        .selectAll("rect")
+        // enter a second time = loop subgroup per subgroup to add all rectangles
+        .data(function(d) { return d; })
+        .enter().append("rect")
+        .attr("x", function(d) { return x(d.data.Technology); })
+        .attr("y", function(d) { return y(d[1]); })
+        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+        .attr("width",x.bandwidth())
+        .attr("stroke", "grey")
+        .attr("stroke-width", "0.5px")
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave)
+
+
+    // Show the bars
+   /* svg.append("g")
         .selectAll("g")
         // Enter in the stack data = loop key per key = group per group
         .data(data_by_tech)
@@ -1525,6 +1591,7 @@
         .attr("width", xSubgroup.bandwidth())
         .attr("height", function(d) { return height - y(d.value); })
         .attr("fill", function(d) { return color(d.key); });
+        */
 
 </script>
 
