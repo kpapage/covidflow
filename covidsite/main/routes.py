@@ -618,15 +618,15 @@ def fetch():
     top_10_distinct_users = dict(islice(sorted_distinct_users.items(), 10))
 
     sorted_ids_and_votes = dict(
-        sorted(ids_and_votes.items(), reverse=True, key=lambda item: item[1]))
+        sorted(ids_and_votes.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_votes = dict(islice(sorted_ids_and_votes.items(), 10))
 
     sorted_ids_and_answers = dict(
-        sorted(ids_and_answers.items(), reverse=True, key=lambda item: item[1]))
+        sorted(ids_and_answers.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_answers = dict(islice(sorted_ids_and_answers.items(), 10))
 
     sorted_ids_and_comments = dict(
-        sorted(ids_and_comments.items(), reverse=True, key=lambda item: item[1]))
+        sorted(ids_and_comments.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_comments = dict(islice(sorted_ids_and_comments.items(), 10))
 
     numberOfComments = sum(comments)
