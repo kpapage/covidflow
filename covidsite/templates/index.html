@@ -536,7 +536,7 @@
 
                 <div class="row">
                     <!-- Content Column -->
-                    <div class="col-xl-12">
+                    <div class="col-xl-8">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3" id="tenthChart">
                                 <h6 class="m-0 font-weight-bold text-primary">Chord Diagram
@@ -548,7 +548,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="chart-area">
-                                    <div id="my_dataviz"></div>
+                                    <div id="my_dataviz" style="height: 900px; "></div>
                                 </div>
                             </div>
                         </div>
@@ -1084,7 +1084,7 @@
         var width = document.getElementById('wordCloud').offsetWidth, height = 500;
 
         if (document.getElementById('wordCloud').offsetWidth < 400) {
-            dataScale = d3.scale.linear().range([10, 40]);
+            dataScale = d3.scaleLinear().range([10, 40]);
             height = 300;
         }
 
@@ -1632,15 +1632,15 @@
     ////////////////////////////////////////////////////////////
     //////////////////////// Set-Up ////////////////////////////
     ////////////////////////////////////////////////////////////
-    var margin = {left:90, top:90, right:90, bottom:90},
-        width =  Math.min(window.innerWidth, 800), // more flexibility: Math.min(window.innerWidth, 1000)
-        height =  Math.min(window.innerWidth, 800), // same: Math.min(window.innerWidth, 1000)
-        innerRadius = Math.min(width, height) * .40,
+    var margin = {top: 50, right: 50, bottom: 50, left: 50},
+        width = parseInt(d3.select("#my_dataviz").style("width")) - margin.left - margin.right ,
+        height = parseInt(d3.select("#my_dataviz").style("height")) - margin.top - margin.bottom,
+        innerRadius = Math.min(width, height) * 0.41,
         outerRadius = innerRadius * 1.1;
-
-    var names = {{top_ten_tags | safe}},
-        colors = ["#301E1E", "#083E77", "#342350", "#567235", "#8B161C", "#DF7C00","#559e83", "#ae5a41", "#c3cb71", "#5e3c58"],
-        opacityDefault = 0.8;
+    var names = {{top_twenty_tags | safe}},
+        colors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', '#008080',
+            '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'],
+    opacityDefault = 0.8;
 
     var matrix = {{list_tag_link_matrix | safe }};
 
@@ -1653,7 +1653,7 @@ var colors = d3.scaleOrdinal()
   .range(colors);
 
 var chord = d3.chord()
-  .padAngle(.15)
+  .padAngle(.01)
   .sortChords(d3.descending)
 
   var arc = d3.arc()
@@ -1666,12 +1666,12 @@ var path = d3.ribbon()
 ////////////////////////////////////////////////////////////
 ////////////////////// Create SVG //////////////////////////
 ////////////////////////////////////////////////////////////
-
-var svg = d3.select("#my_dataviz").append("svg")
-.attr("width", width  )
-.attr("height", height )
+var svg = d3.select("#my_dataviz")
+.append("svg")
+.attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+.attr("preserveAspectRatio", "xMinYMin meet")
 .append("g")
-.attr("transform", "translate(" + (width/3 + margin.left) + "," + (height/3 + margin.top) + ")")
+.attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")")
 .datum(chord(matrix));
 
 ////////////////////////////////////////////////////////////
@@ -1683,11 +1683,9 @@ var outerArcs = svg.selectAll("g.group")
 .enter().append("g")
 .attr("class", "group")
 .on("mouseover", fade(.1))
-.on("mouseout", fade(opacityDefault))
+.on("mouseout", fade(opacityDefault));
 
-// text popups
-.on("click", mouseoverChord)
-.on("mouseout", mouseoutChord);
+
 
 
 ////////////////////////////////////////////////////////////
@@ -1701,14 +1699,19 @@ outerArcs.append("path")
 .attr("d", arc);
 
 outerArcs.append("text")
-       .attr("x", 6)
-       .attr("dx", 20)
-      .attr("dy", 18)
-    .append("textPath")
-      .attr("href", function(d) { return "#group" + d.index;})
-      .text(function(chords, i){return names[i];})
-      .style("fill", "white")
-      .style("font-size", "13px");
+    .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+    .attr("dy", ".35em")
+    .attr("class", "titles")
+    .attr("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+    .attr("transform", function(d) {
+    if (outerArcs = 0) {
+      width = 5.0;
+    }
+    return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+    + "translate(" + (outerRadius + 10) + ")"
+    + (d.angle > Math.PI ? "rotate(180)" : "");
+    })
+    .text(function(chords, i) { return names[i]; });
 
 ////////////////////////////////////////////////////////////
 ////////////////// Draw inner chords ///////////////////////
@@ -1720,70 +1723,65 @@ svg.selectAll("path.chord")
 .attr("class", "chord")
 .style("fill", function(d) { return colors(d.source.index); })
 .style("opacity", opacityDefault)
-.attr("d", path);
+.attr("d", path)
+.on("mouseover", mouseoverChord)
+.on("mouseout", mouseoutChord);
 
 
 ////////////////////////////////////////////////////////////
 ////////////////// Extra Functions /////////////////////////
 ////////////////////////////////////////////////////////////
 
-function popup() {
-return function(d,i) {
-  console.log("love");
-};
-}//popup
+function mouseoverChord(d,i) {
+    var me = this;  
+    svg.selectAll("path.chord")
+    .filter(function(d) {
+        return this != me;
+    })
+    .transition()
+    .style("opacity", .1);
+    $(this).popover({
+        //placement: 'auto top',
+        placement: 'auto',
+        container: 'body',
+        animation: false,
+        offset: "20px -100px",
+        followMouse: true,
+        html : true,
+        content: function() {
+        return "Both " +"'"+ names[d.source.index] +"'"+ " and " +"'"+ names[d.target.index] +"'"+ " where used " + d.source.value + " times together as tags in a question"; }
+    });
+    $(this).popover('show');
+}
+
+function mouseoutChord(d) {
+    //Hide the tooltip
+    $('.popover').each(function() {
+    $(this).remove();
+    })
+    //Set opacity back to default for all
+    var me = this;  
+        svg.selectAll("path.chord")
+        .filter(function(d) {
+            return this != me;
+        })
+    .transition()
+        .style("opacity", opacityDefault);
+}      //function mouseoutChord
 
 //Returns an event handler for fading a given chord group.
 function fade(opacity) {
-return function(d,i) {
-  svg.selectAll("path.chord")
-      .filter(function(d) { return d.source.index != i && d.target.index != i; })
-  .transition()
-      .style("opacity", opacity);
-};
+    return function(d,i) {
+    svg.selectAll("path.chord")
+        .filter(function(d) { return d.source.index != i && d.target.index != i; })
+    .transition()
+        .style("opacity", opacity);
+    };
 }//fade
 
-//Highlight hovered over chord
-function mouseoverChord(d,i) {
-//Decrease opacity to all
-svg.selectAll("path.chord")
-  .transition()
-  .style("opacity", 0.1);
-//Show hovered over chord with full opacity
-d3.select(this)
-  .transition()
-      .style("opacity", 1);
-
-//Define and show the tooltip over the mouse location
-$(this).popover({
-  //placement: 'auto top',
-  title: 'test',
-  placement: 'right',
-  container: 'body',
-  animation: false,
-  offset: "20px -100px",
-  followMouse: true,
-  trigger: 'click',
-  html : true,
-  content: function() {
-    return "<p style='font-size: 11px; text-align: center;'><span style='font-weight:900'>"  +
-         "</span> text <span style='font-weight:900'>"  +
-         "</span> folgt hier <span style='font-weight:900'>" + "</span> movies </p>"; }
-});
-$(this).popover('show');
-}
-//Bring all chords back to default opacity
-function mouseoutChord(d) {
-//Hide the tooltip
-$('.popover').each(function() {
-  $(this).remove();
-})
-//Set opacity back to default for all
-svg.selectAll("path.chord")
-  .transition()
-  .style("opacity", opacityDefault);
-}      //function mouseoutChord
 </script>
+
+
 <script>
     document.getElementById('datepicker').onclick = function() {
         var dateFrom = document.getElementById('dateFrom').value;
