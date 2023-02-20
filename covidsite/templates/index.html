@@ -538,13 +538,25 @@
                     <!-- Content Column -->
                     <div class="col-xl-8">
                         <div class="card shadow mb-4">
-                            <div class="card-header py-3" id="tenthChart">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="tenthChart">
                                 <h6 class="m-0 font-weight-bold text-primary">Chord Diagram
                                     <div style="z-index: 10000 !important;" class="tooltip2"><i
                                             class="fas fa-info-circle"></i>
                                         <span class="tooltiptext"></span>
-                                    </div>
-                                </h6>
+                                    </div>   
+                                </h6> 
+                                <div>
+                                    <select class="custom-select" id="classSelectChord" >
+                                        <option value="All">All Groups</option>
+                                        <option value="Languages">Languages</option>
+                                        <option value="Web Frameworks">Web Frameworks</option>
+                                        <option value="Big Data - ML">Big Data - ML</option>
+                                        <option value="Databases">Databases</option>
+                                        <option value="Platforms">Platforms</option>
+                                        <option value="Collaboration Tools">Collaboration Tools</option>
+                                        <option value="Developer Tools">Developer Tools</option>
+                                    </select>
+                                </div>    
                             </div>
                             <div class="card-body">
                                 <div class="chart-area">
@@ -571,11 +583,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
 
             </div>
             <!-- /.container-fluid -->
@@ -1685,9 +1692,6 @@ var outerArcs = svg.selectAll("g.group")
 .on("mouseover", fade(.1))
 .on("mouseout", fade(opacityDefault));
 
-
-
-
 ////////////////////////////////////////////////////////////
 ////////////////////// Append names ////////////////////////
 ////////////////////////////////////////////////////////////
@@ -1778,6 +1782,187 @@ function fade(opacity) {
         .style("opacity", opacity);
     };
 }//fade
+
+
+d3.select("#classSelectChord").on("change", function() {
+    'use strict';
+    d3.select('#my_dataviz').selectAll('svg').remove();
+    var collaborationGroup = document.getElementById('classSelectChord').value;
+    var colors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe'];
+    var opacityDefault = 0.8;
+    if (collaborationGroup === "Languages") {
+        var names = {{names_top_10_sorted_languages_tags | safe}};
+        var matrix = {{list_languages_tag_link_matrix | safe}};
+    }else if (collaborationGroup === "Web Frameworks") {
+        var names = {{names_top_10_sorted_frameworks_tags | safe}};
+        var matrix = {{list_frameworks_tag_link_matrix | safe}};
+    }else if (collaborationGroup === "Big Data - ML") {
+        var names = {{names_top_10_sorted_big_data_ml_tags | safe}};
+        var matrix = {{list_big_data_ml_tag_link_matrix | safe}};
+    }else if (collaborationGroup === "Databases") {
+        var names = {{names_top_10_sorted_databases_tags | safe}};
+        var matrix = {{list_databases_tag_link_matrix | safe}};
+    }else if (collaborationGroup === "Platforms") {
+        var names = {{names_top_10_sorted_platforms_tags | safe}};
+        var matrix = {{list_platforms_tag_link_matrix |safe}};
+    }else if (collaborationGroup === "Collaboration Tools") {
+        var names = {{names_top_10_sorted_collaboration_tools_tags | safe}};
+        var matrix = {{list_collaboration_tools_tag_link_matrix | safe}};
+    }else if (collaborationGroup === "Developer Tools") {
+        var names = {{names_top_10_sorted_developer_tools_tags | safe}};
+        var matrix = {{list_developer_tools_tag_link_matrix | safe}};
+    }else if (collaborationGroup === "All") {
+        var names = {{top_twenty_tags | safe}};
+        var matrix = {{list_tag_link_matrix |safe}};
+        var colors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', '#008080',
+            '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'];
+    }
+    console.log(names);
+    console.log(matrix);
+    ////////////////////////////////////////////////////////////
+    //////////////////////// Set-Up ////////////////////////////
+    ////////////////////////////////////////////////////////////
+    var margin = {top: 50, right: 50, bottom: 50, left: 50},
+        width = parseInt(d3.select("#my_dataviz").style("width")) - margin.left - margin.right ,
+        height = parseInt(d3.select("#my_dataviz").style("height")) - margin.top - margin.bottom,
+        innerRadius = Math.min(width, height) * 0.41,
+        outerRadius = innerRadius * 1.1;
+
+////////////////////////////////////////////////////////////
+/////////// Create scale and layout functions //////////////
+////////////////////////////////////////////////////////////
+
+var colors = d3.scaleOrdinal()
+    .domain(d3.range(names.length))
+  .range(colors);
+
+var chord = d3.chord()
+  .padAngle(.01)
+  .sortChords(d3.descending)
+
+  var arc = d3.arc()
+  .innerRadius(innerRadius*1.01)
+  .outerRadius(outerRadius);
+
+var path = d3.ribbon()
+.radius(innerRadius);
+
+////////////////////////////////////////////////////////////
+////////////////////// Create SVG //////////////////////////
+////////////////////////////////////////////////////////////
+var svg = d3.select("#my_dataviz")
+.append("svg")
+.attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+.attr("preserveAspectRatio", "xMinYMin meet")
+.append("g")
+.attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")")
+.datum(chord(matrix));
+
+////////////////////////////////////////////////////////////
+////////////////// Draw outer Arcs /////////////////////////
+////////////////////////////////////////////////////////////
+
+var outerArcs = svg.selectAll("g.group")
+.data(function(chords) { return chords.groups; })
+.enter().append("g")
+.attr("class", "group")
+.on("mouseover", fade(.1))
+.on("mouseout", fade(opacityDefault));
+
+////////////////////////////////////////////////////////////
+////////////////////// Append names ////////////////////////
+////////////////////////////////////////////////////////////
+
+//Append the label names INSIDE outside
+outerArcs.append("path")
+.style("fill", function(d) { return colors(d.index); })
+.attr("id", function(d, i) { return "group" + d.index; })
+.attr("d", arc);
+
+outerArcs.append("text")
+    .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+    .attr("dy", ".35em")
+    .attr("class", "titles")
+    .attr("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+    .attr("transform", function(d) {
+    if (outerArcs = 0) {
+      width = 5.0;
+    }
+    return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+    + "translate(" + (outerRadius + 10) + ")"
+    + (d.angle > Math.PI ? "rotate(180)" : "");
+    })
+    .text(function(chords, i) {if(chords.value!==0) return names[i]; });
+
+////////////////////////////////////////////////////////////
+////////////////// Draw inner chords ///////////////////////
+////////////////////////////////////////////////////////////
+
+svg.selectAll("path.chord")
+.data(function(chords) { return chords; })
+.enter().append("path")
+.attr("class", "chord")
+.style("fill", function(d) { return colors(d.source.index); })
+.style("opacity", opacityDefault)
+.attr("d", path)
+.on("mouseover", mouseoverChord)
+.on("mouseout", mouseoutChord);
+
+
+////////////////////////////////////////////////////////////
+////////////////// Extra Functions /////////////////////////
+////////////////////////////////////////////////////////////
+
+function mouseoverChord(d,i) {
+    var me = this;  
+    svg.selectAll("path.chord")
+    .filter(function(d) {
+        return this != me;
+    })
+    .transition()
+    .style("opacity", .1);
+    $(this).popover({
+        //placement: 'auto top',
+        placement: 'auto',
+        container: 'body',
+        animation: false,
+        offset: "20px -100px",
+        followMouse: true,
+        html : true,
+        content: function() {
+        return "Both " +"'"+ names[d.source.index] +"'"+ " and " +"'"+ names[d.target.index] +"'"+ " where used " + d.source.value + " times together as tags in a question"; }
+    });
+    $(this).popover('show');
+}
+
+function mouseoutChord(d) {
+    //Hide the tooltip
+    $('.popover').each(function() {
+    $(this).remove();
+    })
+    //Set opacity back to default for all
+    var me = this;  
+        svg.selectAll("path.chord")
+        .filter(function(d) {
+            return this != me;
+        })
+    .transition()
+        .style("opacity", opacityDefault);
+}      //function mouseoutChord
+
+//Returns an event handler for fading a given chord group.
+function fade(opacity) {
+    return function(d,i) {
+    svg.selectAll("path.chord")
+        .filter(function(d) { return d.source.index != i && d.target.index != i; })
+    .transition()
+        .style("opacity", opacity);
+    };
+}//fade
+
+    
+  
+});
 
 </script>
 

@@ -305,6 +305,14 @@ def index():
     stacked_closed_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
     stacked_deleted_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
+    languages_tags_and_values = {}
+    frameworks_tags_and_values = {}
+    big_data_ml_tags_and_values = {}
+    databases_tags_and_values = {}
+    platforms_tags_and_values = {}
+    collaboration_tools_tags_and_values = {}
+    developer_tools_tags_and_values = {}
+
     for tag in tags:
         if tag in fields_and_techs.keys():
             if tag not in distinct_tags:
@@ -313,18 +321,58 @@ def index():
     for tag in distinct_tags:
         if fields_and_techs.get(tag) == 'Languages':
             radar_values[0] = radar_values[0] + 1
+            languages_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Web Frameworks':
             radar_values[1] = radar_values[1] + 1
+            frameworks_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Big Data - ML':
             radar_values[2] = radar_values[2] + 1
+            big_data_ml_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Databases':
             radar_values[3] = radar_values[3] + 1
+            databases_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Platforms':
             radar_values[4] = radar_values[4] + 1
+            platforms_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Collaboration Tools':
             radar_values[5] = radar_values[5] + 1
+            collaboration_tools_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Developer Tools':
             radar_values[6] = radar_values[6] + 1
+            developer_tools_tags_and_values[tag] = tags.count(tag)
+
+
+    sorted_languages_tags_and_values = dict(
+        sorted(languages_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_frameworks_tags_and_values = dict(
+        sorted(frameworks_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_big_data_ml_tags_and_values = dict(
+        sorted(big_data_ml_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_databases_tags_and_values = dict(
+        sorted(databases_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_platforms_tags_and_values = dict(
+        sorted(platforms_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_collaboration_tools_tags_and_values = dict(
+        sorted(collaboration_tools_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_developer_tools_tags_and_values = dict(
+        sorted(developer_tools_tags_and_values.items(), reverse=True, key=lambda item: item[1]))  
+
+    top_10_sorted_languages_tags_and_values = dict(islice(sorted_languages_tags_and_values.items(), 10))
+    top_10_sorted_frameworks_tags_and_values = dict(islice(sorted_frameworks_tags_and_values.items(), 10))
+    top_10_sorted_big_data_ml_tags_and_values = dict(islice(sorted_big_data_ml_tags_and_values.items(), 10))
+    top_10_sorted_databases_tags_and_values = dict(islice(sorted_databases_tags_and_values.items(), 10))
+    top_10_sorted_platforms_tags_and_values = dict(islice(sorted_platforms_tags_and_values.items(), 10))
+    top_10_sorted_collaboration_tools_tags_and_values = dict(islice(sorted_collaboration_tools_tags_and_values.items(), 10))
+    top_10_sorted_developer_tools_tags_and_values = dict(islice(sorted_developer_tools_tags_and_values.items(), 10))
+
+    names_top_10_sorted_languages_tags = list(top_10_sorted_languages_tags_and_values.keys())
+    names_top_10_sorted_frameworks_tags = list(top_10_sorted_frameworks_tags_and_values.keys())
+    names_top_10_sorted_big_data_ml_tags = list(top_10_sorted_big_data_ml_tags_and_values.keys())
+    names_top_10_sorted_databases_tags = list(top_10_sorted_databases_tags_and_values.keys())
+    names_top_10_sorted_platforms_tags = list(top_10_sorted_platforms_tags_and_values.keys())
+    names_top_10_sorted_collaboration_tools_tags = list(top_10_sorted_collaboration_tools_tags_and_values.keys())
+    names_top_10_sorted_developer_tools_tags = list(top_10_sorted_developer_tools_tags_and_values.keys())
+    
 
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
@@ -357,6 +405,21 @@ def index():
     # creation of chord diagram matrix
     tag_link_matrix = np.zeros((20, 20)).astype(int)
     tags_to_be_linked = []
+    languages_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    languages_tags_to_be_linked = []
+    frameworks_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    frameworks_tags_to_be_linked = []
+    big_data_ml_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    big_data_ml_tags_to_be_linked = []
+    databases_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    databases_tags_to_be_linked = []
+    platforms_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    platforms_tags_to_be_linked = []
+    collaborations_tools_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    collaborations_tools_tags_to_be_linked = []
+    developer_tools_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    developer_tools_tags_to_be_linked = []
+
 
     for question in questions:
         record_tags = question['tag'].split()
@@ -371,8 +434,92 @@ def index():
                         tag_link_matrix[combination[0], combination[1]] += 1
                         tag_link_matrix[combination[1], combination[0]] += 1
             tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_languages_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_languages_tags:
+                    languages_tags_to_be_linked.append(names_top_10_sorted_languages_tags.index(tag))
+            if len(languages_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(languages_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        languages_tag_link_matrix[combination[0], combination[1]] += 1
+                        languages_tag_link_matrix[combination[1], combination[0]] += 1
+            languages_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_frameworks_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_frameworks_tags:
+                    frameworks_tags_to_be_linked.append(names_top_10_sorted_frameworks_tags.index(tag))
+            if len(frameworks_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(frameworks_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        frameworks_tag_link_matrix[combination[0], combination[1]] += 1
+                        frameworks_tag_link_matrix[combination[1], combination[0]] += 1
+            frameworks_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_big_data_ml_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_big_data_ml_tags:
+                    big_data_ml_tags_to_be_linked.append(names_top_10_sorted_big_data_ml_tags.index(tag))
+            if len(big_data_ml_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(big_data_ml_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        big_data_ml_tag_link_matrix[combination[0], combination[1]] += 1
+                        big_data_ml_tag_link_matrix[combination[1], combination[0]] += 1
+            big_data_ml_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_databases_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_databases_tags:
+                    databases_tags_to_be_linked.append(names_top_10_sorted_databases_tags.index(tag))
+            if len(databases_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(databases_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        databases_tag_link_matrix[combination[0], combination[1]] += 1
+                        databases_tag_link_matrix[combination[1], combination[0]] += 1
+            databases_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_platforms_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_platforms_tags:
+                    platforms_tags_to_be_linked.append(names_top_10_sorted_platforms_tags.index(tag))
+            if len(platforms_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(platforms_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        platforms_tag_link_matrix[combination[0], combination[1]] += 1
+                        platforms_tag_link_matrix[combination[1], combination[0]] += 1
+            platforms_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_collaboration_tools_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_collaboration_tools_tags:
+                    collaborations_tools_tags_to_be_linked.append(names_top_10_sorted_collaboration_tools_tags.index(tag))
+            if len(collaborations_tools_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(collaborations_tools_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        collaborations_tools_tag_link_matrix[combination[0], combination[1]] += 1
+                        collaborations_tools_tag_link_matrix[combination[1], combination[0]] += 1
+            collaborations_tools_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_developer_tools_tags if i in record_tags]:    
+            for tag in record_tags:
+                if tag in names_top_10_sorted_developer_tools_tags:
+                    developer_tools_tags_to_be_linked.append(names_top_10_sorted_developer_tools_tags.index(tag))
+            if len(developer_tools_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(developer_tools_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        developer_tools_tag_link_matrix[combination[0], combination[1]] += 1
+                        developer_tools_tag_link_matrix[combination[1], combination[0]] += 1
+            developer_tools_tags_to_be_linked.clear()
 
     list_tag_link_matrix = np.array2string(tag_link_matrix, separator=",")
+    list_languages_tag_link_matrix = np.array2string(languages_tag_link_matrix, separator=",")
+    list_frameworks_tag_link_matrix = np.array2string(frameworks_tag_link_matrix, separator=",")
+    list_big_data_ml_tag_link_matrix = np.array2string(big_data_ml_tag_link_matrix, separator=",")
+    list_databases_tag_link_matrix = np.array2string(databases_tag_link_matrix, separator=",")
+    list_platforms_tag_link_matrix = np.array2string(platforms_tag_link_matrix, separator=",")
+    list_collaboration_tools_tag_link_matrix = np.array2string(collaborations_tools_tag_link_matrix, separator=",")
+    list_developer_tools_tag_link_matrix = np.array2string(developer_tools_tag_link_matrix, separator=",")
 
     return render_template('index.html', questions=questions, question_count=question_count, users=users, labels=labels,
                            values=values,
@@ -411,8 +558,15 @@ def index():
                            top_10_dev_tools_votes=top_10_dev_tools_votes,
                            top_10_dev_tools_answers=top_10_dev_tools_answers,
                            top_10_dev_tools_comments=top_10_dev_tools_comments,
-                           date_from=date_from, date_to=date_to, list_tag_link_matrix=list_tag_link_matrix,
-                           top_twenty_tags=top_twenty_tags
+                           date_from=date_from, date_to=date_to, 
+                           list_tag_link_matrix=list_tag_link_matrix, top_twenty_tags=top_twenty_tags, 
+                           list_languages_tag_link_matrix = list_languages_tag_link_matrix, names_top_10_sorted_languages_tags = names_top_10_sorted_languages_tags,
+                           list_frameworks_tag_link_matrix = list_frameworks_tag_link_matrix, names_top_10_sorted_frameworks_tags = names_top_10_sorted_frameworks_tags,
+                           list_big_data_ml_tag_link_matrix = list_big_data_ml_tag_link_matrix, names_top_10_sorted_big_data_ml_tags = names_top_10_sorted_big_data_ml_tags,
+                           list_databases_tag_link_matrix = list_databases_tag_link_matrix, names_top_10_sorted_databases_tags = names_top_10_sorted_databases_tags,
+                           list_platforms_tag_link_matrix = list_platforms_tag_link_matrix, names_top_10_sorted_platforms_tags = names_top_10_sorted_platforms_tags,
+                           list_collaboration_tools_tag_link_matrix = list_collaboration_tools_tag_link_matrix, names_top_10_sorted_collaboration_tools_tags = names_top_10_sorted_collaboration_tools_tags,
+                           list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags
                            )
 
 
@@ -725,6 +879,14 @@ def fetch():
     stacked_closed_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
     stacked_deleted_values = [0, 0, 0, 0, 0, 0, 0]  # [languages,frameworks,big data,dbs,platforms,collab tools,dev tools]
 
+    languages_tags_and_values = {}
+    frameworks_tags_and_values = {}
+    big_data_ml_tags_and_values = {}
+    databases_tags_and_values = {}
+    platforms_tags_and_values = {}
+    collaboration_tools_tags_and_values = {}
+    developer_tools_tags_and_values = {}
+
     for tag in tags:
         if tag in fields_and_techs.keys():
             if tag not in distinct_tags:
@@ -733,78 +895,80 @@ def fetch():
     for tag in distinct_tags:
         if fields_and_techs.get(tag) == 'Languages':
             radar_values[0] = radar_values[0] + 1
+            languages_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Web Frameworks':
             radar_values[1] = radar_values[1] + 1
+            frameworks_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Big Data - ML':
             radar_values[2] = radar_values[2] + 1
+            big_data_ml_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Databases':
             radar_values[3] = radar_values[3] + 1
+            databases_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Platforms':
             radar_values[4] = radar_values[4] + 1
+            platforms_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Collaboration Tools':
             radar_values[5] = radar_values[5] + 1
+            collaboration_tools_tags_and_values[tag] = tags.count(tag)
         elif fields_and_techs.get(tag) == 'Developer Tools':
             radar_values[6] = radar_values[6] + 1
+            developer_tools_tags_and_values[tag] = tags.count(tag)
+
+
+    sorted_languages_tags_and_values = dict(
+        sorted(languages_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_frameworks_tags_and_values = dict(
+        sorted(frameworks_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_big_data_ml_tags_and_values = dict(
+        sorted(big_data_ml_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_databases_tags_and_values = dict(
+        sorted(databases_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_platforms_tags_and_values = dict(
+        sorted(platforms_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_collaboration_tools_tags_and_values = dict(
+        sorted(collaboration_tools_tags_and_values.items(), reverse=True, key=lambda item: item[1]))
+    sorted_developer_tools_tags_and_values = dict(
+        sorted(developer_tools_tags_and_values.items(), reverse=True, key=lambda item: item[1]))  
+
+    top_10_sorted_languages_tags_and_values = dict(islice(sorted_languages_tags_and_values.items(), 10))
+    top_10_sorted_frameworks_tags_and_values = dict(islice(sorted_frameworks_tags_and_values.items(), 10))
+    top_10_sorted_big_data_ml_tags_and_values = dict(islice(sorted_big_data_ml_tags_and_values.items(), 10))
+    top_10_sorted_databases_tags_and_values = dict(islice(sorted_databases_tags_and_values.items(), 10))
+    top_10_sorted_platforms_tags_and_values = dict(islice(sorted_platforms_tags_and_values.items(), 10))
+    top_10_sorted_collaboration_tools_tags_and_values = dict(islice(sorted_collaboration_tools_tags_and_values.items(), 10))
+    top_10_sorted_developer_tools_tags_and_values = dict(islice(sorted_developer_tools_tags_and_values.items(), 10))
+
+    names_top_10_sorted_languages_tags = list(top_10_sorted_languages_tags_and_values.keys())
+    names_top_10_sorted_frameworks_tags = list(top_10_sorted_frameworks_tags_and_values.keys())
+    names_top_10_sorted_big_data_ml_tags = list(top_10_sorted_big_data_ml_tags_and_values.keys())
+    names_top_10_sorted_databases_tags = list(top_10_sorted_databases_tags_and_values.keys())
+    names_top_10_sorted_platforms_tags = list(top_10_sorted_platforms_tags_and_values.keys())
+    names_top_10_sorted_collaboration_tools_tags = list(top_10_sorted_collaboration_tools_tags_and_values.keys())
+    names_top_10_sorted_developer_tools_tags = list(top_10_sorted_developer_tools_tags_and_values.keys())
+    
 
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
 
-        # Creation of the stacked bar chart values.
-        for question in questions:
-            if closed == 1:
-                if question['closed'] == 1:
-                    for tag in question['tag'].split(' '):
-                        if tag in fields_and_techs.keys():
-                            if fields_and_techs.get(tag) == 'Languages':
-                                stacked_closed_values[0] = stacked_closed_values[0] + 1
-                            elif fields_and_techs.get(tag) == 'Web Frameworks':
-                                stacked_closed_values[1] = stacked_closed_values[1] + 1
-                            elif fields_and_techs.get(tag) == 'Big Data - ML':
-                                stacked_closed_values[2] = stacked_closed_values[2] + 1
-                            elif fields_and_techs.get(tag) == 'Databases':
-                                stacked_closed_values[3] = stacked_closed_values[3] + 1
-                            elif fields_and_techs.get(tag) == 'Platforms':
-                                stacked_closed_values[4] = stacked_closed_values[4] + 1
-                            elif fields_and_techs.get(tag) == 'Collaboration Tools':
-                                stacked_closed_values[5] = stacked_closed_values[5] + 1
-                            elif fields_and_techs.get(tag) == 'Developer Tools':
-                                stacked_closed_values[6] = stacked_closed_values[6] + 1
-
-                if question['deleted'] == 1:
-                    for tag in question['tag'].split(' '):
-                        if tag in fields_and_techs.keys():
-                            if fields_and_techs.get(tag) == 'Languages':
-                                stacked_deleted_values[0] = stacked_deleted_values[0] + 1
-                            elif fields_and_techs.get(tag) == 'Web Frameworks':
-                                stacked_deleted_values[1] = stacked_deleted_values[1] + 1
-                            elif fields_and_techs.get(tag) == 'Big Data - ML':
-                                stacked_deleted_values[2] = stacked_deleted_values[2] + 1
-                            elif fields_and_techs.get(tag) == 'Databases':
-                                stacked_deleted_values[3] = stacked_deleted_values[3] + 1
-                            elif fields_and_techs.get(tag) == 'Platforms':
-                                stacked_deleted_values[4] = stacked_deleted_values[4] + 1
-                            elif fields_and_techs.get(tag) == 'Collaboration Tools':
-                                stacked_deleted_values[5] = stacked_deleted_values[5] + 1
-                            elif fields_and_techs.get(tag) == 'Developer Tools':
-                                stacked_deleted_values[6] = stacked_deleted_values[6] + 1
-
-            if question['closed'] == 0 and question['deleted'] == 0:
-                for tag in question['tag'].split(' '):
-                    if tag in fields_and_techs.keys():
-                        if fields_and_techs.get(tag) == 'Languages':
-                            stacked_open_values[0] = stacked_open_values[0] + 1
-                        elif fields_and_techs.get(tag) == 'Web Frameworks':
-                            stacked_open_values[1] = stacked_open_values[1] + 1
-                        elif fields_and_techs.get(tag) == 'Big Data - ML':
-                            stacked_open_values[2] = stacked_open_values[2] + 1
-                        elif fields_and_techs.get(tag) == 'Databases':
-                            stacked_open_values[3] = stacked_open_values[3] + 1
-                        elif fields_and_techs.get(tag) == 'Platforms':
-                            stacked_open_values[4] = stacked_open_values[4] + 1
-                        elif fields_and_techs.get(tag) == 'Collaboration Tools':
-                            stacked_open_values[5] = stacked_open_values[5] + 1
-                        elif fields_and_techs.get(tag) == 'Developer Tools':
-                            stacked_open_values[6] = stacked_open_values[6] + 1
+    # Creation of the stacked bar chart values.
+    for question in questions:
+        for tag in question['tag'].split(' '):
+            if tag in fields_and_techs.keys():
+                if fields_and_techs.get(tag) == 'Languages':
+                    stacked_open_values[0] = stacked_open_values[0] + 1
+                elif fields_and_techs.get(tag) == 'Web Frameworks':
+                    stacked_open_values[1] = stacked_open_values[1] + 1
+                elif fields_and_techs.get(tag) == 'Big Data - ML':
+                    stacked_open_values[2] = stacked_open_values[2] + 1
+                elif fields_and_techs.get(tag) == 'Databases':
+                    stacked_open_values[3] = stacked_open_values[3] + 1
+                elif fields_and_techs.get(tag) == 'Platforms':
+                    stacked_open_values[4] = stacked_open_values[4] + 1
+                elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                    stacked_open_values[5] = stacked_open_values[5] + 1
+                elif fields_and_techs.get(tag) == 'Developer Tools':
+                    stacked_open_values[6] = stacked_open_values[6] + 1
 
     # Distinct technologies
     distinct_technologies = []
@@ -812,13 +976,24 @@ def fetch():
         if tech not in distinct_technologies:
             distinct_technologies.append(tech)
 
-
-
-
-
     # creation of chord diagram matrix
     tag_link_matrix = np.zeros((20, 20)).astype(int)
     tags_to_be_linked = []
+    languages_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    languages_tags_to_be_linked = []
+    frameworks_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    frameworks_tags_to_be_linked = []
+    big_data_ml_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    big_data_ml_tags_to_be_linked = []
+    databases_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    databases_tags_to_be_linked = []
+    platforms_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    platforms_tags_to_be_linked = []
+    collaborations_tools_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    collaborations_tools_tags_to_be_linked = []
+    developer_tools_tag_link_matrix = np.zeros((10, 10)).astype(int)
+    developer_tools_tags_to_be_linked = []
+
 
     for question in questions:
         record_tags = question['tag'].split()
@@ -833,8 +1008,94 @@ def fetch():
                         tag_link_matrix[combination[0], combination[1]] += 1
                         tag_link_matrix[combination[1], combination[0]] += 1
             tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_languages_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_languages_tags:
+                    languages_tags_to_be_linked.append(names_top_10_sorted_languages_tags.index(tag))
+            if len(languages_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(languages_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        languages_tag_link_matrix[combination[0], combination[1]] += 1
+                        languages_tag_link_matrix[combination[1], combination[0]] += 1
+            languages_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_frameworks_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_frameworks_tags:
+                    frameworks_tags_to_be_linked.append(names_top_10_sorted_frameworks_tags.index(tag))
+            if len(frameworks_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(frameworks_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        frameworks_tag_link_matrix[combination[0], combination[1]] += 1
+                        frameworks_tag_link_matrix[combination[1], combination[0]] += 1
+            frameworks_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_big_data_ml_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_big_data_ml_tags:
+                    big_data_ml_tags_to_be_linked.append(names_top_10_sorted_big_data_ml_tags.index(tag))
+            if len(big_data_ml_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(big_data_ml_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        big_data_ml_tag_link_matrix[combination[0], combination[1]] += 1
+                        big_data_ml_tag_link_matrix[combination[1], combination[0]] += 1
+            big_data_ml_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_databases_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_databases_tags:
+                    databases_tags_to_be_linked.append(names_top_10_sorted_databases_tags.index(tag))
+            if len(databases_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(databases_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        databases_tag_link_matrix[combination[0], combination[1]] += 1
+                        databases_tag_link_matrix[combination[1], combination[0]] += 1
+            databases_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_platforms_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_platforms_tags:
+                    platforms_tags_to_be_linked.append(names_top_10_sorted_platforms_tags.index(tag))
+            if len(platforms_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(platforms_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        platforms_tag_link_matrix[combination[0], combination[1]] += 1
+                        platforms_tag_link_matrix[combination[1], combination[0]] += 1
+            platforms_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_collaboration_tools_tags if i in record_tags]:
+            for tag in record_tags:
+                if tag in names_top_10_sorted_collaboration_tools_tags:
+                    collaborations_tools_tags_to_be_linked.append(names_top_10_sorted_collaboration_tools_tags.index(tag))
+            if len(collaborations_tools_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(collaborations_tools_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        collaborations_tools_tag_link_matrix[combination[0], combination[1]] += 1
+                        collaborations_tools_tag_link_matrix[combination[1], combination[0]] += 1
+            collaborations_tools_tags_to_be_linked.clear()
+        if [i for i in names_top_10_sorted_developer_tools_tags if i in record_tags]:    
+            for tag in record_tags:
+                if tag in names_top_10_sorted_developer_tools_tags:
+                    developer_tools_tags_to_be_linked.append(names_top_10_sorted_developer_tools_tags.index(tag))
+            if len(developer_tools_tags_to_be_linked) > 1:
+                combinations_of_tags = list(combinations(developer_tools_tags_to_be_linked, 2))
+                for combination in combinations_of_tags:
+                    if combination[0] != combination[1]:
+                        developer_tools_tag_link_matrix[combination[0], combination[1]] += 1
+                        developer_tools_tag_link_matrix[combination[1], combination[0]] += 1
+            developer_tools_tags_to_be_linked.clear()
 
+    # print(not np.any(developer_tools_tag_link_matrix))
     list_tag_link_matrix = np.array2string(tag_link_matrix, separator=",")
+    list_languages_tag_link_matrix = np.array2string(languages_tag_link_matrix, separator=",")
+    list_frameworks_tag_link_matrix = np.array2string(frameworks_tag_link_matrix, separator=",")
+    list_big_data_ml_tag_link_matrix = np.array2string(big_data_ml_tag_link_matrix, separator=",")
+    list_databases_tag_link_matrix = np.array2string(databases_tag_link_matrix, separator=",")
+    list_platforms_tag_link_matrix = np.array2string(platforms_tag_link_matrix, separator=",")
+    list_collaboration_tools_tag_link_matrix = np.array2string(collaborations_tools_tag_link_matrix, separator=",")
+    list_developer_tools_tag_link_matrix = np.array2string(developer_tools_tag_link_matrix, separator=",")
+    
 
     return render_template('index.html', questions=questions, question_count=question_count, users=users, labels=labels,
                            values=values,
@@ -844,8 +1105,7 @@ def fetch():
                            distinct_technologies=distinct_technologies,
                            stacked_open_values=stacked_open_values, stacked_closed_values=stacked_closed_values,
                            stacked_deleted_values=stacked_deleted_values,
-                           radar_values=radar_values, added_values=added_values,
-                           avgNumberOfAnswers=avgNumberOfAnswers,
+                           radar_values=radar_values, added_values=added_values, avgNumberOfAnswers=avgNumberOfAnswers,
                            avgNumberOfComments=avgNumberOfComments, avgNumberOfVotes=avgNumberOfVotes,
                            snippetData=snippetData, halfMonthValues=halfMonthValues,
                            top_10_sorted_ids_and_votes=top_10_sorted_ids_and_votes,
@@ -873,6 +1133,14 @@ def fetch():
                            top_10_collaboration_tools_comments=top_10_collaboration_tools_comments,
                            top_10_dev_tools_votes=top_10_dev_tools_votes,
                            top_10_dev_tools_answers=top_10_dev_tools_answers,
-                           top_10_dev_tools_comments=top_10_dev_tools_comments, date_from=date_from, date_to=date_to,
-                           list_tag_link_matrix=list_tag_link_matrix, top_twenty_tags=top_twenty_tags
+                           top_10_dev_tools_comments=top_10_dev_tools_comments,
+                           date_from=date_from, date_to=date_to, 
+                           list_tag_link_matrix=list_tag_link_matrix, top_twenty_tags=top_twenty_tags, 
+                           list_languages_tag_link_matrix = list_languages_tag_link_matrix, names_top_10_sorted_languages_tags = names_top_10_sorted_languages_tags,
+                           list_frameworks_tag_link_matrix = list_frameworks_tag_link_matrix, names_top_10_sorted_frameworks_tags = names_top_10_sorted_frameworks_tags,
+                           list_big_data_ml_tag_link_matrix = list_big_data_ml_tag_link_matrix, names_top_10_sorted_big_data_ml_tags = names_top_10_sorted_big_data_ml_tags,
+                           list_databases_tag_link_matrix = list_databases_tag_link_matrix, names_top_10_sorted_databases_tags = names_top_10_sorted_databases_tags,
+                           list_platforms_tag_link_matrix = list_platforms_tag_link_matrix, names_top_10_sorted_platforms_tags = names_top_10_sorted_platforms_tags,
+                           list_collaboration_tools_tag_link_matrix = list_collaboration_tools_tag_link_matrix, names_top_10_sorted_collaboration_tools_tags = names_top_10_sorted_collaboration_tools_tags,
+                           list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags
                            )
