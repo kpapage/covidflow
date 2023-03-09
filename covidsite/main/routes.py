@@ -10,7 +10,11 @@ import re
 
 from datetime import datetime
 
+from datetime import timezone
+
 import numpy as np
+
+from operator import itemgetter
 
 main = Blueprint('main', __name__)
 
@@ -58,6 +62,14 @@ def index():
     platforms = {}
     collaboration_tools = {}
     dev_tools = {}
+    elapsed_time_data_list = []
+    languages_elapsed_time_data_list = []
+    web_frameworks_elapsed_time_data_list = []
+    big_data_ml_elapsed_time_data_list = []
+    databases_elapsed_time_data_list = []
+    platforms_elapsed_time_data_list = []
+    collaboration_tools_elapsed_time_data_list = []
+    dev_tools_elapsed_time_data_list = []
 
     fields_and_techs = {}
     for technology in technologies:
@@ -81,31 +93,120 @@ def index():
         ids_and_answers.update({q_link: [int(question['answers']), question['question_title']]})
         ids_and_comments.update({q_link: [int(question['comments']), question['question_title']]})
         #########################
+        
+        question_time = datetime.fromisoformat(question['timestamps'][:-1]).replace(tzinfo=timezone.utc)
+        if question_time:           
+            if question['first_answer'] != 'No answers':
+                first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                event = 1   
+            else:
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                event = 0    
+            if hour_diff!=0.0:
+                elapsed_time_data_list.append([hour_diff,event])
+        #########################
         for q_tag in dif_tags:
             if fields_and_techs.get(q_tag) == 'Languages':
-                languages.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                                           question['question_title']]})
+                languages.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        languages_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Web Frameworks':
-                web_frameworks.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                web_frameworks.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        web_frameworks_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Big Data - ML':
-                big_data_ml.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                big_data_ml.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        big_data_ml_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Databases':
-                databases.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                                           question['question_title']]})
+                databases.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        databases_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Platforms':
-                platforms.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                                           question['question_title']]})
+                platforms.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        platforms_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Collaboration Tools':
-                collaboration_tools.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                collaboration_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        collaboration_tools_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Developer Tools':
-                dev_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                                           question['question_title']]})
+                dev_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        dev_tools_elapsed_time_data_list.append([hour_diff,event])
         #########################
         code_snippets.append(int(question['code_snippet']))
         if question['latitude'] != 'None':
@@ -116,7 +217,310 @@ def index():
             locations.append(question['location'])
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
+    
+    sorted_elapsed_time_data_list = sorted(elapsed_time_data_list, key=itemgetter(0))
+    languages_sorted_elapsed_time_data_list = sorted(languages_elapsed_time_data_list, key=itemgetter(0))
+    web_frameworks_sorted_elapsed_time_data_list = sorted(web_frameworks_elapsed_time_data_list, key=itemgetter(0))
+    big_data_ml_sorted_elapsed_time_data_list = sorted(big_data_ml_elapsed_time_data_list, key=itemgetter(0))
+    databases_sorted_elapsed_time_data_list = sorted(databases_elapsed_time_data_list, key=itemgetter(0))
+    platforms_sorted_elapsed_time_data_list = sorted(platforms_elapsed_time_data_list, key=itemgetter(0))
+    collaboration_tools_sorted_elapsed_time_data_list = sorted(collaboration_tools_elapsed_time_data_list, key=itemgetter(0))
+    dev_tools_sorted_elapsed_time_data_list = sorted(dev_tools_elapsed_time_data_list, key=itemgetter(0))
+    
+    
+    times_data_list = []
+    number_of_distinct_times_data_list = []
+    censored_data_list = []
+    times_left_list = []
+    
+    item_counter = 1
+    times_data_list.append(0)
+    number_of_distinct_times_data_list.append(0)
+    censored_data_list.append(0)
+    times_left_list.append(len(sorted_elapsed_time_data_list))
+    
+    for item in sorted_elapsed_time_data_list:
+        if item[0] not in times_data_list :
+            if item[1] == 1:
+                times_data_list.append(item[0])
+                number_of_distinct_times_data_list.append(1)
+                censored_data_list.append(0) 
+                times_left_list.append(times_left_list[item_counter - 1] - (number_of_distinct_times_data_list[item_counter - 1] + censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                censored_data_list[item_counter-1]+=1
+        
+    survival_time_curve_values = []
+    for i in range(len(times_data_list)):
+        if i == 0:
+            survival_time_curve_values.append((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i])
+        else:
+            survival_time_curve_values.append(((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i])* survival_time_curve_values[i-1])
+    
+    
+    
+    languages_times_data_list = []
+    languages_number_of_distinct_times_data_list = []
+    languages_censored_data_list = []
+    languages_times_left_list = []
 
+    item_counter = 1
+    languages_times_data_list.append(0)
+    languages_number_of_distinct_times_data_list.append(0)
+    languages_censored_data_list.append(0)
+    languages_times_left_list.append(len(languages_sorted_elapsed_time_data_list))
+
+    for item in languages_sorted_elapsed_time_data_list:
+        if item[0] not in languages_times_data_list :
+            if item[1] == 1:
+                languages_times_data_list.append(item[0])
+                languages_number_of_distinct_times_data_list.append(1)
+                languages_censored_data_list.append(0) 
+                languages_times_left_list.append(languages_times_left_list[item_counter - 1] - (languages_number_of_distinct_times_data_list[item_counter - 1] + languages_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                languages_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                languages_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                languages_censored_data_list[item_counter-1]+=1
+
+    languages_survival_time_curve_values = []
+    for i in range(len(languages_times_data_list)):
+        if i == 0:
+            languages_survival_time_curve_values.append((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i])
+        else:
+            languages_survival_time_curve_values.append(((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i]) * languages_survival_time_curve_values[i-1])
+        
+    
+    
+    web_frameworks_times_data_list = []
+    web_frameworks_number_of_distinct_times_data_list = []
+    web_frameworks_censored_data_list = []
+    web_frameworks_times_left_list = []
+
+    item_counter = 1
+    web_frameworks_times_data_list.append(0)
+    web_frameworks_number_of_distinct_times_data_list.append(0)
+    web_frameworks_censored_data_list.append(0)
+    web_frameworks_times_left_list.append(len(web_frameworks_sorted_elapsed_time_data_list))
+
+    for item in web_frameworks_sorted_elapsed_time_data_list:
+        if item[0] not in web_frameworks_times_data_list :
+            if item[1] == 1:
+                web_frameworks_times_data_list.append(item[0])
+                web_frameworks_number_of_distinct_times_data_list.append(1)
+                web_frameworks_censored_data_list.append(0) 
+                web_frameworks_times_left_list.append(web_frameworks_times_left_list[item_counter - 1] - (web_frameworks_number_of_distinct_times_data_list[item_counter - 1] + web_frameworks_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                web_frameworks_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                web_frameworks_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                web_frameworks_censored_data_list[item_counter-1]+=1
+                
+    web_frameworks_survival_time_curve_values = []
+    for i in range(len(web_frameworks_times_data_list)):
+        if i == 0:
+            web_frameworks_survival_time_curve_values.append((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i])
+        else:
+            web_frameworks_survival_time_curve_values.append(((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i])* web_frameworks_survival_time_curve_values[i-1])
+        
+        
+
+    big_data_ml_times_data_list = []
+    big_data_ml_number_of_distinct_times_data_list = []
+    big_data_ml_censored_data_list = []
+    big_data_ml_times_left_list = []
+
+    item_counter = 1
+    big_data_ml_times_data_list.append(0)
+    big_data_ml_number_of_distinct_times_data_list.append(0)
+    big_data_ml_censored_data_list.append(0)
+    big_data_ml_times_left_list.append(len(big_data_ml_sorted_elapsed_time_data_list))
+
+    for item in big_data_ml_sorted_elapsed_time_data_list:
+        if item[0] not in big_data_ml_times_data_list :
+            if item[1] == 1:
+                big_data_ml_times_data_list.append(item[0])
+                big_data_ml_number_of_distinct_times_data_list.append(1)
+                big_data_ml_censored_data_list.append(0) 
+                big_data_ml_times_left_list.append(big_data_ml_times_left_list[item_counter - 1] - (big_data_ml_number_of_distinct_times_data_list[item_counter - 1] + big_data_ml_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                big_data_ml_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                big_data_ml_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                big_data_ml_censored_data_list[item_counter-1]+=1
+                
+    big_data_ml_survival_time_curve_values = []
+    for i in range(len(big_data_ml_times_data_list)):
+        if i == 0:
+            big_data_ml_survival_time_curve_values.append((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i])
+        else:
+            big_data_ml_survival_time_curve_values.append(((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i])* big_data_ml_survival_time_curve_values[i-1])
+            
+    databases_times_data_list = []
+    databases_number_of_distinct_times_data_list = []
+    databases_censored_data_list = []
+    databases_times_left_list = []
+
+    item_counter = 1
+    databases_times_data_list.append(0)
+    databases_number_of_distinct_times_data_list.append(0)
+    databases_censored_data_list.append(0)
+    databases_times_left_list.append(len(databases_sorted_elapsed_time_data_list))
+
+    for item in databases_sorted_elapsed_time_data_list:
+        if item[0] not in databases_times_data_list :
+            if item[1] == 1:
+                databases_times_data_list.append(item[0])
+                databases_number_of_distinct_times_data_list.append(1)
+                databases_censored_data_list.append(0) 
+                databases_times_left_list.append(databases_times_left_list[item_counter - 1] - (databases_number_of_distinct_times_data_list[item_counter - 1] + databases_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                databases_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                databases_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                databases_censored_data_list[item_counter-1]+=1
+                
+    databases_survival_time_curve_values = []
+    for i in range(len(databases_times_data_list)):
+        if i == 0:
+            databases_survival_time_curve_values.append((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i])
+        else:
+            databases_survival_time_curve_values.append(((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i])* databases_survival_time_curve_values[i-1])
+            
+    
+    platforms_times_data_list = []
+    platforms_number_of_distinct_times_data_list = []
+    platforms_censored_data_list = []
+    platforms_times_left_list = []
+
+    item_counter = 1
+    platforms_times_data_list.append(0)
+    platforms_number_of_distinct_times_data_list.append(0)
+    platforms_censored_data_list.append(0)
+    platforms_times_left_list.append(len(platforms_sorted_elapsed_time_data_list))
+
+    for item in platforms_sorted_elapsed_time_data_list:
+        if item[0] not in platforms_times_data_list :
+            if item[1] == 1:
+                platforms_times_data_list.append(item[0])
+                platforms_number_of_distinct_times_data_list.append(1)
+                platforms_censored_data_list.append(0) 
+                platforms_times_left_list.append(platforms_times_left_list[item_counter - 1] - (platforms_number_of_distinct_times_data_list[item_counter - 1] + platforms_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                platforms_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                platforms_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                platforms_censored_data_list[item_counter-1]+=1
+                
+    platforms_survival_time_curve_values = []
+    for i in range(len(platforms_times_data_list)):
+        if i == 0:
+            platforms_survival_time_curve_values.append((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])
+        else:
+            platforms_survival_time_curve_values.append(((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])* platforms_survival_time_curve_values[i-1])
+    
+    
+    
+    collaboration_tools_times_data_list = []
+    collaboration_tools_number_of_distinct_times_data_list = []
+    collaboration_tools_censored_data_list = []
+    collaboration_tools_times_left_list = []
+
+    item_counter = 1
+    collaboration_tools_times_data_list.append(0)
+    collaboration_tools_number_of_distinct_times_data_list.append(0)
+    collaboration_tools_censored_data_list.append(0)
+    collaboration_tools_times_left_list.append(len(collaboration_tools_sorted_elapsed_time_data_list))
+
+    for item in collaboration_tools_sorted_elapsed_time_data_list:
+        if item[0] not in collaboration_tools_times_data_list :
+            if item[1] == 1:
+                collaboration_tools_times_data_list.append(item[0])
+                collaboration_tools_number_of_distinct_times_data_list.append(1)
+                collaboration_tools_censored_data_list.append(0) 
+                collaboration_tools_times_left_list.append(collaboration_tools_times_left_list[item_counter - 1] - (collaboration_tools_number_of_distinct_times_data_list[item_counter - 1] + collaboration_tools_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                collaboration_tools_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                collaboration_tools_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                collaboration_tools_censored_data_list[item_counter-1]+=1
+                
+    collaboration_tools_survival_time_curve_values = []
+    for i in range(len(collaboration_tools_times_data_list)):
+        if i == 0:
+            collaboration_tools_survival_time_curve_values.append((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])
+        else:
+            collaboration_tools_survival_time_curve_values.append(((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])* collaboration_tools_survival_time_curve_values[i-1])
+        
+        
+    
+    dev_tools_times_data_list = []
+    dev_tools_number_of_distinct_times_data_list = []
+    dev_tools_censored_data_list = []
+    dev_tools_times_left_list = []
+
+    item_counter = 1
+    dev_tools_times_data_list.append(0)
+    dev_tools_number_of_distinct_times_data_list.append(0)
+    dev_tools_censored_data_list.append(0)
+    dev_tools_times_left_list.append(len(dev_tools_sorted_elapsed_time_data_list))
+
+    for item in dev_tools_sorted_elapsed_time_data_list:
+        if item[0] not in dev_tools_times_data_list :
+            if item[1] == 1:
+                dev_tools_times_data_list.append(item[0])
+                dev_tools_number_of_distinct_times_data_list.append(1)
+                dev_tools_censored_data_list.append(0) 
+                dev_tools_times_left_list.append(dev_tools_times_left_list[item_counter - 1] - (dev_tools_number_of_distinct_times_data_list[item_counter - 1] + dev_tools_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                dev_tools_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                dev_tools_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                dev_tools_censored_data_list[item_counter-1]+=1
+                
+    dev_tools_survival_time_curve_values = []
+    for i in range(len(dev_tools_times_data_list)):
+        if i == 0:
+            dev_tools_survival_time_curve_values.append((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i])
+        else:
+            dev_tools_survival_time_curve_values.append(((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i])* dev_tools_survival_time_curve_values[i-1])    
+        
+    
+             
     distinct_locations = Counter(locations)
     for key, value in distinct_locations.items():
         location_name.append(key)
@@ -566,7 +970,15 @@ def index():
                            list_databases_tag_link_matrix = list_databases_tag_link_matrix, names_top_10_sorted_databases_tags = names_top_10_sorted_databases_tags,
                            list_platforms_tag_link_matrix = list_platforms_tag_link_matrix, names_top_10_sorted_platforms_tags = names_top_10_sorted_platforms_tags,
                            list_collaboration_tools_tag_link_matrix = list_collaboration_tools_tag_link_matrix, names_top_10_sorted_collaboration_tools_tags = names_top_10_sorted_collaboration_tools_tags,
-                           list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags
+                           list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags,
+                           times_data_list = times_data_list, survival_time_curve_values = survival_time_curve_values, 
+                           languages_times_data_list = languages_times_data_list, languages_survival_time_curve_values = languages_survival_time_curve_values,
+                           web_frameworks_times_data_list = web_frameworks_times_data_list, web_frameworks_survival_time_curve_values = web_frameworks_survival_time_curve_values,
+                           big_data_ml_times_data_list = big_data_ml_times_data_list, big_data_ml_survival_time_curve_values = big_data_ml_survival_time_curve_values,
+                           databases_times_data_list = databases_times_data_list, databases_survival_time_curve_values = databases_survival_time_curve_values,
+                           platforms_times_data_list = platforms_times_data_list, platforms_survival_time_curve_values = platforms_survival_time_curve_values,
+                           collaboration_tools_times_data_list = collaboration_tools_times_data_list, collaboration_tools_survival_time_curve_values = collaboration_tools_survival_time_curve_values,
+                           dev_tools_times_data_list = dev_tools_times_data_list, dev_tools_survival_time_curve_values = dev_tools_survival_time_curve_values
                            )
 
 
@@ -628,6 +1040,14 @@ def fetch():
     platforms = {}
     collaboration_tools = {}
     dev_tools = {}
+    elapsed_time_data_list = []
+    languages_elapsed_time_data_list = []
+    web_frameworks_elapsed_time_data_list = []
+    big_data_ml_elapsed_time_data_list = []
+    databases_elapsed_time_data_list = []
+    platforms_elapsed_time_data_list = []
+    collaboration_tools_elapsed_time_data_list = []
+    dev_tools_elapsed_time_data_list = []
 
     fields_and_techs = {}
     for technology in technologies:
@@ -651,35 +1071,120 @@ def fetch():
         ids_and_answers.update({q_link: [int(question['answers']), question['question_title']]})
         ids_and_comments.update({q_link: [int(question['comments']), question['question_title']]})
         #########################
+        
+        question_time = datetime.fromisoformat(question['timestamps'][:-1]).replace(tzinfo=timezone.utc)
+        if question_time:           
+            if question['first_answer'] != 'No answers':
+                first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                event = 1   
+            else:
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                event = 0    
+            if hour_diff!=0.0:
+                elapsed_time_data_list.append([hour_diff,event])
+        #########################
         for q_tag in dif_tags:
             if fields_and_techs.get(q_tag) == 'Languages':
-                languages.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                languages.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        languages_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Web Frameworks':
-                web_frameworks.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                web_frameworks.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        web_frameworks_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Big Data - ML':
-                big_data_ml.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                big_data_ml.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        big_data_ml_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Databases':
-                databases.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                databases.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        databases_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Platforms':
-                platforms.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                platforms.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        platforms_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Collaboration Tools':
-                collaboration_tools.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                collaboration_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        collaboration_tools_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Developer Tools':
-                dev_tools.update(
-                    {q_link: [int(question['votes']), int(question['answers']), int(question['comments']),
-                              question['question_title']]})
+                dev_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), question['question_title']]})
+                if question_time:           
+                    if question['first_answer'] != 'No answers':
+                        first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        event = 1   
+                    else:
+                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
+                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        event = 0    
+                    if hour_diff!=0.0:
+                        dev_tools_elapsed_time_data_list.append([hour_diff,event])
         #########################
         code_snippets.append(int(question['code_snippet']))
         if question['latitude'] != 'None':
@@ -690,6 +1195,314 @@ def fetch():
             locations.append(question['location'])
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
+    
+    sorted_elapsed_time_data_list = sorted(elapsed_time_data_list, key=itemgetter(0))
+    languages_sorted_elapsed_time_data_list = sorted(languages_elapsed_time_data_list, key=itemgetter(0))
+    web_frameworks_sorted_elapsed_time_data_list = sorted(web_frameworks_elapsed_time_data_list, key=itemgetter(0))
+    big_data_ml_sorted_elapsed_time_data_list = sorted(big_data_ml_elapsed_time_data_list, key=itemgetter(0))
+    databases_sorted_elapsed_time_data_list = sorted(databases_elapsed_time_data_list, key=itemgetter(0))
+    platforms_sorted_elapsed_time_data_list = sorted(platforms_elapsed_time_data_list, key=itemgetter(0))
+    collaboration_tools_sorted_elapsed_time_data_list = sorted(collaboration_tools_elapsed_time_data_list, key=itemgetter(0))
+    dev_tools_sorted_elapsed_time_data_list = sorted(dev_tools_elapsed_time_data_list, key=itemgetter(0))
+    
+    
+    times_data_list = []
+    number_of_distinct_times_data_list = []
+    censored_data_list = []
+    times_left_list = []
+    
+    item_counter = 1
+    times_data_list.append(0)
+    number_of_distinct_times_data_list.append(0)
+    censored_data_list.append(0)
+    times_left_list.append(len(sorted_elapsed_time_data_list))
+    
+    for item in sorted_elapsed_time_data_list:
+        if item[0] not in times_data_list :
+            if item[1] == 1:
+                times_data_list.append(item[0])
+                number_of_distinct_times_data_list.append(1)
+                censored_data_list.append(0) 
+                times_left_list.append(times_left_list[item_counter - 1] - (number_of_distinct_times_data_list[item_counter - 1] + censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                censored_data_list[item_counter-1]+=1
+        
+    survival_time_curve_values = []
+    for i in range(len(times_data_list)):
+        if i == 0:
+            survival_time_curve_values.append((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i])
+        else:
+            survival_time_curve_values.append(((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i])* survival_time_curve_values[i-1])
+    
+    
+    
+    languages_times_data_list = []
+    languages_number_of_distinct_times_data_list = []
+    languages_censored_data_list = []
+    languages_times_left_list = []
+
+    item_counter = 1
+    languages_times_data_list.append(0)
+    languages_number_of_distinct_times_data_list.append(0)
+    languages_censored_data_list.append(0)
+    languages_times_left_list.append(len(languages_sorted_elapsed_time_data_list))
+
+    for item in languages_sorted_elapsed_time_data_list:
+        if item[0] not in languages_times_data_list :
+            if item[1] == 1:
+                languages_times_data_list.append(item[0])
+                languages_number_of_distinct_times_data_list.append(1)
+                languages_censored_data_list.append(0) 
+                languages_times_left_list.append(languages_times_left_list[item_counter - 1] - (languages_number_of_distinct_times_data_list[item_counter - 1] + languages_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                languages_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                languages_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                languages_censored_data_list[item_counter-1]+=1
+
+    languages_survival_time_curve_values = []
+    for i in range(len(languages_times_data_list)):
+        if i == 0:
+            languages_survival_time_curve_values.append((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i])
+        else:
+            languages_survival_time_curve_values.append(((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i]) * languages_survival_time_curve_values[i-1])
+        
+    
+    
+    web_frameworks_times_data_list = []
+    web_frameworks_number_of_distinct_times_data_list = []
+    web_frameworks_censored_data_list = []
+    web_frameworks_times_left_list = []
+
+    item_counter = 1
+    web_frameworks_times_data_list.append(0)
+    web_frameworks_number_of_distinct_times_data_list.append(0)
+    web_frameworks_censored_data_list.append(0)
+    web_frameworks_times_left_list.append(len(web_frameworks_sorted_elapsed_time_data_list))
+
+    for item in web_frameworks_sorted_elapsed_time_data_list:
+        if item[0] not in web_frameworks_times_data_list :
+            if item[1] == 1:
+                web_frameworks_times_data_list.append(item[0])
+                web_frameworks_number_of_distinct_times_data_list.append(1)
+                web_frameworks_censored_data_list.append(0) 
+                web_frameworks_times_left_list.append(web_frameworks_times_left_list[item_counter - 1] - (web_frameworks_number_of_distinct_times_data_list[item_counter - 1] + web_frameworks_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                web_frameworks_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                web_frameworks_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                web_frameworks_censored_data_list[item_counter-1]+=1
+                
+    web_frameworks_survival_time_curve_values = []
+    for i in range(len(web_frameworks_times_data_list)):
+        if i == 0:
+            web_frameworks_survival_time_curve_values.append((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i])
+        else:
+            web_frameworks_survival_time_curve_values.append(((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i])* web_frameworks_survival_time_curve_values[i-1])
+        
+        
+
+    big_data_ml_times_data_list = []
+    big_data_ml_number_of_distinct_times_data_list = []
+    big_data_ml_censored_data_list = []
+    big_data_ml_times_left_list = []
+
+    item_counter = 1
+    big_data_ml_times_data_list.append(0)
+    big_data_ml_number_of_distinct_times_data_list.append(0)
+    big_data_ml_censored_data_list.append(0)
+    big_data_ml_times_left_list.append(len(big_data_ml_sorted_elapsed_time_data_list))
+
+    for item in big_data_ml_sorted_elapsed_time_data_list:
+        if item[0] not in big_data_ml_times_data_list :
+            if item[1] == 1:
+                big_data_ml_times_data_list.append(item[0])
+                big_data_ml_number_of_distinct_times_data_list.append(1)
+                big_data_ml_censored_data_list.append(0) 
+                big_data_ml_times_left_list.append(big_data_ml_times_left_list[item_counter - 1] - (big_data_ml_number_of_distinct_times_data_list[item_counter - 1] + big_data_ml_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                big_data_ml_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                big_data_ml_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                big_data_ml_censored_data_list[item_counter-1]+=1
+                
+    big_data_ml_survival_time_curve_values = []
+    for i in range(len(big_data_ml_times_data_list)):
+        if i == 0:
+            big_data_ml_survival_time_curve_values.append((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i])
+        else:
+            big_data_ml_survival_time_curve_values.append(((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i])* big_data_ml_survival_time_curve_values[i-1])
+            
+    databases_times_data_list = []
+    databases_number_of_distinct_times_data_list = []
+    databases_censored_data_list = []
+    databases_times_left_list = []
+
+    item_counter = 1
+    databases_times_data_list.append(0)
+    databases_number_of_distinct_times_data_list.append(0)
+    databases_censored_data_list.append(0)
+    databases_times_left_list.append(len(databases_sorted_elapsed_time_data_list))
+
+    for item in databases_sorted_elapsed_time_data_list:
+        if item[0] not in databases_times_data_list :
+            if item[1] == 1:
+                databases_times_data_list.append(item[0])
+                databases_number_of_distinct_times_data_list.append(1)
+                databases_censored_data_list.append(0) 
+                databases_times_left_list.append(databases_times_left_list[item_counter - 1] - (databases_number_of_distinct_times_data_list[item_counter - 1] + databases_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                databases_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                databases_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                databases_censored_data_list[item_counter-1]+=1
+                
+    databases_survival_time_curve_values = []
+    for i in range(len(databases_times_data_list)):
+        if i == 0:
+            databases_survival_time_curve_values.append((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i])
+        else:
+            databases_survival_time_curve_values.append(((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i])* databases_survival_time_curve_values[i-1])
+            
+    
+    platforms_times_data_list = []
+    platforms_number_of_distinct_times_data_list = []
+    platforms_censored_data_list = []
+    platforms_times_left_list = []
+
+    item_counter = 1
+    platforms_times_data_list.append(0)
+    platforms_number_of_distinct_times_data_list.append(0)
+    platforms_censored_data_list.append(0)
+    platforms_times_left_list.append(len(platforms_sorted_elapsed_time_data_list))
+
+    for item in platforms_sorted_elapsed_time_data_list:
+        if item[0] not in platforms_times_data_list :
+            if item[1] == 1:
+                platforms_times_data_list.append(item[0])
+                platforms_number_of_distinct_times_data_list.append(1)
+                platforms_censored_data_list.append(0) 
+                platforms_times_left_list.append(platforms_times_left_list[item_counter - 1] - (platforms_number_of_distinct_times_data_list[item_counter - 1] + platforms_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                platforms_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                platforms_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                platforms_censored_data_list[item_counter-1]+=1
+                
+    platforms_survival_time_curve_values = []
+    for i in range(len(platforms_times_data_list)):
+        if i == 0:
+            platforms_survival_time_curve_values.append((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])
+        else:
+            platforms_survival_time_curve_values.append(((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])* platforms_survival_time_curve_values[i-1])
+    
+    
+    
+    collaboration_tools_times_data_list = []
+    collaboration_tools_number_of_distinct_times_data_list = []
+    collaboration_tools_censored_data_list = []
+    collaboration_tools_times_left_list = []
+
+    item_counter = 1
+    collaboration_tools_times_data_list.append(0)
+    collaboration_tools_number_of_distinct_times_data_list.append(0)
+    collaboration_tools_censored_data_list.append(0)
+    collaboration_tools_times_left_list.append(len(collaboration_tools_sorted_elapsed_time_data_list))
+
+    for item in collaboration_tools_sorted_elapsed_time_data_list:
+        if item[0] not in collaboration_tools_times_data_list :
+            if item[1] == 1:
+                collaboration_tools_times_data_list.append(item[0])
+                collaboration_tools_number_of_distinct_times_data_list.append(1)
+                collaboration_tools_censored_data_list.append(0) 
+                collaboration_tools_times_left_list.append(collaboration_tools_times_left_list[item_counter - 1] - (collaboration_tools_number_of_distinct_times_data_list[item_counter - 1] + collaboration_tools_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                collaboration_tools_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                collaboration_tools_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                collaboration_tools_censored_data_list[item_counter-1]+=1
+                
+    collaboration_tools_survival_time_curve_values = []
+    for i in range(len(collaboration_tools_times_data_list)):
+        if i == 0:
+            collaboration_tools_survival_time_curve_values.append((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])
+        else:
+            collaboration_tools_survival_time_curve_values.append(((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])* collaboration_tools_survival_time_curve_values[i-1])
+        
+        
+    
+    dev_tools_times_data_list = []
+    dev_tools_number_of_distinct_times_data_list = []
+    dev_tools_censored_data_list = []
+    dev_tools_times_left_list = []
+
+    item_counter = 1
+    dev_tools_times_data_list.append(0)
+    dev_tools_number_of_distinct_times_data_list.append(0)
+    dev_tools_censored_data_list.append(0)
+    dev_tools_times_left_list.append(len(dev_tools_sorted_elapsed_time_data_list))
+
+    for item in dev_tools_sorted_elapsed_time_data_list:
+        if item[0] not in dev_tools_times_data_list :
+            if item[1] == 1:
+                dev_tools_times_data_list.append(item[0])
+                dev_tools_number_of_distinct_times_data_list.append(1)
+                dev_tools_censored_data_list.append(0) 
+                dev_tools_times_left_list.append(dev_tools_times_left_list[item_counter - 1] - (dev_tools_number_of_distinct_times_data_list[item_counter - 1] + dev_tools_censored_data_list[item_counter-1]))  
+                item_counter+=1        
+            else:
+                dev_tools_censored_data_list[item_counter-1]+=1
+            
+        else:         
+            if item[1] == 1:
+                dev_tools_number_of_distinct_times_data_list[item_counter - 1]+=1
+            else:
+                dev_tools_censored_data_list[item_counter-1]+=1
+                
+    dev_tools_survival_time_curve_values = []
+    for i in range(len(dev_tools_times_data_list)):
+        if i == 0:
+            dev_tools_survival_time_curve_values.append((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i])
+        else:
+            dev_tools_survival_time_curve_values.append(((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i])* dev_tools_survival_time_curve_values[i-1])    
+        
+    
+             
+    distinct_locations = Counter(locations)
+    for key, value in distinct_locations.items():
+        location_name.append(key)
+        location_question.append(value)
 
     distinct_locations = Counter(locations)
     for key, value in distinct_locations.items():
@@ -1142,5 +1955,13 @@ def fetch():
                            list_databases_tag_link_matrix = list_databases_tag_link_matrix, names_top_10_sorted_databases_tags = names_top_10_sorted_databases_tags,
                            list_platforms_tag_link_matrix = list_platforms_tag_link_matrix, names_top_10_sorted_platforms_tags = names_top_10_sorted_platforms_tags,
                            list_collaboration_tools_tag_link_matrix = list_collaboration_tools_tag_link_matrix, names_top_10_sorted_collaboration_tools_tags = names_top_10_sorted_collaboration_tools_tags,
-                           list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags
+                           list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags,
+                           times_data_list = times_data_list, survival_time_curve_values = survival_time_curve_values, 
+                           languages_times_data_list = languages_times_data_list, languages_survival_time_curve_values = languages_survival_time_curve_values,
+                           web_frameworks_times_data_list = web_frameworks_times_data_list, web_frameworks_survival_time_curve_values = web_frameworks_survival_time_curve_values,
+                           big_data_ml_times_data_list = big_data_ml_times_data_list, big_data_ml_survival_time_curve_values = big_data_ml_survival_time_curve_values,
+                           databases_times_data_list = databases_times_data_list, databases_survival_time_curve_values = databases_survival_time_curve_values,
+                           platforms_times_data_list = platforms_times_data_list, platforms_survival_time_curve_values = platforms_survival_time_curve_values,
+                           collaboration_tools_times_data_list = collaboration_tools_times_data_list, collaboration_tools_survival_time_curve_values = collaboration_tools_survival_time_curve_values,
+                           dev_tools_times_data_list = dev_tools_times_data_list, dev_tools_survival_time_curve_values = dev_tools_survival_time_curve_values
                            )

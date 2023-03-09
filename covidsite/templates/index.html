@@ -566,6 +566,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <!-- Content Column -->
+                    <div class="col-xl-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="twelfthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Survival Curves
+                                    <div style="z-index: 10000 !important;" class="tooltip2"><i
+                                            class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"></span>
+                                    </div>   
+                                </h6> 
+                                
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <div id="survivalCurve" style="height: 800px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
                 <!-- Add the eleventhChart created in a li above -->
@@ -583,6 +604,8 @@
                     </div>
                 </div>
             </div>
+
+            
 
             </div>
             <!-- /.container-fluid -->
@@ -1959,13 +1982,91 @@ function fade(opacity) {
         .style("opacity", opacity);
     };
 }//fade
-
-    
-  
 });
 
 </script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var allGroups = {
+        x: {{times_data_list | safe}},
+        y: {{survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'All Competence Groups'
+    };
 
+    var languages = {
+        x: {{languages_times_data_list | safe}},
+        y: {{languages_survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Languages'
+    };
+
+    var webFrameworks = {
+        x: {{web_frameworks_times_data_list | safe}},
+        y: {{web_frameworks_survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Web Frameworks'
+    };
+
+    var bigDataML = {
+        x: {{big_data_ml_times_data_list | safe}},
+        y: {{big_data_ml_survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Big Data - ML'
+    };
+
+    var databases = {
+        x: {{databases_times_data_list | safe}},
+        y: {{databases_survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Databases'
+    };
+
+    var platforms = {
+        x: {{platforms_times_data_list | safe}},
+        y: {{platforms_survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Platforms'
+    };
+
+    var collaborationTools = {
+        x: {{collaboration_tools_times_data_list | safe}},
+        y: {{collaboration_tools_survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Collaboration Tools'
+    };
+
+    var developerTools = {
+        x: {{dev_tools_times_data_list | safe}},
+        y: {{dev_tools_survival_time_curve_values | safe}},
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Developer Tools'
+    };
+    
+    var survivalData = [allGroups, languages, webFrameworks, bigDataML, databases, platforms, collaborationTools, developerTools];
+    
+    var layout = {
+        title: 'Kaplan-Meier Curve',
+        xaxis: {title: 'Time'},
+        yaxis: {title: 'Survival Probability'},
+        width: "100%"
+    };
+    
+    var config = {
+        responsive: true
+    };
+
+    Plotly.newPlot('survivalCurve', survivalData, layout, config); 
+      
+</script>
 
 <script>
     document.getElementById('datepicker').onclick = function() {
