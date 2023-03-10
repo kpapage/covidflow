@@ -481,7 +481,6 @@ def index():
             collaboration_tools_survival_time_curve_values.append(((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])* collaboration_tools_survival_time_curve_values[i-1])
         
         
-    
     dev_tools_times_data_list = []
     dev_tools_number_of_distinct_times_data_list = []
     dev_tools_censored_data_list = []
