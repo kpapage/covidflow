@@ -90,5 +90,3 @@ for i in range(len(title)):
 
         "deleted": deleted[i]
     })
-
-
