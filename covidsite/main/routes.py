@@ -445,8 +445,6 @@ def index():
         else:
             platforms_survival_time_curve_values.append(((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])* platforms_survival_time_curve_values[i-1])
     
-    
-    
     collaboration_tools_times_data_list = []
     collaboration_tools_number_of_distinct_times_data_list = []
     collaboration_tools_censored_data_list = []
