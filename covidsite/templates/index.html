@@ -292,7 +292,7 @@
                             </div>
                             <div class=" col-xl-2 ">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                                    <input class="form-check-input" type="checkbox"  id="includeClosedQuestionsCheckbox">
                                     <div class="tooltip2"><i class="fas fa-info-circle"></i>
                                         <span class="tooltiptext">Include closed/deleted questions</span>
                                     </div>
@@ -2115,6 +2115,20 @@ function fade(opacity) {
         ];
         window.location.href = './get_dates?dateFrom=' + dateFrom + '&dateTo=' + dateTo + '&inclClosed=' + closed;
     };
+</script>
+
+<script>
+    window.onload = function () {
+
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var inclClosed = urlParams.get('inclClosed');
+        if (inclClosed && inclClosed === '1') {
+            document.getElementById('includeClosedQuestionsCheckbox').checked = true;
+            //console.log(document.getElementById('includeClosedQuestionsCheckbox')); 
+        }
+    }
+     //document.getElementById('includeClosedQuestionsCheckbox') 
 </script>
 
 </div>
