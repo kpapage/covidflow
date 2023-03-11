@@ -623,24 +623,6 @@
                 </div>
 
 
-                <!-- Add the eleventhChart created in a li above -->
-            <div class="row">
-                <!-- Chart -->
-                <div class="col-lg-12">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3" id="eleventhChart">
-                            <h6 class="m-0 font-weight-bold text-primary">Question Distribution per Competence groups</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-area">
-                                <div id="QbTechChart" height="250"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            
-
             </div>
             <!-- /.container-fluid -->
 
@@ -1487,178 +1469,6 @@
 
 </script>
 
-    <!-- Stacked barplot in d3.js. For data, you stack the stacked_open_values on top of the stacked_closed_values for each technology,
-    which have been passed from a render_template().
-    The are 7 bars: 'Languages', 'Web Frameworks', 'Big Data - ML', 'Databases', 'Platforms', 'Collaboration Tools', 'Dev Tools'-->
-<script>
-
-
-    // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 20, bottom: 30, left: 40},
-        width = 1500 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
-
-
- /* var svg = d3.select("#QbTechChart").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-*/
-
-    var svg = d3.select("#QbTechChart").append("svg")
-      .attr("width", "95%")
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-   // Parse the data returned from render_template()
-    var technologies = {{ distinct_technologies | safe }}
-    var data_open = {{ stacked_open_values | safe }}
-    var data_closed = {{ stacked_closed_values | safe }};
-    var data_deleted = {{ stacked_deleted_values | safe }};
-
-    technologies.unshift("All");
-    data_open.unshift(data_open.reduce((a, b) => a + b, 0));
-    data_closed.unshift(data_closed.reduce((a, b) => a + b, 0));
-    data_deleted.unshift(data_deleted.reduce((a, b) => a + b, 0));
-
-
-
-    console.log(technologies);
-   // var data_by_tech = [{"Technology": "All", "Open": data_open.reduce((a, b) => a + b, 0), "Closed": data_closed.reduce((a, b) => a + b, 0), "Deleted": data_deleted.reduce((a, b) => a + b, 0)}];
-    var data_by_tech = [];
-    for (var i = 0; i < technologies.length; i++) {
-        data_by_tech.push({
-            "Technology": technologies[i],
-            "Open": data_open[i],
-            "Closed": data_closed[i],
-            "Deleted": data_deleted[i]
-        });
-    }
-
-    console.log(data_by_tech);
-
-
-
-
-    // List of subgroups = header of the csv files = soil condition here
-    var subgroups = d3.keys(data_by_tech[0])
-  //  delete subgroups[0]
-    console.log(subgroups)
-
-    // List of groups = species here = value of the first column called group -> I show them on the X axis
-    var groups = d3.map(data_by_tech, function(d){return(d.Technology)}).keys()
-
-
-    console.log(groups)
-
-    // Add X axis
-    var x = d3.scaleBand()
-        .domain(groups)
-        .range([0, width])
-        .padding([0.2])
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).tickSizeOuter(0));
-
-    // Add Y axis
-    var y = d3.scaleLinear()
-        .domain([0, 20000])
-        .range([ height, 0 ]);
-    svg.append("g")
-        .call(d3.axisLeft(y));
-
-    /*var xSubgroup = d3.scaleBand()
-        .domain(subgroups)
-        .range([0, x.bandwidth()])
-        .padding([0.05])
-
-     */
-
-    // color palette = one color per subgroup
-    var color = d3.scaleOrdinal()
-        .domain(subgroups)
-        .range(['#e5493b','#1cc689','#f4c03e'])
-
-    //stack the data? --> stack per subgroup
-    var stackedData = d3.stack()
-        .keys(subgroups)
-        (data_by_tech)
-
-    var tooltip = d3.select("#QbTechChart")
-        .append("div")
-        .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("background-color", "white")
-        .style("border", "solid")
-        .style("border-width", "2px")
-        .style("border-radius", "5px")
-        .style("padding", "5px")
-
-    var mouseover = function(d) {
-        var subgroupName = d3.select(this.parentNode).datum().key;
-        var subgroupValue = d.data[subgroupName];
-        tooltip
-            .html( subgroupName + " : " + subgroupValue)
-            .style("opacity", 1)
-    }
-
-    var mousemove = function(d) {
-        tooltip
-            .style("left", (d3.mouse(this)[0]+70) + "px")
-            .style("top", (d3.mouse(this)[1]) + "px")
-    }
-
-    var mouseleave = function(d) {
-        tooltip
-            .style("opacity", 0)
-    }
-
-    // Show the bars
-    svg.append("g")
-        .selectAll("g")
-        // Enter in the stack data = loop key per key = group per group
-        .data(stackedData)
-        .enter().append("g")
-        .attr("fill", function(d) { return color(d.key); })
-        .selectAll("rect")
-        // enter a second time = loop subgroup per subgroup to add all rectangles
-        .data(function(d) { return d; })
-        .enter().append("rect")
-        .attr("x", function(d) { return x(d.data.Technology); })
-        .attr("y", function(d) { return y(d[1]); })
-        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-        .attr("width",x.bandwidth())
-        .attr("stroke", "grey")
-        .attr("stroke-width", "0.5px")
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave)
-
-
-    // Show the bars
-   /* svg.append("g")
-        .selectAll("g")
-        // Enter in the stack data = loop key per key = group per group
-        .data(data_by_tech)
-        .enter().append("g")
-        .attr("transform", function(d) { return "translate(" + x(d.Technology) + ",0)"; })
-        .selectAll("rect")
-        // enter a second time = loop subgroup per subgroup to add all rectangles
-        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
-        .enter().append("rect")
-        .attr("x", function(d) { return xSubgroup(d.key) - xSubgroup.bandwidth()/2; })
-
-        .attr("y", function(d) { return y(d.value); })
-        .attr("width", xSubgroup.bandwidth())
-        .attr("height", function(d) { return height - y(d.value); })
-        .attr("fill", function(d) { return color(d.key); });
-        */
-
-</script>
-
 
 <!-- Doughnut Chart script -->
 <script>
@@ -1720,7 +1530,7 @@
     var configLanguages = {
         type: "polarArea",
         data: {
-            labels: ['Open', 'Closed', 'Deleted'],
+            labels: ['Open', 'Deleted', 'Closed'],
             datasets: [
                 {
                     label: "Technology Percentage",
@@ -1739,7 +1549,7 @@
     var configWebFrameworks = {
         type: "polarArea",
         data: {
-            labels: ['Open', 'Closed', 'Deleted'],
+            labels: ['Open', 'Deleted', 'Closed'],
             datasets: [
                 {
                     label: "Technology Percentage",
@@ -1758,7 +1568,7 @@
     var configBigDataML = {
         type: "polarArea",
         data: {
-            labels: ['Open', 'Closed', 'Deleted'],
+            labels: ['Open', 'Deleted', 'Closed'],
             datasets: [
                 {
                     label: "Technology Percentage",
@@ -1777,7 +1587,7 @@
     var configDatabases = {
         type: "polarArea",
         data: {
-            labels: ['Open', 'Closed', 'Deleted'],
+            labels: ['Open', 'Deleted', 'Closed'],
             datasets: [
                 {
                     label: "Technology Percentage",
@@ -1796,7 +1606,7 @@
     var configPlatforms = {
         type: "polarArea",
         data: {
-            labels: ['Open', 'Closed', 'Deleted'],
+            labels: ['Open', 'Deleted', 'Closed'],
             datasets: [
                 {
                     label: "Technology Percentage",
@@ -1815,7 +1625,7 @@
     var configCollaborationTools = {
         type: "polarArea",
         data: {
-            labels: ['Open', 'Closed', 'Deleted'],
+            labels: ['Open', 'Deleted', 'Closed'],
             datasets: [
                 {
                     label: "Technology Percentage",
@@ -1834,7 +1644,7 @@
     var configDevTools = {
         type: "polarArea",
         data: {
-            labels: ['Open', 'Closed', 'Deleted'],
+            labels: ['Open', 'Deleted', 'Closed'],
             datasets: [
                 {
                     label: "Technology Percentage",

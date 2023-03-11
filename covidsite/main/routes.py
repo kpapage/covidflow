@@ -778,7 +778,7 @@ def index():
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
 
-    # Creation of the stacked bar chart values.
+    # Creation of the polar chart open values.
     for question in questions:
         for tag in question['tag'].split(' '):
             if tag in fields_and_techs.keys():
@@ -797,7 +797,7 @@ def index():
                 elif fields_and_techs.get(tag) == 'Developer Tools':
                     stacked_open_values[6] = stacked_open_values[6] + 1
                     
-    # Creation of the stacked bar chart values.
+    # Creation of the polar chart closed values.
     for question in closed_questions:
         for tag in question['tag'].split(' '):
             if tag in fields_and_techs.keys():
@@ -816,7 +816,7 @@ def index():
                 elif fields_and_techs.get(tag) == 'Developer Tools':
                     stacked_closed_values[6] += 1
     
-    # Creation of the stacked bar chart values.
+    # Creation of the polar chart deleted values.
     for question in deleted_questions:
         for tag in question['tag'].split(' '):
             if tag in fields_and_techs.keys():
@@ -1058,15 +1058,32 @@ def fetch():
                 ]}
             ]
         }
-
+    
     questions = covidCollection.find(query)  #load questions from collection
-
+    
     techCollection = mongo.db.technologies_list
     technologies = techCollection.find()
     users = len(questions.distinct('owner_id'))
     question_number = len(covidCollection.distinct('_id'))
     questions = list(questions)
+    
+    all_questions = covidCollection.find({'timestamps': {'$gte': date_from, '$lte': date_to}})
+    all_questions_list = list(all_questions)
+    closed_questions = list([q for q in all_questions_list if q['closed'] == 1])
+    deleted_questions = list([q for q in all_questions_list if q['deleted'] == 1])
 
+    all_filtered_questions = covidCollection.find({
+            "$and": [
+                {"timestamps": {"$gte": date_from, "$lte": date_to}},
+                {"$and": [
+                    {"closed": 0},
+                    {"deleted": 0}
+                ]}
+            ]
+        })
+    all_filtered_questions_list = list(all_filtered_questions)
+    
+    
     dates = []
     dates_and_values = {}
     tags = []
@@ -1817,7 +1834,7 @@ def fetch():
     for i in range(len(radar_values)):
         radar_values[i] = radar_values[i] / len(distinct_tags)
 
-    # Creation of the stacked bar chart values.
+    # Creation of the polar chart open values.
     for question in questions:
         for tag in question['tag'].split(' '):
             if tag in fields_and_techs.keys():
@@ -1835,6 +1852,53 @@ def fetch():
                     stacked_open_values[5] = stacked_open_values[5] + 1
                 elif fields_and_techs.get(tag) == 'Developer Tools':
                     stacked_open_values[6] = stacked_open_values[6] + 1
+                    
+    # Creation of the polar chart closed values.
+    for question in closed_questions:
+        for tag in question['tag'].split(' '):
+            if tag in fields_and_techs.keys():
+                if fields_and_techs.get(tag) == 'Languages':
+                    stacked_closed_values[0] += 1
+                elif fields_and_techs.get(tag) == 'Web Frameworks':
+                    stacked_closed_values[1] += 1
+                elif fields_and_techs.get(tag) == 'Big Data - ML':
+                    stacked_closed_values[2] += 1
+                elif fields_and_techs.get(tag) == 'Databases':
+                    stacked_closed_values[3] += 1
+                elif fields_and_techs.get(tag) == 'Platforms':
+                    stacked_closed_values[4] += 1
+                elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                    stacked_closed_values[5] += 1
+                elif fields_and_techs.get(tag) == 'Developer Tools':
+                    stacked_closed_values[6] += 1
+    
+    # Creation of the polar chart deleted values.
+    for question in deleted_questions:
+        for tag in question['tag'].split(' '):
+            if tag in fields_and_techs.keys():
+                if fields_and_techs.get(tag) == 'Languages':
+                    stacked_deleted_values[0] += 1
+                elif fields_and_techs.get(tag) == 'Web Frameworks':
+                    stacked_deleted_values[1] += 1
+                elif fields_and_techs.get(tag) == 'Big Data - ML':
+                    stacked_deleted_values[2] += 1
+                elif fields_and_techs.get(tag) == 'Databases':
+                    stacked_deleted_values[3] += 1
+                elif fields_and_techs.get(tag) == 'Platforms':
+                    stacked_deleted_values[4] += 1
+                elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                    stacked_deleted_values[5] += 1
+                elif fields_and_techs.get(tag) == 'Developer Tools':
+                    stacked_deleted_values[6] += 1
+    
+    languges_question_types = [stacked_open_values[0], stacked_deleted_values[0], stacked_closed_values[0]]
+    web_frameworks_question_types = [stacked_open_values[1], stacked_deleted_values[1], stacked_closed_values[1]]
+    big_data_ml_question_types = [stacked_open_values[2], stacked_deleted_values[2], stacked_closed_values[2]]
+    databases_question_types = [stacked_open_values[3], stacked_deleted_values[3], stacked_closed_values[3]]
+    platforms_question_types = [stacked_open_values[4], stacked_deleted_values[4], stacked_closed_values[4]]
+    collaboration_tools_question_types = [stacked_open_values[5], stacked_deleted_values[5], stacked_closed_values[5]]
+    dev_tools_question_types = [stacked_open_values[6], stacked_deleted_values[6], stacked_closed_values[6]]
+    all_groups_question_types = [len(all_filtered_questions_list), len(deleted_questions), len(closed_questions)]
 
     # Distinct technologies
     distinct_technologies = []
@@ -2016,5 +2080,13 @@ def fetch():
                            databases_times_data_list = databases_times_data_list, databases_survival_time_curve_values = databases_survival_time_curve_values,
                            platforms_times_data_list = platforms_times_data_list, platforms_survival_time_curve_values = platforms_survival_time_curve_values,
                            collaboration_tools_times_data_list = collaboration_tools_times_data_list, collaboration_tools_survival_time_curve_values = collaboration_tools_survival_time_curve_values,
-                           dev_tools_times_data_list = dev_tools_times_data_list, dev_tools_survival_time_curve_values = dev_tools_survival_time_curve_values
+                           dev_tools_times_data_list = dev_tools_times_data_list, dev_tools_survival_time_curve_values = dev_tools_survival_time_curve_values,
+                           languges_question_types = languges_question_types,
+                            web_frameworks_question_types = web_frameworks_question_types,
+                            big_data_ml_question_types = big_data_ml_question_types,
+                            databases_question_types = databases_question_types,
+                            platforms_question_types = platforms_question_types,
+                            collaboration_tools_question_types = collaboration_tools_question_types,
+                            dev_tools_question_types = dev_tools_question_types,
+                            all_groups_question_types = all_groups_question_types
                            )
