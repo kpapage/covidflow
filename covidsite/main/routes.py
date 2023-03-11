@@ -796,6 +796,54 @@ def index():
                     stacked_open_values[5] = stacked_open_values[5] + 1
                 elif fields_and_techs.get(tag) == 'Developer Tools':
                     stacked_open_values[6] = stacked_open_values[6] + 1
+                    
+    # Creation of the stacked bar chart values.
+    for question in closed_questions:
+        for tag in question['tag'].split(' '):
+            if tag in fields_and_techs.keys():
+                if fields_and_techs.get(tag) == 'Languages':
+                    stacked_closed_values[0] += 1
+                elif fields_and_techs.get(tag) == 'Web Frameworks':
+                    stacked_closed_values[1] += 1
+                elif fields_and_techs.get(tag) == 'Big Data - ML':
+                    stacked_closed_values[2] += 1
+                elif fields_and_techs.get(tag) == 'Databases':
+                    stacked_closed_values[3] += 1
+                elif fields_and_techs.get(tag) == 'Platforms':
+                    stacked_closed_values[4] += 1
+                elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                    stacked_closed_values[5] += 1
+                elif fields_and_techs.get(tag) == 'Developer Tools':
+                    stacked_closed_values[6] += 1
+    
+    # Creation of the stacked bar chart values.
+    for question in deleted_questions:
+        for tag in question['tag'].split(' '):
+            if tag in fields_and_techs.keys():
+                if fields_and_techs.get(tag) == 'Languages':
+                    stacked_deleted_values[0] += 1
+                elif fields_and_techs.get(tag) == 'Web Frameworks':
+                    stacked_deleted_values[1] += 1
+                elif fields_and_techs.get(tag) == 'Big Data - ML':
+                    stacked_deleted_values[2] += 1
+                elif fields_and_techs.get(tag) == 'Databases':
+                    stacked_deleted_values[3] += 1
+                elif fields_and_techs.get(tag) == 'Platforms':
+                    stacked_deleted_values[4] += 1
+                elif fields_and_techs.get(tag) == 'Collaboration Tools':
+                    stacked_deleted_values[5] += 1
+                elif fields_and_techs.get(tag) == 'Developer Tools':
+                    stacked_deleted_values[6] += 1
+    
+    languges_question_types = [stacked_open_values[0], stacked_deleted_values[0], stacked_closed_values[0]]
+    web_frameworks_question_types = [stacked_open_values[1], stacked_deleted_values[1], stacked_closed_values[1]]
+    big_data_ml_question_types = [stacked_open_values[2], stacked_deleted_values[2], stacked_closed_values[2]]
+    databases_question_types = [stacked_open_values[3], stacked_deleted_values[3], stacked_closed_values[3]]
+    platforms_question_types = [stacked_open_values[4], stacked_deleted_values[4], stacked_closed_values[4]]
+    collaboration_tools_question_types = [stacked_open_values[5], stacked_deleted_values[5], stacked_closed_values[5]]
+    dev_tools_question_types = [stacked_open_values[6], stacked_deleted_values[6], stacked_closed_values[6]]
+    all_groups_question_types = [len(questions), len(deleted_questions), len(closed_questions)]
+
 
     # Distinct technologies
     distinct_technologies = []
@@ -923,59 +971,67 @@ def index():
     list_developer_tools_tag_link_matrix = np.array2string(developer_tools_tag_link_matrix, separator=",")
 
     return render_template('index.html', questions=questions, question_count=question_count, users=users, labels=labels,
-                           values=values,
-                           list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
-                           barChartValues=barChartValues, latLngInt=latLngInt, latitudes=latitudes,
-                           longitudes=longitudes,
-                           distinct_technologies=distinct_technologies,
-                           stacked_open_values=stacked_open_values, stacked_closed_values=stacked_closed_values,
-                           stacked_deleted_values=stacked_deleted_values,
-                           radar_values=radar_values, added_values=added_values, avgNumberOfAnswers=avgNumberOfAnswers,
-                           avgNumberOfComments=avgNumberOfComments, avgNumberOfVotes=avgNumberOfVotes,
-                           snippetData=snippetData, halfMonthValues=halfMonthValues,
-                           top_10_sorted_ids_and_votes=top_10_sorted_ids_and_votes,
-                           top_10_sorted_ids_and_answers=top_10_sorted_ids_and_answers,
-                           top_10_sorted_ids_and_comments=top_10_sorted_ids_and_comments,
-                           top_10_distinct_users=top_10_distinct_users, location_name=location_name,
-                           location_question=location_question, locations=locations,
-                           top_10_languages_votes=top_10_languages_votes,
-                           top_10_languages_answers=top_10_languages_answers,
-                           top_10_languages_comments=top_10_languages_comments,
-                           top_10_web_frameworks_votes=top_10_web_frameworks_votes,
-                           top_10_web_frameworks_answers=top_10_web_frameworks_answers,
-                           top_10_web_frameworks_comments=top_10_web_frameworks_comments,
-                           top_10_big_data_ml_votes=top_10_big_data_ml_votes,
-                           top_10_big_data_ml_answers=top_10_big_data_ml_answers,
-                           top_10_big_data_ml_comments=top_10_big_data_ml_comments,
-                           top_10_databases_votes=top_10_databases_votes,
-                           top_10_databases_answers=top_10_databases_answers,
-                           top_10_databases_comments=top_10_databases_comments,
-                           top_10_platforms_votes=top_10_platforms_votes,
-                           top_10_platforms_answers=top_10_platforms_answers,
-                           top_10_platforms_comments=top_10_platforms_comments,
-                           top_10_collaboration_tools_votes=top_10_collaboration_tools_votes,
-                           top_10_collaboration_tools_answers=top_10_collaboration_tools_answers,
-                           top_10_collaboration_tools_comments=top_10_collaboration_tools_comments,
-                           top_10_dev_tools_votes=top_10_dev_tools_votes,
-                           top_10_dev_tools_answers=top_10_dev_tools_answers,
-                           top_10_dev_tools_comments=top_10_dev_tools_comments,
-                           date_from=date_from, date_to=date_to, 
-                           list_tag_link_matrix=list_tag_link_matrix, top_twenty_tags=top_twenty_tags, 
-                           list_languages_tag_link_matrix = list_languages_tag_link_matrix, names_top_10_sorted_languages_tags = names_top_10_sorted_languages_tags,
-                           list_frameworks_tag_link_matrix = list_frameworks_tag_link_matrix, names_top_10_sorted_frameworks_tags = names_top_10_sorted_frameworks_tags,
-                           list_big_data_ml_tag_link_matrix = list_big_data_ml_tag_link_matrix, names_top_10_sorted_big_data_ml_tags = names_top_10_sorted_big_data_ml_tags,
-                           list_databases_tag_link_matrix = list_databases_tag_link_matrix, names_top_10_sorted_databases_tags = names_top_10_sorted_databases_tags,
-                           list_platforms_tag_link_matrix = list_platforms_tag_link_matrix, names_top_10_sorted_platforms_tags = names_top_10_sorted_platforms_tags,
-                           list_collaboration_tools_tag_link_matrix = list_collaboration_tools_tag_link_matrix, names_top_10_sorted_collaboration_tools_tags = names_top_10_sorted_collaboration_tools_tags,
-                           list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags,
-                           times_data_list = times_data_list, survival_time_curve_values = survival_time_curve_values, 
-                           languages_times_data_list = languages_times_data_list, languages_survival_time_curve_values = languages_survival_time_curve_values,
-                           web_frameworks_times_data_list = web_frameworks_times_data_list, web_frameworks_survival_time_curve_values = web_frameworks_survival_time_curve_values,
-                           big_data_ml_times_data_list = big_data_ml_times_data_list, big_data_ml_survival_time_curve_values = big_data_ml_survival_time_curve_values,
-                           databases_times_data_list = databases_times_data_list, databases_survival_time_curve_values = databases_survival_time_curve_values,
-                           platforms_times_data_list = platforms_times_data_list, platforms_survival_time_curve_values = platforms_survival_time_curve_values,
-                           collaboration_tools_times_data_list = collaboration_tools_times_data_list, collaboration_tools_survival_time_curve_values = collaboration_tools_survival_time_curve_values,
-                           dev_tools_times_data_list = dev_tools_times_data_list, dev_tools_survival_time_curve_values = dev_tools_survival_time_curve_values
+                            values=values,
+                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
+                            barChartValues=barChartValues, latLngInt=latLngInt, latitudes=latitudes,
+                            longitudes=longitudes,
+                            distinct_technologies=distinct_technologies,
+                            stacked_open_values=stacked_open_values, stacked_closed_values=stacked_closed_values,
+                            stacked_deleted_values=stacked_deleted_values,
+                            radar_values=radar_values, added_values=added_values, avgNumberOfAnswers=avgNumberOfAnswers,
+                            avgNumberOfComments=avgNumberOfComments, avgNumberOfVotes=avgNumberOfVotes,
+                            snippetData=snippetData, halfMonthValues=halfMonthValues,
+                            top_10_sorted_ids_and_votes=top_10_sorted_ids_and_votes,
+                            top_10_sorted_ids_and_answers=top_10_sorted_ids_and_answers,
+                            top_10_sorted_ids_and_comments=top_10_sorted_ids_and_comments,
+                            top_10_distinct_users=top_10_distinct_users, location_name=location_name,
+                            location_question=location_question, locations=locations,
+                            top_10_languages_votes=top_10_languages_votes,
+                            top_10_languages_answers=top_10_languages_answers,
+                            top_10_languages_comments=top_10_languages_comments,
+                            top_10_web_frameworks_votes=top_10_web_frameworks_votes,
+                            top_10_web_frameworks_answers=top_10_web_frameworks_answers,
+                            top_10_web_frameworks_comments=top_10_web_frameworks_comments,
+                            top_10_big_data_ml_votes=top_10_big_data_ml_votes,
+                            top_10_big_data_ml_answers=top_10_big_data_ml_answers,
+                            top_10_big_data_ml_comments=top_10_big_data_ml_comments,
+                            top_10_databases_votes=top_10_databases_votes,
+                            top_10_databases_answers=top_10_databases_answers,
+                            top_10_databases_comments=top_10_databases_comments,
+                            top_10_platforms_votes=top_10_platforms_votes,
+                            top_10_platforms_answers=top_10_platforms_answers,
+                            top_10_platforms_comments=top_10_platforms_comments,
+                            top_10_collaboration_tools_votes=top_10_collaboration_tools_votes,
+                            top_10_collaboration_tools_answers=top_10_collaboration_tools_answers,
+                            top_10_collaboration_tools_comments=top_10_collaboration_tools_comments,
+                            top_10_dev_tools_votes=top_10_dev_tools_votes,
+                            top_10_dev_tools_answers=top_10_dev_tools_answers,
+                            top_10_dev_tools_comments=top_10_dev_tools_comments,
+                            date_from=date_from, date_to=date_to, 
+                            list_tag_link_matrix=list_tag_link_matrix, top_twenty_tags=top_twenty_tags, 
+                            list_languages_tag_link_matrix = list_languages_tag_link_matrix, names_top_10_sorted_languages_tags = names_top_10_sorted_languages_tags,
+                            list_frameworks_tag_link_matrix = list_frameworks_tag_link_matrix, names_top_10_sorted_frameworks_tags = names_top_10_sorted_frameworks_tags,
+                            list_big_data_ml_tag_link_matrix = list_big_data_ml_tag_link_matrix, names_top_10_sorted_big_data_ml_tags = names_top_10_sorted_big_data_ml_tags,
+                            list_databases_tag_link_matrix = list_databases_tag_link_matrix, names_top_10_sorted_databases_tags = names_top_10_sorted_databases_tags,
+                            list_platforms_tag_link_matrix = list_platforms_tag_link_matrix, names_top_10_sorted_platforms_tags = names_top_10_sorted_platforms_tags,
+                            list_collaboration_tools_tag_link_matrix = list_collaboration_tools_tag_link_matrix, names_top_10_sorted_collaboration_tools_tags = names_top_10_sorted_collaboration_tools_tags,
+                            list_developer_tools_tag_link_matrix = list_developer_tools_tag_link_matrix, names_top_10_sorted_developer_tools_tags = names_top_10_sorted_developer_tools_tags,
+                            times_data_list = times_data_list, survival_time_curve_values = survival_time_curve_values, 
+                            languages_times_data_list = languages_times_data_list, languages_survival_time_curve_values = languages_survival_time_curve_values,
+                            web_frameworks_times_data_list = web_frameworks_times_data_list, web_frameworks_survival_time_curve_values = web_frameworks_survival_time_curve_values,
+                            big_data_ml_times_data_list = big_data_ml_times_data_list, big_data_ml_survival_time_curve_values = big_data_ml_survival_time_curve_values,
+                            databases_times_data_list = databases_times_data_list, databases_survival_time_curve_values = databases_survival_time_curve_values,
+                            platforms_times_data_list = platforms_times_data_list, platforms_survival_time_curve_values = platforms_survival_time_curve_values,
+                            collaboration_tools_times_data_list = collaboration_tools_times_data_list, collaboration_tools_survival_time_curve_values = collaboration_tools_survival_time_curve_values,
+                            dev_tools_times_data_list = dev_tools_times_data_list, dev_tools_survival_time_curve_values = dev_tools_survival_time_curve_values,
+                            languges_question_types = languges_question_types,
+                            web_frameworks_question_types = web_frameworks_question_types,
+                            big_data_ml_question_types = big_data_ml_question_types,
+                            databases_question_types = databases_question_types,
+                            platforms_question_types = platforms_question_types,
+                            collaboration_tools_question_types = collaboration_tools_question_types,
+                            dev_tools_question_types = dev_tools_question_types,
+                            all_groups_question_types = all_groups_question_types
                            )
 
 

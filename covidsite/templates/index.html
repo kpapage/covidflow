@@ -546,7 +546,7 @@
                                     </div>   
                                 </h6> 
                                 <div>
-                                    <select class="custom-select" id="classSelectChord" >
+                                    <select class="custom-select" id="classSelectChord">
                                         <option value="All">All Groups</option>
                                         <option value="Languages">Languages</option>
                                         <option value="Web Frameworks">Web Frameworks</option>
@@ -582,6 +582,40 @@
                             <div class="card-body">
                                 <div class="chart-area">
                                     <div id="survivalCurve" style="height: 800px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Content Column -->
+                    <div class="col-xl-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="thirteenthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Question Distribution per Competence groups
+                                    <div style="z-index: 10000 !important;" class="tooltip2"><i
+                                            class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"></span>
+                                    </div>   
+                                </h6> 
+                                <div>
+                                    <select class="custom-select" id="groupSelect" onchange="changeGroup()">
+                                        <option value="All">All Groups</option>
+                                        <option value="Languages">Languages</option>
+                                        <option value="Web Frameworks">Web Frameworks</option>
+                                        <option value="Big Data - ML">Big Data - ML</option>
+                                        <option value="Databases">Databases</option>
+                                        <option value="Platforms">Platforms</option>
+                                        <option value="Collaboration Tools">Collaboration Tools</option>
+                                        <option value="Developer Tools">Developer Tools</option>
+                                    </select>
+                                </div>    
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="polarChart" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -1655,6 +1689,195 @@
     });
 
 </script>
+
+<!-- Polar Chart script -->
+<script>
+
+    var ctx = document.getElementById("polarChart").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+    Chart.defaults.global.defaultFontSize = 14;
+
+    var configAllGroups = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Deleted', 'Closed'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ all_groups_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+    var configLanguages = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Closed', 'Deleted'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ languges_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+    var configWebFrameworks = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Closed', 'Deleted'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ web_frameworks_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+    var configBigDataML = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Closed', 'Deleted'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ big_data_ml_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+    var configDatabases = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Closed', 'Deleted'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ databases_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+    var configPlatforms = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Closed', 'Deleted'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ platforms_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+    var configCollaborationTools = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Closed', 'Deleted'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ collaboration_tools_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+    var configDevTools = {
+        type: "polarArea",
+        data: {
+            labels: ['Open', 'Closed', 'Deleted'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ dev_tools_question_types |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }
+            ]
+        }
+    };
+
+
+
+    var polarChart = new Chart(ctx, configAllGroups);
+
+    function changeGroup() {
+        var collaborationGroup = document.getElementById('groupSelect').value;
+        polarChart.destroy();
+        if (collaborationGroup === "Languages") {
+            polarChart = new Chart(ctx, configLanguages);
+        }else if (collaborationGroup === "Web Frameworks") {
+            polarChart = new Chart(ctx, configWebFrameworks);
+        }else if (collaborationGroup === "Big Data - ML") {
+            polarChart = new Chart(ctx, configBigDataML);
+        }else if (collaborationGroup === "Databases") {
+            polarChart = new Chart(ctx, configDatabases);
+        }else if (collaborationGroup === "Platforms") {
+            polarChart = new Chart(ctx, configPlatforms);
+        }else if (collaborationGroup === "Collaboration Tools") {
+            polarChart = new Chart(ctx, configCollaborationTools);
+        }else if (collaborationGroup === "Developer Tools") {
+            polarChart = new Chart(ctx, configDevTools);
+        }else if (collaborationGroup === "All") {
+            polarChart = new Chart(ctx, configAllGroups);
+        }
+    }
+
+</script>
+
 
 
 <!-- Chord Diagram -->
