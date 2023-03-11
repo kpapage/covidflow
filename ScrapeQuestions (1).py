@@ -23,13 +23,12 @@ def scrape_site_questions(tag):
     driver = webdriver.Chrome(
         executable_path='chromedriver_win32/chromedriver.exe'
         , options=options)
-    searchdate = "2020-01-26..2022-12-8"
+    searchdate = "2020-01-26..2020-02-16"
     print("Extracting question data about {}".format(tag))
     driver.get("https://stackoverflow.com/search?page=1&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(tag, searchdate,'is','question'))
     results_text = driver.find_element(By.CSS_SELECTOR, ".flex--item.fl1.fs-body3.mr12").text
     numberOfResults = float(re.sub("[^0-9]", "", results_text))
     pages = math.ceil(numberOfResults / 15)
-    print(pages)
     questions = {}
     covered_ids = []
     processed_ids = []
@@ -61,7 +60,6 @@ def scrape_site_questions(tag):
                     metadata.append('No Owner ID')
                 time.sleep(1)
                 questions[id] = metadata
-                print(questions[id])
             for id in questions.keys():
                 if id not in covered_ids:
                     split = id.split('-')
@@ -89,14 +87,14 @@ def scrape_site_questions(tag):
                             questions[id].append('No answers')
                         if len(timestamps) == 1:
                             questions[id].append(timestamps[0])
-                        else:
+                        if len(timestamps) > 1:
                             max = -10
                             for timestamp in timestamps:
                                 d = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%SZ")
                                 sum = d.year + d.month + d.day + d.hour + d.minute + d.second
                                 if sum > max:
                                     first_answer = timestamp
-                                    questions[id].append(first_answer)
+                            questions[id].append(first_answer)
                     except NoSuchElementException:
                         questions[id].append('No answers')
                     try:
@@ -154,8 +152,8 @@ def scrape_site_questions(tag):
             timeout=3)
         for i in questions.keys():
             if i not in processed_ids:
-                if (questions[i][11] != "No Location"):
-                    location = geoLocator.geocode(questions[i][11])
+                if (questions[i][12] != "No Location"):
+                    location = geoLocator.geocode(questions[i][12])
                     if location is not None:
                         questions[i].append(location.latitude)
                         questions[i].append(location.longitude)
@@ -225,16 +223,16 @@ def scrape_site_questions(tag):
                         one_tag = one_tag + " " + separated_tag + " "
                 questions[i][0] = one_tag
                 processed_ids.append(i)
-        final = pd.DataFrame.from_dict(questions, orient='index')
-        if tag == 'covid*':
-            final.to_excel('collected_covid.xlsx')
-        else:
-            final.to_excel('collected_{}.xlsx'.format(tag))
+    final = pd.DataFrame.from_dict(questions, orient='index')
+    if tag == 'covid*':
+        final.to_excel('collected_covid2.xlsx')
+    else:
+        final.to_excel('collected_{}.xlsx'.format(tag))
     print('Completed data extraction for {}'.format(tag))
 
 print('Extracting Question Data')
 #
-tags = ["sars-cov","2019-ncov","corona-virus","coronavirus","covid*"]
+tags = ["coronavirus, corona-virus, 2019-ncov, sars-cov, covid*"]
 
 for tag in tags:
     scrape_site_questions(tag)
