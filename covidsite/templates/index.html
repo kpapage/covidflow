@@ -296,10 +296,8 @@
                                     <div class="tooltip2"><i class="fas fa-info-circle"></i>
                                         <span class="tooltiptext">Include closed/deleted questions</span>
                                     </div>
-                                  </div>
-                            
-                                
-                              </div>
+                                </div>
+                            </div>
                             <div class=" col-xl-2 ">
                               <button type="button" class="btn btn-primary" id="datepicker" >Search</button>
                             </div>
@@ -343,6 +341,41 @@
                                 <div class="chart-area">
                                     <canvas id="lineChart"></canvas>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Content Column -->
+                    <div class="col-xl-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="thirteenthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Question Distribution
+                                    <div style="z-index: 10000 !important;" class="tooltip2"><i
+                                            class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"></span>
+                                    </div>   
+                                </h6>     
+                            </div>
+                            <div class="card-body" >
+                                <div style="display: flex;">
+                                    <div class="chart-area">
+                                        <canvas id="votesDistributionChart" height="150"></canvas>
+                                    </div>
+                                    <div class="chart-area">
+                                        <canvas id="commentsDistributionChart" height="150"></canvas>
+                                    </div>
+                                </div>
+                                <div style="display: flex;">
+                                    <div class="chart-area">
+                                        <canvas id="answersDistributionChart" height="150"></canvas>
+                                    </div>
+                                    <div class="chart-area">
+                                        <canvas id="viewsDistributionChart" height="150"></canvas>
+                                    </div>
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -2129,6 +2162,127 @@ function fade(opacity) {
         }
     }
      //document.getElementById('includeClosedQuestionsCheckbox') 
+</script>
+
+<script>
+    var ctx1 = document.getElementById("commentsDistributionChart").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+    
+    var commentsLabels = {{ sorted_comments_distribution_labels |safe }};
+    var commentsBackgroundColors = [];
+    commentsLabels.forEach(function(label) {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        commentsBackgroundColors.push('rgba('+r+','+g+','+b+',0.7)');
+    });
+
+    var commentsBarChart = new Chart(ctx1, {
+        type: "bar",
+        data: {
+            labels: commentsLabels,
+            datasets: [
+                {
+                    label: "Comments Distribution",
+                    data: {{ sorted_comments_distribution_values |safe }},
+                    backgroundColor: commentsBackgroundColors
+                }
+            ],
+            options: {
+                responsive: false
+            }
+        }
+    });
+
+    var ctx2 = document.getElementById("answersDistributionChart").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+
+    var answersLabels = {{ sorted_answers_distribution_labels |safe }};
+    var answersBackgroundColors = [];
+    answersLabels.forEach(function(label) {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        answersBackgroundColors.push('rgba('+r+','+g+','+b+',0.7)');
+    });
+
+    var barChart = new Chart(ctx2, {
+        type: "bar",
+        data: {
+            labels: answersLabels,
+            datasets: [
+                {
+                    label: "Answers Distribution",
+                    data: {{ sorted_answers_distribution_values |safe }},
+                    backgroundColor: answersBackgroundColors
+                }
+            ],
+            options: {
+                responsive: false
+            }
+        }
+    });
+
+    var ctx3 = document.getElementById("votesDistributionChart").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+
+    var votesLabels = {{ sorted_votes_distribution_labels |safe }};
+    var votesBackgroundColors = [];
+    votesLabels.forEach(function(label) {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        votesBackgroundColors.push('rgba('+r+','+g+','+b+',0.7)');
+    });
+
+    var barChart = new Chart(ctx3, {
+        type: "bar",
+        data: {
+            labels: votesLabels,
+            datasets: [
+                {
+                    label: "Votes Distribution",
+                    data: {{ sorted_votes_distribution_values |safe }},
+                    backgroundColor: votesBackgroundColors
+                }
+            ],
+            options: {
+                responsive: false
+            }
+        }
+    });
+
+    var ctx4 = document.getElementById("viewsDistributionChart").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+
+    var barChart = new Chart(ctx4, {
+        type: "bar",
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: "Views Distribution",
+                    data: [],
+                    backgroundColor: [
+                        
+                    ]
+                }
+            ],
+            options: {
+                responsive: false
+            }
+        }
+    });
+
+</script>
+
+<script>
+
+
 </script>
 
 </div>

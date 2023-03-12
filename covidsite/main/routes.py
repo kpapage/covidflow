@@ -70,6 +70,9 @@ def index():
     platforms_elapsed_time_data_list = []
     collaboration_tools_elapsed_time_data_list = []
     dev_tools_elapsed_time_data_list = []
+    comments_distribution = {}
+    votes_distribution = {}
+    answers_distribution = {}
 
     fields_and_techs = {}
     for technology in technologies:
@@ -84,9 +87,26 @@ def index():
 
         if question['owner_id'] != 'No Owner ID':
             usernames.append(question['owner_id'])
+               
         comments.append(question['comments'])
+        if question['comments'] in comments_distribution.keys():
+            comments_distribution[question['comments']]+=1
+        else:
+            comments_distribution.update({int(question['comments']) : 1})
+            
         answers.append(question['answers'])
-        votes.append(int(question['votes']))
+        if question['answers'] in answers_distribution.keys():
+            answers_distribution[question['answers']] += 1
+        else:
+            answers_distribution.update({int(question['answers']) : 1})
+        
+        integer_votes = int(question['votes'])
+        votes.append(integer_votes)
+        if integer_votes in votes_distribution.keys():
+            votes_distribution[integer_votes] += 1
+        else:
+            votes_distribution.update({integer_votes : 1})
+        
         q_id = question['question_id']
         q_link = "https://stackoverflow.com/questions/" + str(re.sub("[^0-9]", "", q_id))
         ids_and_votes.update({q_link: [int(question['votes']), question['question_title']]})
@@ -217,6 +237,19 @@ def index():
             locations.append(question['location'])
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
+            
+    sorted_comments_distribution = dict(sorted(comments_distribution.items(), key=lambda x:x[0]))
+    sorted_comments_distribution_labels = list(sorted_comments_distribution.keys())
+    sorted_comments_distribution_values = list(sorted_comments_distribution.values())
+    
+    sorted_answers_distribution = dict(sorted(answers_distribution.items(), key=lambda x:x[0]))
+    sorted_answers_distribution_labels = list(sorted_answers_distribution.keys())
+    sorted_answers_distribution_values = list(sorted_answers_distribution.values())
+    
+    sorted_votes_distribution = dict(sorted(votes_distribution.items(), key=lambda x:x[0]))
+    sorted_votes_distribution_labels = list(sorted_votes_distribution.keys())
+    sorted_votes_distribution_values = list(sorted_votes_distribution.values())
+    
     
     sorted_elapsed_time_data_list = sorted(elapsed_time_data_list, key=itemgetter(0))
     languages_sorted_elapsed_time_data_list = sorted(languages_elapsed_time_data_list, key=itemgetter(0))
@@ -1031,7 +1064,13 @@ def index():
                             platforms_question_types = platforms_question_types,
                             collaboration_tools_question_types = collaboration_tools_question_types,
                             dev_tools_question_types = dev_tools_question_types,
-                            all_groups_question_types = all_groups_question_types
+                            all_groups_question_types = all_groups_question_types,
+                            sorted_comments_distribution_labels = sorted_comments_distribution_labels,
+                            sorted_comments_distribution_values = sorted_comments_distribution_values,
+                            sorted_answers_distribution_labels = sorted_answers_distribution_labels,
+                            sorted_answers_distribution_values = sorted_answers_distribution_values,
+                            sorted_votes_distribution_labels = sorted_votes_distribution_labels,
+                            sorted_votes_distribution_values = sorted_votes_distribution_values
                            )
 
 
@@ -1118,6 +1157,9 @@ def fetch():
     platforms_elapsed_time_data_list = []
     collaboration_tools_elapsed_time_data_list = []
     dev_tools_elapsed_time_data_list = []
+    comments_distribution = {}
+    votes_distribution = {}
+    answers_distribution = {}
 
     fields_and_techs = {}
     for technology in technologies:
@@ -1132,9 +1174,26 @@ def fetch():
 
         if question['owner_id'] != 'No Owner ID':
             usernames.append(question['owner_id'])
+            
         comments.append(question['comments'])
+        if question['comments'] in comments_distribution.keys():
+            comments_distribution[question['comments']]+=1
+        else:
+            comments_distribution.update({int(question['comments']) : 1})
+            
         answers.append(question['answers'])
-        votes.append(int(question['votes']))
+        if question['answers'] in answers_distribution.keys():
+            answers_distribution[question['answers']] += 1
+        else:
+            answers_distribution.update({int(question['answers']) : 1})
+            
+        integer_votes = int(question['votes'])
+        votes.append(integer_votes)
+        if integer_votes in votes_distribution.keys():
+            votes_distribution[integer_votes] += 1
+        else:
+            votes_distribution.update({integer_votes : 1})
+            
         q_id = question['question_id']
         q_link = "https://stackoverflow.com/questions/" + str(re.sub("[^0-9]", "", q_id))
         ids_and_votes.update({q_link: [int(question['votes']), question['question_title']]})
@@ -1265,6 +1324,21 @@ def fetch():
             locations.append(question['location'])
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
+    
+                
+    sorted_comments_distribution = dict(sorted(comments_distribution.items(), key=lambda x:x[0]))
+    sorted_comments_distribution_labels = list(sorted_comments_distribution.keys())
+    sorted_comments_distribution_values = list(sorted_comments_distribution.values())
+    
+    sorted_answers_distribution = dict(sorted(answers_distribution.items(), key=lambda x:x[0]))
+    sorted_answers_distribution_labels = list(sorted_answers_distribution.keys())
+    sorted_answers_distribution_values = list(sorted_answers_distribution.values())
+    
+    sorted_votes_distribution = dict(sorted(votes_distribution.items(), key=lambda x:x[0]))
+    sorted_votes_distribution_labels = list(sorted_votes_distribution.keys())
+    sorted_votes_distribution_values = list(sorted_votes_distribution.values())
+    
+    print(votes_distribution)
     
     sorted_elapsed_time_data_list = sorted(elapsed_time_data_list, key=itemgetter(0))
     languages_sorted_elapsed_time_data_list = sorted(languages_elapsed_time_data_list, key=itemgetter(0))
@@ -2088,5 +2162,11 @@ def fetch():
                             platforms_question_types = platforms_question_types,
                             collaboration_tools_question_types = collaboration_tools_question_types,
                             dev_tools_question_types = dev_tools_question_types,
-                            all_groups_question_types = all_groups_question_types
+                            all_groups_question_types = all_groups_question_types,
+                            sorted_comments_distribution_labels = sorted_comments_distribution_labels,
+                            sorted_comments_distribution_values = sorted_comments_distribution_values,
+                            sorted_answers_distribution_labels = sorted_answers_distribution_labels,
+                            sorted_answers_distribution_values = sorted_answers_distribution_values,
+                            sorted_votes_distribution_labels = sorted_votes_distribution_labels,
+                            sorted_votes_distribution_values = sorted_votes_distribution_values
                            )
