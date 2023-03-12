@@ -2259,21 +2259,24 @@ function fade(opacity) {
 
     Chart.defaults.scale.ticks.beginAtZero = true;
 
+    var viewsLabels = {{ sorted_views_distribution_labels |safe }};
+
     var barChart = new Chart(ctx4, {
-        type: "bar",
+        type: "line",
         data: {
-            labels: [],
+            labels: viewsLabels,
             datasets: [
                 {
                     label: "Views Distribution",
-                    data: [],
-                    backgroundColor: [
-                        
-                    ]
+                    data: {{ sorted_views_distribution_values |safe }},
+                    backgroundColor: 'rgba(51, 28, 71, 0.5)',
+                    lineTension: 1,
+                    pointRadius: 0
                 }
             ],
             options: {
-                responsive: false
+                responsive: true
+                
             }
         }
     });

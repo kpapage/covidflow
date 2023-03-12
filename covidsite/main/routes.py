@@ -73,6 +73,7 @@ def index():
     comments_distribution = {}
     votes_distribution = {}
     answers_distribution = {}
+    views_distribution = {}
 
     fields_and_techs = {}
     for technology in technologies:
@@ -106,6 +107,16 @@ def index():
             votes_distribution[integer_votes] += 1
         else:
             votes_distribution.update({integer_votes : 1})
+            
+        views_text = str((question['views'])).replace(",", "")
+        views = re.findall('[0-9]+', views_text)
+        
+        if len(views) != 0:
+            views_integer = int(views[0])
+            if views_integer in views_distribution.keys():
+                views_distribution[views_integer] += 1
+            else:
+                views_distribution.update({views_integer : 1})
         
         q_id = question['question_id']
         q_link = "https://stackoverflow.com/questions/" + str(re.sub("[^0-9]", "", q_id))
@@ -249,6 +260,10 @@ def index():
     sorted_votes_distribution = dict(sorted(votes_distribution.items(), key=lambda x:x[0]))
     sorted_votes_distribution_labels = list(sorted_votes_distribution.keys())
     sorted_votes_distribution_values = list(sorted_votes_distribution.values())
+    
+    sorted_views_distribution = dict(sorted(views_distribution.items(), key=lambda x:x[0]))
+    sorted_views_distribution_labels = list(sorted_views_distribution.keys())
+    sorted_views_distribution_values = list(sorted_views_distribution.values())
     
     
     sorted_elapsed_time_data_list = sorted(elapsed_time_data_list, key=itemgetter(0))
@@ -676,6 +691,8 @@ def index():
     top_ten_tags_and_values_barchart = dict(islice(sorted_tags_and_values.items(), 10))  # top 10 for barChart
     top_twenty_tags_and_values_chord = dict(islice(sorted_tags_and_values.items(), 20))  # top 20 for chordDiagram
     top_twenty_tags = list(top_twenty_tags_and_values_chord.keys())  # to 20 tag names for the chord diagram
+    all_tags_and_values = dict(sorted_tags_and_values)
+    all_tags_names = list(all_tags_and_values.keys())
 
     for key, value in best_sorted_tags_and_values.items():  # map the dict for the wordCloud
         d = {"text": key, "size": value}
@@ -901,6 +918,8 @@ def index():
     collaborations_tools_tags_to_be_linked = []
     developer_tools_tag_link_matrix = np.zeros((10, 10)).astype(int)
     developer_tools_tags_to_be_linked = []
+    all_tag_link_matrix = np.zeros((len(all_tags_names), len(all_tags_names))).astype(int)
+    all_tags_to_be_linked = []
 
 
     for question in questions:
@@ -993,6 +1012,17 @@ def index():
                         developer_tools_tag_link_matrix[combination[0], combination[1]] += 1
                         developer_tools_tag_link_matrix[combination[1], combination[0]] += 1
             developer_tools_tags_to_be_linked.clear()
+        # if [i for i in all_tags_names if i in record_tags]:
+        #     for tag in record_tags:
+        #         if tag in all_tags_names:
+        #             all_tags_to_be_linked.append(all_tags_names.index(tag))
+        #     if len(all_tags_to_be_linked) > 1:
+        #         combinations_of_tags = list(combinations(all_tags_to_be_linked, 2))
+        #         for combination in combinations_of_tags:
+        #             if combination[0] != combination[1]:
+        #                 all_tag_link_matrix[combination[0], combination[1]] += 1
+        #                 all_tag_link_matrix[combination[1], combination[0]] += 1
+    
 
     list_tag_link_matrix = np.array2string(tag_link_matrix, separator=",")
     list_languages_tag_link_matrix = np.array2string(languages_tag_link_matrix, separator=",")
@@ -1070,7 +1100,9 @@ def index():
                             sorted_answers_distribution_labels = sorted_answers_distribution_labels,
                             sorted_answers_distribution_values = sorted_answers_distribution_values,
                             sorted_votes_distribution_labels = sorted_votes_distribution_labels,
-                            sorted_votes_distribution_values = sorted_votes_distribution_values
+                            sorted_votes_distribution_values = sorted_votes_distribution_values,
+                            sorted_views_distribution_labels = sorted_views_distribution_labels,
+                            sorted_views_distribution_values = sorted_views_distribution_values
                            )
 
 
@@ -1160,6 +1192,7 @@ def fetch():
     comments_distribution = {}
     votes_distribution = {}
     answers_distribution = {}
+    views_distribution = {}
 
     fields_and_techs = {}
     for technology in technologies:
@@ -1194,6 +1227,16 @@ def fetch():
         else:
             votes_distribution.update({integer_votes : 1})
             
+        views_text = str((question['views'])).replace(",", "")
+        views = re.findall('[0-9]+', views_text)
+        
+        if len(views) != 0:
+            views_integer = int(views[0])
+            if views_integer in views_distribution.keys():
+                views_distribution[views_integer] += 1
+            else:
+                views_distribution.update({views_integer : 1})
+        
         q_id = question['question_id']
         q_link = "https://stackoverflow.com/questions/" + str(re.sub("[^0-9]", "", q_id))
         ids_and_votes.update({q_link: [int(question['votes']), question['question_title']]})
@@ -1337,6 +1380,11 @@ def fetch():
     sorted_votes_distribution = dict(sorted(votes_distribution.items(), key=lambda x:x[0]))
     sorted_votes_distribution_labels = list(sorted_votes_distribution.keys())
     sorted_votes_distribution_values = list(sorted_votes_distribution.values())
+    
+    sorted_views_distribution = dict(sorted(views_distribution.items(), key=lambda x:x[0]))
+    sorted_views_distribution_labels = list(sorted_views_distribution.keys())
+    sorted_views_distribution_values = list(sorted_views_distribution.values())
+    
     
     print(votes_distribution)
     
@@ -2168,5 +2216,7 @@ def fetch():
                             sorted_answers_distribution_labels = sorted_answers_distribution_labels,
                             sorted_answers_distribution_values = sorted_answers_distribution_values,
                             sorted_votes_distribution_labels = sorted_votes_distribution_labels,
-                            sorted_votes_distribution_values = sorted_votes_distribution_values
+                            sorted_votes_distribution_values = sorted_votes_distribution_values,
+                            sorted_views_distribution_labels = sorted_views_distribution_labels,
+                            sorted_views_distribution_values = sorted_views_distribution_values
                            )
