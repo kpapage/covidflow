@@ -271,7 +271,7 @@
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
                           <h6 class="m-0 font-weight-bold text-primary">See Data For Specific Time Windows
                             <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                              <span class="tooltiptext">to be added
+                              <span class="tooltiptext"> Define the time window you want to see data for.
                               </span>
                             </div>
                           </h6>
@@ -354,7 +354,9 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Question Distribution
                                     <div style="z-index: 10000 !important;" class="tooltip2"><i
                                             class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext"></span>
+                                        <span class="tooltiptext">
+                                            In each chart, the x-axis represents the number of votes, comments, answers or views that the question has, while the y-axis represents the number of questions that have that number of votes, comments, answers or views.
+                                        </span>
                                     </div>   
                                 </h6>     
                             </div>
@@ -425,7 +427,11 @@
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                                  id="fourthChart">
-                                <h6 class="m-0 font-weight-bold text-primary">User World Map</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">User World Map
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"> Number of questions asked by users in each place on the map</span>
+                                    </div>
+                                </h6>
 
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="inlineRadioOptions"
@@ -470,8 +476,12 @@
                     <div class="col-lg-6 mb-4">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3" id="sixthChart">
-                                <h6 class="m-0 font-weight-bold text-primary">Doughnut Chart of Questions Containing
-                                    Code Snippets </h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Doughnut Chart of Questions Containing Code Snippets
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"> Number of questions that contain or do not contain code snippets
+                                        </span>
+                                    </div>
+                                </h6>
                             </div>
                             <div class="card-body">
                                 <div class="chart-area">
@@ -487,7 +497,12 @@
                         <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                                  id="seventhChart">
-                                <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Top 10 Questions By
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"> Top 10 questions based on the selected
+                                         criteria</span>
+                                    </div>
+                                </h6>
                                 <div>
                                     <select class="custom-select" id="classSelect" onchange="update()">
                                         <option value="All">All</option>
@@ -530,7 +545,12 @@
                         <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                                  id="eighthChart">
-                                <h6 class="m-0 font-weight-bold text-primary">Top 10 Users</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Top 10 Users
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"> Top 10 users based on the number of
+                                         questions they asked</span>
+                                    </div>
+                                </h6>
                             </div>
                             <div class="card-body">
                                 <div class="topTableUsers">
@@ -579,7 +599,12 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Chord Diagram
                                     <div style="z-index: 10000 !important;" class="tooltip2"><i
                                             class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext"></span>
+                                        <span class="tooltiptext">
+                                            This figure shows the relationships between the different topics. The larger the arc, the more
+                                            questions are related to that topic. The thickness of the chord indicates the number of
+                                            questions that are related to both topics. The color of the chord indicates the
+                                            similarity between the topics. The darker the color, the more similar the topics are.
+                                        </span>
                                     </div>   
                                 </h6> 
                                 <div>
@@ -611,7 +636,13 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Survival Curves
                                     <div style="z-index: 10000 !important;" class="tooltip2"><i
                                             class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext"></span>
+                                        <span class="tooltiptext">
+                                            This figure shows the survival curves of the different topics. The survival curve of a topic
+                                            shows the probability of a question being related to that topic at a given time. The
+                                            x-axis shows the time in days since the question was asked and the y-axis shows the
+                                            probability of the question being related to the topic. The darker the color, the more
+                                            similar the topics are.
+                                        </span>
                                     </div>   
                                 </h6> 
                                 
@@ -634,7 +665,10 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Question Distribution per Competence groups
                                     <div style="z-index: 10000 !important;" class="tooltip2"><i
                                             class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext"></span>
+                                        <span class="tooltiptext">
+                                            This figure shows the distribution of questions per competence group. The larger the circle, the more
+                                            questions are related to that topic. The distances between topics indicate how similar (or dissimilar) they are.
+                                        </span>
                                     </div>   
                                 </h6> 
                                 <div>
