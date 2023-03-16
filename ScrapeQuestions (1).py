@@ -220,7 +220,7 @@ def scrape_site_questions(tag):
                     elif separated_tag == "html-agility-pack" or separated_tag == "html-parsing" or separated_tag == "html-table" or separated_tag == "html-webpack-plugin":
                         one_tag = one_tag + " " + "html" + " "
                     else:
-                        one_tag = one_tag + " " + separated_tag + " "
+                        one_tag = one_tag + " " + separated_tag
                 questions[i][0] = one_tag
                 processed_ids.append(i)
     final = pd.DataFrame.from_dict(questions, orient='index')

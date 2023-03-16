@@ -1,99 +1,104 @@
-import openpyxl
-import pandas as pd
 import pymongo
-import pandas as pd
-import numpy as np
-from nltk.corpus import stopwords
-import nltk
-import string
-from nltk import WordNetLemmatizer
-from nltk.stem.snowball import SnowballStemmer
-from nltk.util import ngrams
+from datetime import date
+from selenium import webdriver
+import time
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException
 import re
-import gensim
-from gensim.models import CoherenceModel
-from gensim import corpora
-import tqdm
-import pyLDAvis.gensim_models
-import pickle
-import pyLDAvis
-import pyLDAvis.sklearn
-from gensim.matutils import hellinger,kullback_leibler,jensen_shannon
-from nltk.stem import WordNetLemmatizer
-from itertools import chain
-from collections import Counter
+import math
+import openpyxl
+from geopy.geocoders import Nominatim
+from datetime import datetime
+import ast
+import itertools
 
-def compute_coherence_values(corpus, dictionary, k, a, b,texts):
-    lda_model = gensim.models.LdaModel(corpus=corpus,
-                                           id2word=dictionary,
-                                           num_topics=k,
-                                           passes=10,
-                                           alpha=a,
-                                           eta=b,
-                                           per_word_topics=True,minimum_probability=0.0,random_state=100)
+cluster = pymongo.MongoClient("mongodb://localhost:27017/")
+db = cluster["COVID-db"]
+collection = db["questions"]
+questions = collection.find()
 
-    coherence_model_lda = CoherenceModel(model=lda_model, texts=texts, dictionary=dictionary, coherence='c_v')
-    # from pprint import pprint  # Print the Keyword in the 10 topics
-    # pprint(lda_model.print_topics())
-    #
-    # lda_visualization = pyLDAvis.gensim.prepare(lda_model, bow_corpus, dictionary, mds='mmds', sort_topics=False)
-    # pyLDAvis.save_html(lda_visualization, 'lda_G06F870_10_Topics{}.html'.format(k))
-    return coherence_model_lda.get_coherence()
+for question in questions:
+    tags = question['tag']
+    print(tags)
+    if tags[0] == '[':
+        tag_list = ast.literal_eval(tags)
+        tag_list = [n.strip() for n in tag_list]
+    else:
+        tag_list = tags.split()
+    for i in range(0,len(tag_list)):
+        if tag_list[i] == "python-3.x" or tag_list[i] == "python-2.7" or tag_list[i] == "python-3.6" or tag_list[i] == "python-3.7" or tag_list[i] == "python-3.8":
+            tag_list[i] = "python"
+        elif tag_list[i] == "angular5" or tag_list[i] == "angular9" or tag_list[i] == "angular10":
+            tag_list[i] = "angular"
+        elif tag_list[i] == "swiftui" or tag_list[i] == "swift2":
+            tag_list[i] = "swift"
+        elif tag_list[i] == "sql-server-2008" or tag_list[i] == "sql-server-2005" or tag_list[i] == "sql-server-2012":
+            tag_list[i] = "sql-server"
+        elif tag_list[i] == "ios7" or tag_list[i] == "ios13":
+            tag_list[i] = "ios"
+        elif tag_list[i] == "vue-chartjs" or tag_list[i] == "vuejs2" or tag_list[i] == "vue-component" or tag_list[i] == "vue-router" or tag_list[i] == "vue-tables-2" or tag_list[i] == "vuetify.js" or tag_list[i] == "vuex":
+            tag_list[i] = "vue.js"
+        elif tag_list[i] == "tensorflow2.0" or tag_list[i] == "tensorflow2.x":
+            tag_list[i] = "tensorflow"
+        elif tag_list[i] == "postgresql-9.5" or tag_list[i] == "postgresql-9.6":
+            tag_list[i] = "postgresql"
+        elif tag_list[i] == "xcode6" or tag_list[i] == "xcode11":
+            tag_list[i] = "xcode"
+        elif tag_list[i] == "ruby-on-rails-5" or tag_list[i] == "ruby-on-rails-4" or tag_list[i] == "ruby-on-rails-3":
+            tag_list[i] = "ruby-on-rails"
+        elif tag_list[i] == "laravel-5":
+            tag_list[i] = "laravel"
+        elif tag_list[i] == "windows-10":
+            tag_list[i] = "windows"
+        elif tag_list[i] == "visual-studio-2015" or tag_list[i] == "visual-studio-2019":
+            tag_list[i] = "visual-studio"
+        elif tag_list[i] == "ionic5" or tag_list[i] == "ionic2" or tag_list[i] == "ionic4":
+            tag_list[i] = "ionic-framework"
+        elif tag_list[i] == "f#-3.0":
+            tag_list[i] = "f#"
+        elif tag_list[i] == "hadoop3":
+            tag_list[i] = "hadoop"
+        elif tag_list[i] == "ubuntu-20.04" or tag_list[i] == "ubuntu-14.04":
+            tag_list[i] = "ubuntu"
+        elif tag_list[i] == "fortran90":
+            tag_list[i] = "fortran"
+        elif tag_list[i] == "drupal-7":
+            tag_list[i] = "drupal"
+        elif tag_list[i] == "spring-boot":
+            tag_list[i] = "spring"
+        elif tag_list[i] == "gitlab-ci":
+            tag_list[i] = "gitlab"
+        elif tag_list[i] == "azure-devops":
+            tag_list[i] = "azure"
+        elif tag_list[i] == "unity3d":
+            tag_list[i] ="unity"
+        elif tag_list[i] == "unreal-engine4":
+            tag_list[i] = "unreal-engine"
+        elif tag_list[i] == "sql-insert" or tag_list[i] == "sql-like":
+            tag_list[i] = "sql"
+        elif tag_list[i] == "pandas-bokeh" or tag_list[i] == "pandas-groupby" or tag_list[i] == "pandas-resample":
+            tag_list[i] = "pandas"
+        elif tag_list[i] == "html-agility-pack" or tag_list[i] == "html-parsing" or tag_list[i] == "html-table" or tag_list[i] == "html-webpack-plugin":
+            tag_list[i] = "html"
+        else:
+            tag_list[i] = tag_list[i]
 
-def make_corpus(texts):
-    dictionary = corpora.Dictionary(texts)
-    bow_corpus = [dictionary.doc2bow(row) for row in texts]
-    return dictionary,bow_corpus
-
-title_df = pd.read_excel('titles.xlsx')
-punc = string.punctuation
-stopwords = stopwords.words('english')
-stemmer = SnowballStemmer("english")
-lemmatizer = WordNetLemmatizer()
-title_df = title_df.apply(lambda x: x.astype(str).str.lower())
-title_df['nolinks'] = title_df['title'].str.replace('http\S+|www.\S+', '', case=False)
-title_df['cleaned'] = title_df['nolinks'].apply(lambda x: ''.join([i for i in x if i not in punc]))
-title_df['tokenized'] = title_df.apply(lambda row: nltk.word_tokenize(row['cleaned']), axis=1)
-title_df['no_stop'] = title_df['tokenized'].apply(lambda x: [item for item in x if item not in stopwords])
-title_df['stemmed'] = title_df['no_stop'].apply(lambda x: [stemmer.stem(y) for y in x])
-
-dictionary,bow_corpus = make_corpus(title_df['stemmed'])
-
-min_topics = 2
-max_topics = 16
-step_size = 1
-topics_range = range(min_topics, max_topics, step_size)  # Alpha parameter
-alpha = list(np.arange(0.01, 1, 0.3))
-alpha.append('symmetric')
-alpha.append('asymmetric')  # Beta parameter
-beta = list(np.arange(0.01, 1, 0.3))
-beta.append('symmetric')  # Validation sets
-corpus_title = ['100% Corpus']
-model_results = {'Validation_Set': [],
-                 'Topics': [],
-                 'Alpha': [],
-                 'Beta': [],
-                 'Coherence': []
-                 }  # Can take a long time to run
-pbar = tqdm.tqdm(total=270)
-for k in topics_range:
-    # iterate through alpha values
-    for a in alpha:
-        # iterate through beta values
-        for b in beta:
-            # get the coherence score for the given parameters
-            cv = compute_coherence_values(corpus=bow_corpus, dictionary=dictionary,
-                                          k=k, a=a, b=b,texts=title_df['stemmed'])
-            # Save the model results
-            try:
-                model_results['Validation_Set'].append(corpus_title)
-            except IndexError:
-                model_results['Validation_Set'].append(corpus_title)
-            model_results['Topics'].append(k)
-            model_results['Alpha'].append(a)
-            model_results['Beta'].append(b)
-            model_results['Coherence'].append(cv)
-            print(cv)
-            pbar.update(1)
-    pd.DataFrame(model_results).to_excel('lda_tuning_results_PCI_Titles.xlsx',index=False)
-pbar.close()
+    combinations = list(itertools.combinations(tag_list, 2))
+    if not combinations:
+        collection.update_one(
+            {"question_id": question['question_id']},
+            {"$set":
+                {
+                    "tag_combinations":'No tag combinations'
+                }
+            }
+        )
+    else:
+        collection.update_one(
+            {"question_id": question['question_id']},
+            {"$set":
+                {
+                    "tag_combinations": combinations
+                }
+            }
+        )
