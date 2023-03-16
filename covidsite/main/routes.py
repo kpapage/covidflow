@@ -74,6 +74,8 @@ def index():
     votes_distribution = {}
     answers_distribution = {}
     views_distribution = {}
+    answered_questions = 0
+    unanswered_questions = 0
 
     fields_and_techs = {}
     for technology in technologies:
@@ -100,6 +102,10 @@ def index():
             answers_distribution[question['answers']] += 1
         else:
             answers_distribution.update({int(question['answers']) : 1})
+        if question['answers'] > 0:
+            answered_questions += 1
+        else:
+            unanswered_questions += 1
         
         integer_votes = int(question['votes'])
         votes.append(integer_votes)
@@ -248,6 +254,8 @@ def index():
             locations.append(question['location'])
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
+            
+    answeredData = [answered_questions, unanswered_questions]
             
     sorted_comments_distribution = dict(sorted(comments_distribution.items(), key=lambda x:x[0]))
     sorted_comments_distribution_labels = list(sorted_comments_distribution.keys())
@@ -1012,16 +1020,6 @@ def index():
                         developer_tools_tag_link_matrix[combination[0], combination[1]] += 1
                         developer_tools_tag_link_matrix[combination[1], combination[0]] += 1
             developer_tools_tags_to_be_linked.clear()
-        # if [i for i in all_tags_names if i in record_tags]:
-        #     for tag in record_tags:
-        #         if tag in all_tags_names:
-        #             all_tags_to_be_linked.append(all_tags_names.index(tag))
-        #     if len(all_tags_to_be_linked) > 1:
-        #         combinations_of_tags = list(combinations(all_tags_to_be_linked, 2))
-        #         for combination in combinations_of_tags:
-        #             if combination[0] != combination[1]:
-        #                 all_tag_link_matrix[combination[0], combination[1]] += 1
-        #                 all_tag_link_matrix[combination[1], combination[0]] += 1
     
 
     list_tag_link_matrix = np.array2string(tag_link_matrix, separator=",")
@@ -1102,7 +1100,8 @@ def index():
                             sorted_votes_distribution_labels = sorted_votes_distribution_labels,
                             sorted_votes_distribution_values = sorted_votes_distribution_values,
                             sorted_views_distribution_labels = sorted_views_distribution_labels,
-                            sorted_views_distribution_values = sorted_views_distribution_values
+                            sorted_views_distribution_values = sorted_views_distribution_values,
+                            answeredData = answeredData
                            )
 
 
@@ -1195,6 +1194,8 @@ def fetch():
     votes_distribution = {}
     answers_distribution = {}
     views_distribution = {}
+    answered_questions = 0
+    unanswered_questions = 0
 
     fields_and_techs = {}
     for technology in technologies:
@@ -1221,6 +1222,10 @@ def fetch():
             answers_distribution[question['answers']] += 1
         else:
             answers_distribution.update({int(question['answers']) : 1})
+        if question['answers'] > 0:
+            answered_questions += 1
+        else:
+            unanswered_questions += 1
             
         integer_votes = int(question['votes'])
         votes.append(integer_votes)
@@ -1370,6 +1375,7 @@ def fetch():
         for i in range(len(record_tags)):
             tags.append(record_tags[i])
     
+    answeredData = [answered_questions, unanswered_questions]
                 
     sorted_comments_distribution = dict(sorted(comments_distribution.items(), key=lambda x:x[0]))
     sorted_comments_distribution_labels = list(sorted_comments_distribution.keys())
@@ -2220,5 +2226,6 @@ def fetch():
                             sorted_votes_distribution_labels = sorted_votes_distribution_labels,
                             sorted_votes_distribution_values = sorted_votes_distribution_values,
                             sorted_views_distribution_labels = sorted_views_distribution_labels,
-                            sorted_views_distribution_values = sorted_views_distribution_values
+                            sorted_views_distribution_values = sorted_views_distribution_values,
+                            answeredData = answeredData
                            )

@@ -476,17 +476,40 @@
                     <div class="col-lg-6 mb-4">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3" id="sixthChart">
-                                <h6 class="m-0 font-weight-bold text-primary">Doughnut Chart of Questions Containing Code Snippets
-                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext"> Number of questions that contain or do not contain code snippets
-                                        </span>
-                                    </div>
-                                </h6>
+                                <h6 class="m-0 font-weight-bold text-primary" id="dougnutChartTitle">Doughnut Chart of Questions Containing Code Snippets </h6>
                             </div>
                             <div class="card-body">
-                                <div class="chart-area">
-                                    <canvas id="doughnutChart" height="250"></canvas>
-                                </div>
+
+                                <div id="carouselDoughnut" class="carousel slide" data-ride="carousel" data-interval="10000">
+                                    <div class="carousel-inner">
+                                      <div class="carousel-item active" id="codeSnippet">
+                                        <div class="chart-area">
+                                            <canvas id="doughnutChartCodeSnippets" height="250"></canvas>
+                                        </div>
+                                      </div>
+                                      <div class="carousel-item" id="answered">
+                                        <div class="chart-area">
+                                            <canvas id="doughnutChartAnswered" height="250"></canvas>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <a class="carousel-control-prev" href="#carouselDoughnut" role="button" data-slide="prev">
+                                      <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color:#4e73df;"></span>
+                                      <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselDoughnut" role="button" data-slide="next">
+                                      <span class="carousel-control-next-icon" aria-hidden="true" style="background-color:#4e73df;"></span>
+                                      <span class="sr-only">Next</span>
+                                    </a>
+                                  </div>
+
+
+
+
+
+
+
+                               
                             </div>
                         </div>
                     </div>
@@ -1543,10 +1566,10 @@
 </script>
 
 
-<!-- Doughnut Chart script -->
+<!-- Doughnut Chart Code Snippets script -->
 <script>
 
-    var ctx = document.getElementById("doughnutChart").getContext("2d");
+    var ctx = document.getElementById("doughnutChartCodeSnippets").getContext("2d");
 
     Chart.defaults.scale.ticks.beginAtZero = true;
     Chart.defaults.global.defaultFontSize = 14;
@@ -1560,6 +1583,36 @@
                 {
                     label: "Technology Percentage",
                     data: {{ snippetData |safe }},
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 99, 132)'
+
+                    ]
+                }
+            ]
+        }
+    });
+
+</script>
+
+<!-- Doughnut Chart Answered Questions script -->
+<script>
+
+    var ctx = document.getElementById("doughnutChartAnswered").getContext("2d");
+
+    Chart.defaults.scale.ticks.beginAtZero = true;
+    Chart.defaults.global.defaultFontSize = 14;
+
+
+    var radarChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ['Yes', 'No'],
+            datasets: [
+                {
+                    label: "Technology Percentage",
+                    data: {{ answeredData |safe }},
                     fill: true,
                     backgroundColor: [
                         'rgb(54, 162, 235)',
@@ -2320,7 +2373,13 @@ function fade(opacity) {
 </script>
 
 <script>
-
+    $('#carouselDoughnut').on('slid.bs.carousel', function() {
+        if(document.getElementById('answered').classList.contains('active')){
+            document.getElementById('dougnutChartTitle').innerHTML = 'Doughnut Chart of Answered Questions'
+        }else {
+            document.getElementById('dougnutChartTitle').innerHTML = 'Doughnut Chart of Questions Containing Code Snippets'
+        }
+    });
 
 </script>
 
