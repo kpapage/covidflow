@@ -1108,9 +1108,11 @@ def index():
 
 @main.route('/get_lda')
 def get_map():
+    return render_template('bert_visualize_docs.html')
+
+@main.route('/get_lda2')
+def get_map2():
     return render_template('bert_visualize_hierarchy.html')
-
-
 @main.route('/get_dates', methods=['GET'])
 def fetch():
     covidCollection = mongo.db.questions
