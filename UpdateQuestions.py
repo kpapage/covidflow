@@ -15,8 +15,6 @@ print('Extracting Question Data')
 cluster = pymongo.MongoClient("mongodb://localhost:27017/")
 db = cluster["COVID-db"]
 collection = db["questions"]
-questions = collection.find()
-question_id = []
 
 
 options = webdriver.ChromeOptions()
@@ -26,7 +24,7 @@ driver = webdriver.Chrome(
     executable_path='chromedriver_win32/chromedriver.exe'
     , options=options)
 
-for question in questions:
+for question in collection.find(no_cursor_timeout=True).batch_size(30):
     lista = []  # [votes,comments,answers,closed,views,first_date]
     url = "https://stackoverflow.com/questions/"+question['question_id'].split("-")[2]
     try:

@@ -13,17 +13,264 @@ import re
 import math
 import openpyxl
 from geopy.geocoders import Nominatim
-from datetime import datetime
-from openpyxl.styles import Alignment
+from datetime import datetime,date,timedelta
+# from openpyxl.styles import Alignment
 import pymongo
 import pickle
 import ast
 import itertools
-from webdriver_auto_update import check_driver
+# from webdriver_auto_update import check_driver
 import requests
 import wget
 import zipfile
 import os
+# Import necessary libraries
+import os
+import re
+import pandas as pd
+# from keras import Sequential, Input, Model
+# from keras.layers import Dense, Embedding, LSTM, Bidirectional, Flatten, Dropout, Reshape
+from nltk.corpus import stopwords
+from keras.utils import pad_sequences
+from imblearn.over_sampling import ADASYN, BorderlineSMOTE
+# from sklearn.ensemble import RandomForestClassifier
+# from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, f1_score, recall_score, roc_curve, auc, roc_auc_score
+from nltk.stem import WordNetLemmatizer
+# from sklearn.neighbors import KNeighborsClassifier
+# from sklearn.svm import SVC
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+from transformers import BertTokenizer, BertModel, BertForSequenceClassification
+from xgboost import XGBClassifier
+# import transformers
+import tensorflow as tf
+from sentence_transformers import SentenceTransformer
+# import torch
+# from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
+# from torch.optim import AdamW
+# from transformers import get_linear_schedule_with_warmup
+# from torch.nn.utils import clip_grad_norm_
+# from tqdm.notebook import tqdm
+import numpy as np
+import math
+from sklearn.model_selection import StratifiedKFold
+from nltk import word_tokenize, pos_tag, ne_chunk
+
+METRICS = [
+    tf.keras.metrics.AUC(name='roc-auc'),
+    tf.keras.metrics.BinaryAccuracy(name='accuracy'),
+    tf.keras.metrics.Precision(name='precision'),
+    tf.keras.metrics.Recall(name="recall")
+          ]
+
+def create_embeddings_sentence_transformers(model, corpus):
+
+    model = SentenceTransformer(model)
+
+
+    embdeddings = model.encode(corpus, show_progress_bar=True)
+
+    return embdeddings
+
+def create_embeddings_bert(model, corpus):
+
+    # Create a BERT tokenizer
+    tokenizer = BertTokenizer.from_pretrained(model)
+
+    # Tokenize the corpus using BERT tokenizer and add special tokens
+    tokenized_corpus = [tokenizer.encode(sent, add_special_tokens=True, max_length=512, truncation=True) for sent in corpus]
+
+    # Pad tokenized corpus to a fixed length of 512 tokens
+    X = pad_sequences(tokenized_corpus, maxlen=512, dtype='int32', padding='post', truncating='post', value=0)
+
+    return X
+
+def encode_BERT_2(model, corpus):
+
+    tokenizer = BertTokenizer.from_pretrained(model)
+    encoded_dict = tokenizer.batch_encode_plus(corpus, add_special_tokens=True, max_length=128, padding='max_length',
+                                               return_attention_mask=True, truncation=True, return_tensors='pt')
+    input_ids = encoded_dict['input_ids']
+    attention_masks = encoded_dict['attention_mask']
+    return input_ids, attention_masks
+
+
+def create_corpus2(X):
+    corpus = []
+    for i in range(0, len(X)):
+        review = re.sub(r'[^a-zA-Z0-9\s]', '', X[i])
+        review = re.sub(r'http\S+', '', review)
+
+        review = review.lower()
+        words = word_tokenize(review)
+        tagged = pos_tag(words)
+        chunked = ne_chunk(tagged)
+        filtered = [tup[0] for tup in tagged if
+                    (tup[1].startswith("N") or tup[1].startswith("V") or tup[1].startswith("J"))]
+        corpus.append(' '.join(filtered))
+
+    return corpus
+
+
+def create_corpus(X):
+
+    # Create a corpus
+    corpus = []
+    for i in range(0, len(X)):
+        review = re.sub(r'[^a-zA-Z0-9\s]', '', X[i])
+        review = re.sub(r'http\S+', '', review)
+
+        review = review.lower()
+        review = review.split()
+        ps = WordNetLemmatizer()
+        review = [ps.lemmatize(word) for word in review if not word in set(stopwords.words('english'))]
+        review = ' '.join(review)
+        corpus.append(review)
+
+    return corpus
+
+def load_prepare_data(dir, test_size=0.2):
+
+    # Importing the dataset
+    df = pd.read_excel(dir, engine='openpyxl')
+    #Convert the columns to strings
+    df['Title'] = df['Title'].values.astype(str)
+    df['Body'] = df['Body'].values.astype(str)
+
+    # extract the title and body columns as the input data and combine them into a single column
+    X = df['Title'] + ' ' + df['Body']
+
+    # extract the class column as the target data
+    y = df["Filter"].values
+
+    # Split the data into training and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+
+    #X_train as ndarray
+    X_train = X_train.to_numpy()
+    #X_test as ndarray
+    X_test = X_test.to_numpy()
+
+    train_corpus = create_corpus2(X_train)
+    test_corpus = create_corpus2(X_test)
+
+    # Create embeddings using BERT
+   # X_train = create_embeddings_bert('bert-base-uncased', train_corpus)
+    #X_test = create_embeddings_bert('bert-base-uncased', test_corpus)
+
+    # Create embeddings using sentence_transformers
+    X_train = create_embeddings_sentence_transformers('all-mpnet-base-v2', train_corpus)
+    X_test = create_embeddings_sentence_transformers('all-mpnet-base-v2', test_corpus)
+
+    # Create embeddings using BERT_2
+    #train_input_ids, train_att_masks = encode_BERT_2('bert-base-uncased', train_corpus)
+    #test_input_ids, test_att_masks = encode_BERT_2('bert-base-uncased', test_corpus)
+
+
+
+    # Oversample the minority class using Borderline-SMOTE
+    #b_smote = BorderlineSMOTE(random_state=42, n_jobs=-1)
+    #X_train_resampled, y_train_resampled = b_smote.fit_resample(X_train, y_train)
+
+    # Oversample the minority class using ADASYN
+    adasyn = ADASYN(random_state=42, n_jobs=-1)
+    X_train_resampled, y_train_resampled = adasyn.fit_resample(X_train, y_train)
+
+
+
+    # Split the oversampled data into training and test sets
+    return X_train_resampled, X_test, y_train_resampled, y_test
+
+
+def print_metrics(y_test, y_pred):
+
+    print("Accuracy: ", accuracy_score(y_test, y_pred))
+    print("Precision: ", precision_score(y_test, y_pred))
+    print("Recall: ", recall_score(y_test, y_pred))
+    print("F1 Score: ", f1_score(y_test, y_pred))
+
+def show_roc_curve(y_test, y_pred):
+
+    fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+    plt.plot(fpr, tpr, label='AUC-ROC = %0.2f' % auc(fpr, tpr))
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('AUC-ROC Curve')
+    plt.legend()
+    plt.show()
+
+def show_conf_matrix(y_test, y_pred):
+    cm = confusion_matrix(y_test, y_pred, normalize='true')
+    sns.heatmap(cm, annot=True)
+    plt.title('Confusion matrix')
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.show()
+
+
+
+
+def create_classifier():
+    n_jobs = os.cpu_count() - 1
+    if n_jobs is None:
+        n_jobs = -1
+
+    # Load and preprocess the data
+    X_train, X_test, y_train, y_test = load_prepare_data('GroundTruth.xlsx', test_size=0.25)
+
+    n_splits = 10
+    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+
+    # Hold the metric scores for each fold
+    acc_scores = []
+    prec_scores = []
+    rec_scores = []
+    f1_scores = []
+    auc_scores = []
+
+    # X should be equal to X_train plus X_test
+    X = np.concatenate((X_train, X_test), axis=0)
+    y = np.concatenate((y_train, y_test), axis=0)
+
+    for fold, (train_index, test_index) in enumerate(skf.split(X, y)):
+        print(f"Fold {fold + 1}")
+
+        # Split the data into training and test sets for this fold
+        X_train, X_test = X[train_index], X[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+
+        # Train and evaluate the model for this fold
+        model = XGBClassifier(n_estimators=1000, max_depth=10, n_jobs=n_jobs)
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        precision = precision_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred)
+        auc = roc_auc_score(y_test, y_pred)
+
+        # Save the scores for this fold
+        acc_scores.append(accuracy)
+        prec_scores.append(precision)
+        rec_scores.append(recall)
+        f1_scores.append(f1)
+        auc_scores.append(auc)
+
+        # Print the scores for this fold
+        print_metrics(y_test, y_pred)
+
+    # Print the average scores across all folds
+    print(f"Average accuracy: {np.mean(acc_scores)}")
+    print(f"Average precision: {np.mean(prec_scores)}")
+    print(f"Average recall: {np.mean(rec_scores)}")
+    print(f"Average F1 score: {np.mean(f1_scores)}")
+    print(f"Average AUC score: {np.mean(auc_scores)}")
+
+    show_conf_matrix(y_test, y_pred)
+
 url = 'https://chromedriver.storage.googleapis.com/LATEST_RELEASE'
 response = requests.get(url)
 version_number = response.text
@@ -39,12 +286,7 @@ with zipfile.ZipFile(latest_driver_zip, 'r') as zip_ref:
     zip_ref.extractall()  # you can specify the destination folder path here
 # delete the zip file downloaded above
 os.remove(latest_driver_zip)
-with (open("xgb_model.pkl", "rb")) as openfile:
-    while True:
-        try:
-            pickle.load(openfile)
-        except EOFError:
-            break
+classifier=pd.read_pickle("xgb_model.pkl")
 options = webdriver.ChromeOptions()
 options.add_argument("user-data-dir=C:\\Users\giou2\\AppData\\Local\\Google\\Chrome\\User Data")
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -52,17 +294,16 @@ driver = webdriver.Chrome(
     executable_path='chromedriver.exe'
     , options=options)
 
-
 print('Extracting Question Data')
 
-tags = ["coronavirus", "corona-virus", "2019-ncov", "sars-cov",]
-
-searchdate = "2022-11-1..2023-03-17"
+labels = ['covid*', "coronavirus", "corona-virus", "2019-ncov", "sars-cov"]
+with open("searchdate.txt") as file:
+    searchdate = file.readline()
 
 list_of_dataframes = []
-for tag in tags:
-    print("Extracting question data about {}".format(tag))
-    driver.get("https://stackoverflow.com/search?page=1&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(tag, searchdate,'is','question'))
+for label in labels:
+    print("Extracting question data about {}".format(label))
+    driver.get("https://stackoverflow.com/search?page=1&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(label, searchdate,'is','question'))
     results_text = driver.find_element(By.CSS_SELECTOR, ".flex--item.fl1.fs-body3.mr12").text
     numberOfResults = float(re.sub("[^0-9]", "", results_text))
     pages = math.ceil(numberOfResults / 15)
@@ -70,7 +311,7 @@ for tag in tags:
     covered_ids = []
     processed_ids = []
     for i in range(pages):
-        driver.get("https://stackoverflow.com/search?page={}&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(i+1, tag, searchdate,'is','question'))
+        driver.get("https://stackoverflow.com/search?page={}&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(i+1, label, searchdate,'is','question'))
         try:
             lists = driver.find_elements(By.XPATH, '//*[contains(@id, "question-summary")]')
             for listitem in lists:
@@ -268,19 +509,17 @@ for tag in tags:
                 else:
                     one_tag = one_tag + " " + separated_tag
             questions[i][0] = one_tag
-            print(questions[i])
             processed_ids.append(i)
     final = pd.DataFrame.from_dict(questions, orient='index')
-    colnames = ['Id','Tags','Timestamp','Votes','Answers','User ID','Title','Views','First Answer','Code','Comments',
-                'Closed','Body','Location','Deleted','Latitude','Longitude']
-    final.columns = colnames
+    final.reset_index(inplace=True)
     list_of_dataframes.append(final)
-
-
-    print('Completed data extraction for {}'.format(tag))
+    print('Completed data extraction for {}'.format(label))
 
 df_final = pd.concat(list_of_dataframes, ignore_index = True)
+colnames = ['Id', 'Tags', 'Timestamp', 'Votes', 'Answers', 'User ID', 'Title', 'Views', 'First Answer', 'Code','Comments', 'Closed', 'Body', 'Location', 'Deleted', 'Latitude', 'Longitude']
+df_final.columns = colnames
 df_final = df_final.drop_duplicates(subset=['Id'])
+print('Constructed Final Dataframe')
 title = []
 question_id = []
 tags = []
@@ -293,15 +532,31 @@ body = []
 location = []
 latitude = []
 longitude = []
-tag = []
 code_snippet = []
 comments = []
 answers = []
 closed = []
 deleted = []
 tag_combinations = []
+
+# Convert the columns to strings
+df_final['Title'] = df_final['Title'].values.astype(str)
+df_final['Body'] = df_final['Body'].values.astype(str)
+
+# extract the title and body columns as the input data and combine them into a single column
+X = df_final['Title'] + ' ' + df_final['Body']
+
+corpus_X = create_corpus2(X)
+
+X_embed = create_embeddings_sentence_transformers('all-mpnet-base-v2', corpus_X)
+
+pred = classifier.predict(X_embed)
+pred = pd.DataFrame(pred)
+df_final['Filter'] = pred
+print('Completed Filtering')
+# extract the class column as the target data
+# y = df["Filter"].values
 for index, row in df_final.iterrows():
-    #edo prepei na ginei i problepsi kai an to label einai 1 na to bazei mesa allios oxi
     if row['Filter'] == 1:
         title.append(row['Title'])
         question_id.append(row['Id'])
@@ -313,92 +568,85 @@ for index, row in df_final.iterrows():
         location.append(row['Location'])
         latitude.append(row['Latitude'])
         longitude.append(row['Longitude'])
-        tag.append(row['Tags'])
+        tags.append(row['Tags'])
         code_snippet.append(row['Code'])
         comments.append(row['Comments'])
         answers.append(row['Answers'])
         closed.append(row['Closed'])
         deleted.append(row['Deleted'])
         first_answers.append(row['First Answer'])
-        if tags[0] == '[':
-            tag_list = ast.literal_eval(tags)
-            tag_list = [n.strip() for n in tag_list]
-        else:
-            tag_list = tags.split()
-        for i in range(0, len(tag_list)):
-            if tag_list[i] == "python-3.x" or tag_list[i] == "python-2.7" or tag_list[i] == "python-3.6" or \
-                    tag_list[i] == "python-3.7" or tag_list[i] == "python-3.8":
-                tag_list[i] = "python"
-            elif tag_list[i] == "angular5" or tag_list[i] == "angular9" or tag_list[i] == "angular10":
-                tag_list[i] = "angular"
-            elif tag_list[i] == "swiftui" or tag_list[i] == "swift2":
-                tag_list[i] = "swift"
-            elif tag_list[i] == "sql-server-2008" or tag_list[i] == "sql-server-2005" or tag_list[
-                i] == "sql-server-2012":
-                tag_list[i] = "sql-server"
-            elif tag_list[i] == "ios7" or tag_list[i] == "ios13":
-                tag_list[i] = "ios"
-            elif tag_list[i] == "vue-chartjs" or tag_list[i] == "vuejs2" or tag_list[i] == "vue-component" or \
-                    tag_list[i] == "vue-router" or tag_list[i] == "vue-tables-2" or tag_list[i] == "vuetify.js" or \
-                    tag_list[i] == "vuex":
-                tag_list[i] = "vue.js"
-            elif tag_list[i] == "tensorflow2.0" or tag_list[i] == "tensorflow2.x":
-                tag_list[i] = "tensorflow"
-            elif tag_list[i] == "postgresql-9.5" or tag_list[i] == "postgresql-9.6":
-                tag_list[i] = "postgresql"
-            elif tag_list[i] == "xcode6" or tag_list[i] == "xcode11":
-                tag_list[i] = "xcode"
-            elif tag_list[i] == "ruby-on-rails-5" or tag_list[i] == "ruby-on-rails-4" or tag_list[
-                i] == "ruby-on-rails-3":
-                tag_list[i] = "ruby-on-rails"
-            elif tag_list[i] == "laravel-5":
-                tag_list[i] = "laravel"
-            elif tag_list[i] == "windows-10":
-                tag_list[i] = "windows"
-            elif tag_list[i] == "visual-studio-2015" or tag_list[i] == "visual-studio-2019":
-                tag_list[i] = "visual-studio"
-            elif tag_list[i] == "ionic5" or tag_list[i] == "ionic2" or tag_list[i] == "ionic4":
-                tag_list[i] = "ionic-framework"
-            elif tag_list[i] == "f#-3.0":
-                tag_list[i] = "f#"
-            elif tag_list[i] == "hadoop3":
-                tag_list[i] = "hadoop"
-            elif tag_list[i] == "ubuntu-20.04" or tag_list[i] == "ubuntu-14.04":
-                tag_list[i] = "ubuntu"
-            elif tag_list[i] == "fortran90":
-                tag_list[i] = "fortran"
-            elif tag_list[i] == "drupal-7":
-                tag_list[i] = "drupal"
-            elif tag_list[i] == "spring-boot":
-                tag_list[i] = "spring"
-            elif tag_list[i] == "gitlab-ci":
-                tag_list[i] = "gitlab"
-            elif tag_list[i] == "azure-devops":
-                tag_list[i] = "azure"
-            elif tag_list[i] == "unity3d":
-                tag_list[i] = "unity"
-            elif tag_list[i] == "unreal-engine4":
-                tag_list[i] = "unreal-engine"
-            elif tag_list[i] == "sql-insert" or tag_list[i] == "sql-like":
-                tag_list[i] = "sql"
-            elif tag_list[i] == "pandas-bokeh" or tag_list[i] == "pandas-groupby" or tag_list[
-                i] == "pandas-resample":
-                tag_list[i] = "pandas"
-            elif tag_list[i] == "html-agility-pack" or tag_list[i] == "html-parsing" or tag_list[
-                i] == "html-table" or tag_list[i] == "html-webpack-plugin":
-                tag_list[i] = "html"
+        tag_list = row['Tags']
+        tag_list = tag_list[1:]
+        to_combine = []
+        for tag in tag_list.split(' '):
+            if tag == "python-3.x" or tag == "python-2.7" or tag == "python-3.6" or \
+                    tag == "python-3.7" or tag == "python-3.8":
+                tag = "python"
+            elif tag == "angular5" or tag == "angular9" or tag == "angular10":
+                tag = "angular"
+            elif tag == "swiftui" or tag == "swift2":
+                tag = "swift"
+            elif tag == "sql-server-2008" or tag == "sql-server-2005" or tag == "sql-server-2012":
+                tag = "sql-server"
+            elif tag == "ios7" or tag == "ios13":
+                tag = "ios"
+            elif tag == "vue-chartjs" or tag == "vuejs2" or tag == "vue-component" or \
+                    tag == "vue-router" or tag == "vue-tables-2" or tag == "vuetify.js" or \
+                    tag == "vuex":
+                tag = "vue.js"
+            elif tag == "tensorflow2.0" or tag == "tensorflow2.x":
+                tag = "tensorflow"
+            elif tag == "postgresql-9.5" or tag == "postgresql-9.6":
+                tag = "postgresql"
+            elif tag == "xcode6" or tag == "xcode11":
+                tag = "xcode"
+            elif tag == "ruby-on-rails-5" or tag == "ruby-on-rails-4" or tag == "ruby-on-rails-3":
+                tag = "ruby-on-rails"
+            elif tag == "laravel-5":
+                tag = "laravel"
+            elif tag == "windows-10":
+                tag = "windows"
+            elif tag == "visual-studio-2015" or tag == "visual-studio-2019":
+                tag = "visual-studio"
+            elif tag == "ionic5" or tag == "ionic2" or tag == "ionic4":
+                tag = "ionic-framework"
+            elif tag == "f#-3.0":
+                tag = "f#"
+            elif tag == "hadoop3":
+                tag = "hadoop"
+            elif tag == "ubuntu-20.04" or tag == "ubuntu-14.04":
+                tag = "ubuntu"
+            elif tag == "fortran90":
+                tag = "fortran"
+            elif tag == "drupal-7":
+                tag = "drupal"
+            elif tag == "spring-boot":
+                tag = "spring"
+            elif tag == "gitlab-ci":
+                tag = "gitlab"
+            elif tag == "azure-devops":
+                tag = "azure"
+            elif tag == "unity3d":
+                tag = "unity"
+            elif tag == "unreal-engine4":
+                tag = "unreal-engine"
+            elif tag == "sql-insert" or tag == "sql-like":
+                tag = "sql"
+            elif tag == "pandas-bokeh" or tag == "pandas-groupby" or tag == "pandas-resample":
+                tag = "pandas"
+            elif tag == "html-agility-pack" or tag == "html-parsing" or tag == "html-table" or tag == "html-webpack-plugin":
+                tag = "html"
             else:
-                tag_list[i] = tag_list[i]
-
-        combinations = list(itertools.combinations(tag_list, 2))
+                tag = tag
+            to_combine.append(tag)
+        combinations = list(itertools.combinations(to_combine, 2))
         tag_combinations.append(combinations)
-
+print('Completed Combinations Extraction')
 cluster = pymongo.MongoClient("mongodb://localhost:27017/")
 db = cluster["COVID-db"]
 collection = db["questions"]
 last = db.questions.find().sort('_id', pymongo.DESCENDING).limit(1)[0]['_id'] + 1
 for i in range(len(title)):
-    print(last + i)
     db.questions.insert_one({
 
         "_id": int(last + i),
@@ -423,7 +671,7 @@ for i in range(len(title)):
 
         "longitude": longitude[i],
 
-        "tag": tag[i],
+        "tag": tags[i],
 
         "code_snippet": code_snippet[i],
 
@@ -439,7 +687,7 @@ for i in range(len(title)):
 
         "deleted": deleted[i]
     })
-    if not combinations:
+    if not tag_combinations:
         collection.update_one(
             {"question_id": question_id[i]},
             {"$set":
@@ -453,8 +701,15 @@ for i in range(len(title)):
             {"question_id": question_id[i]},
             {"$set":
                 {
-                    "tag_combinations": combinations
+                    "tag_combinations": tag_combinations[i]
                 }
             }
         )
-
+print('Completed Database Insertion')
+today = date.today()
+d = timedelta(days=7)
+week = today + d
+newsearchdate = str(today) + '...' + str(week)
+print(newsearchdate)
+with open('searchdate.txt', 'w') as f:
+    f.write(newsearchdate)
