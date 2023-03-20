@@ -9,6 +9,7 @@ import math
 import openpyxl
 from geopy.geocoders import Nominatim
 from datetime import datetime
+from selenium.webdriver.common.by import By
 
 print('Extracting Question Data')
 cluster = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -25,19 +26,18 @@ driver = webdriver.Chrome(
     , options=options)
 
 for question in questions:
-    if question['first_answer'] == 'No answers' or question['first_answer'] == 'Not':
         url = "https://stackoverflow.com/questions/" + question['question_id'].split("-")[2]
         try:
             driver.get(url)
             question_text = driver.find_element_by_id('question')
             try:
-                answers = driver.find_elements_by_xpath("//div[contains(@class, 'answercell')]")
-                time.sleep(2)
+                answers = driver.find_elements(By.XPATH,
+                                               "//div[contains(@id, 'answers')]//div[contains(@class, 'answercell')]")
                 timestamps = []
                 for answer in answers:
-                    timestamp = answer.find_element_by_xpath("//span[contains(@class, 'relativetime')]")
+                    timestamp = answer.find_element(By.XPATH,
+                                                    "//div[contains(@class, 'answercell')]//span[contains(@class, 'relativetime')]")
                     timestamps.append(timestamp.get_attribute('title'))
-                print(timestamps)
                 if not timestamps:
                     collection.update_one(
                         {"question_id": question},
