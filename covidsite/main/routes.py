@@ -97,12 +97,12 @@ def index():
         else:
             comments_distribution.update({int(question['comments']) : 1})
             
-        answers.append(question['answers'])
+        answers.append(int(question['answers']))
         if question['answers'] in answers_distribution.keys():
             answers_distribution[question['answers']] += 1
         else:
             answers_distribution.update({int(question['answers']) : 1})
-        if question['answers'] > 0:
+        if int(question['answers']) > 0:
             answered_questions += 1
         else:
             unanswered_questions += 1
@@ -1217,12 +1217,12 @@ def fetch():
         else:
             comments_distribution.update({int(question['comments']) : 1})
             
-        answers.append(question['answers'])
+        answers.append(int(question['answers']))
         if question['answers'] in answers_distribution.keys():
             answers_distribution[question['answers']] += 1
         else:
             answers_distribution.update({int(question['answers']) : 1})
-        if question['answers'] > 0:
+        if int(question['answers']) > 0:
             answered_questions += 1
         else:
             unanswered_questions += 1
