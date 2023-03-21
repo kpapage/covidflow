@@ -564,6 +564,7 @@
                                         <option value="Votes">Votes</option>
                                         <option value="Answers">Answers</option>
                                         <option value="Comments">Comments</option>
+                                        <option value="Views">Views</option>
                                     </select>
                                 </div>
 
@@ -880,10 +881,15 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_languages_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_languages_comments | safe }}
+            }
+            else{
+                var name = "Views";
+                topTen =
+                {{ top_10_languages_views | safe }}
             }
         } else if (selectClass === "Web Frameworks") {
             if (select === "Votes") {
@@ -894,10 +900,14 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_web_frameworks_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_web_frameworks_comments | safe }}
+            } else{
+                var name = "Views";
+                topTen =
+                {{ top_10_web_frameworks_views | safe }}
             }
         } else if (selectClass === "Big Data - ML") {
             if (select === "Votes") {
@@ -908,10 +918,14 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_big_data_ml_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_big_data_ml_comments | safe }}
+            } else{
+                var name = "Views";
+                topTen =
+                {{ top_10_big_data_ml_views | safe }}
             }
         } else if (selectClass === "Databases") {
             if (select === "Votes") {
@@ -922,10 +936,14 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_databases_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_databases_comments | safe }}
+            } else{
+                var name = "Views";
+                topTen =
+                {{ top_10_databases_views | safe }}
             }
         } else if (selectClass === "Platforms") {
             if (select === "Votes") {
@@ -936,10 +954,14 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_platforms_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_platforms_comments | safe }}
+            } else{
+                var name = "Views";
+                topTen =
+                {{ top_10_platforms_views | safe }}
             }
         } else if (selectClass === "Collaboration Tools") {
             if (select === "Votes") {
@@ -950,10 +972,14 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_collaboration_tools_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_collaboration_tools_comments | safe }}
+            } else{
+                var name = "Views";
+                topTen =
+                {{ top_10_collaboration_tools_views | safe }}
             }
         } else if (selectClass === "Developer Tools") {
             if (select === "Votes") {
@@ -964,10 +990,14 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_dev_tools_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_dev_tools_comments | safe }}
+            } else{
+                var name = "Views";
+                topTen =
+                {{ top_10_dev_tools_views | safe }}
             }
         } else if (selectClass === "All") {
             if (select === "Votes") {
@@ -978,14 +1008,17 @@
                 var name = "Answers";
                 topTen =
                 {{ top_10_sorted_ids_and_answers | safe }}
-            } else {
+            } else if (select === "Comments") {
                 var name = "Comments";
                 topTen =
                 {{ top_10_sorted_ids_and_comments | safe }}
+            }else{
+                var name = "Views";
+                topTen =
+                {{ top_10_sorted_ids_and_views | safe }}
             }
+
         }
-
-
         var tbl = document.getElementById('topTenTable');
 
         var tblHead = document.createElement("thead");
@@ -1029,7 +1062,7 @@
             if (selectClass === "All") {
                 var linkText = document.createTextNode(value[1]);
             } else {
-                var linkText = document.createTextNode(value[3]);
+                var linkText = document.createTextNode(value[4]);
             }
             link.appendChild(linkText)
 
@@ -1045,11 +1078,12 @@
                     var cellText3 = document.createTextNode(value [0]);
                 } else if (select === "Answers") {
                     var cellText3 = document.createTextNode(value [1]);
-                } else {
+                } else if (select === "Comments") {
                     var cellText3 = document.createTextNode(value [2]);
+                } else  {
+                    var cellText3 = document.createTextNode(value [3]);
                 }
             }
-
             cell3.appendChild(cellText3);
             row.appendChild(cell3);
 

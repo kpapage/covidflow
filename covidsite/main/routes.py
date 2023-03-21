@@ -581,6 +581,7 @@ def index():
         location_name.append(key)
         location_question.append(value)
 
+
     ############################
     sorted_language_votes = dict(sorted(languages.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_languages_votes = dict(islice(sorted_language_votes.items(), 10))
