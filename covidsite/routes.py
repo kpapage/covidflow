@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
-
+from flask import Flask
 from covidsite.extensions import mongo
-
+from pymongo import MongoClient
 from itertools import islice, combinations
 
 from collections import Counter
@@ -16,21 +16,21 @@ import numpy as np
 
 from operator import itemgetter
 
-main = Blueprint('main', __name__)
+app = Flask(__name__)
 
 
-@main.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    covidCollection = mongo.db.questions
+    client = MongoClient('localhost',27017)
+    db = client['COVID-db']
+    covidCollection = db.questions
     questions = covidCollection.find()  # load questions from collection
     all_questions = list(questions)
     closed_questions = list([q for q in all_questions if q['closed'] == 1])
     deleted_questions = list([q for q in all_questions if q['deleted'] == 1])
     questions = list([q for q in all_questions if q['closed'] == 0 and q['deleted'] == 0])
 
-
-
-    techCollection = mongo.db.technologies_list
+    techCollection = db.technologies_list
     technologies = techCollection.find()
     users = len(covidCollection.distinct('owner_id'))
     question_number = len(covidCollection.distinct('_id'))
@@ -1143,16 +1143,18 @@ def index():
                            )
 
 
-@main.route('/get_lda')
+@app.route('/get_lda')
 def get_map():
     return render_template('bert_visualize_docs.html')
 
-@main.route('/get_lda2')
+@app.route('/get_lda2')
 def get_map2():
     return render_template('bert_visualize_hierarchy.html')
-@main.route('/get_dates', methods=['GET'])
+@app.route('/get_dates', methods=['GET'])
 def fetch():
-    covidCollection = mongo.db.questions
+    client = MongoClient('localhost', 27017)
+    db = client['COVID-db']
+    covidCollection = db.questions
     date_from = request.args.get('dateFrom')
     date_to = request.args.get('dateTo')
     closed = int(request.args.get('inclClosed'))
@@ -1171,7 +1173,7 @@ def fetch():
     
     questions = covidCollection.find(query)  #load questions from collection
     
-    techCollection = mongo.db.technologies_list
+    techCollection = db.technologies_list
     technologies = techCollection.find()
     users = len(questions.distinct('owner_id'))
     question_number = len(covidCollection.distinct('_id'))
@@ -2301,3 +2303,6 @@ def fetch():
                             sorted_views_distribution_values = sorted_views_distribution_values,
                             answeredData = answeredData
                            )
+
+if __name__ == "__main__":
+    app.run(debug=True)
