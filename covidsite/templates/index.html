@@ -673,6 +673,33 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-4 mb-4">
+
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                 id="eighthChart">
+                                <h6 class="m-0 font-weight-bold text-primary">Top 10 Weird Tag Combos
+                                    <div class="tooltip2"><i class="fas fa-info-circle"></i>
+                                        <span class="tooltiptext"> Top 10 users based on the number of COVID-19 SSD
+                                         questions they asked</span>
+                                    </div>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="topTableUsers">
+                                    <table class="table table-striped" id="topTenWeirdTagCombos" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th width="5%" scope="col">#</th>
+                                            <th width="85%" scope="col">Tag Combo</th>
+                                            <th width="10%" scope="col">Inclusion Index</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <!-- Content Column -->
@@ -792,6 +819,39 @@
 
         var cell2 = document.createElement("td");
         cell2.appendChild(link);
+        row.appendChild(cell2);
+
+        var cell3 = document.createElement("td");
+        var cellText3 = document.createTextNode(value);
+        cell3.appendChild(cellText3);
+        row.appendChild(cell3);
+
+        tblBody.appendChild(row);
+        tbl.appendChild(tblBody);
+
+        count++;
+    }
+</script>
+
+<script>
+    'use strict'
+    var tbl = document.getElementById('topTenWeirdTagCombos');
+    var tblBody = document.createElement("tbody");
+
+    var topTenUsers =
+    {{ top_10_inclusion_index | safe }}
+    var count = 1;
+    for (const [key, value] of Object.entries(topTenUsers)) {
+        var row = document.createElement("tr");
+
+        var cell1 = document.createElement("th");
+        var cellText1 = document.createTextNode(count);
+        cell1.appendChild(cellText1);
+        row.appendChild(cell1);
+
+        var cell2 = document.createElement("td");
+        var cellText2 = document.createTextNode(key);
+        cell2.appendChild(cellText2);
         row.appendChild(cell2);
 
         var cell3 = document.createElement("td");

@@ -75,6 +75,7 @@ def index():
     votes_distribution = {}
     answers_distribution = {}
     views_distribution = {}
+    tag_combo_frequencies = {}
     answered_questions = 0
     unanswered_questions = 0
 
@@ -117,6 +118,20 @@ def index():
             
         views_text = str((question['views'])).replace(",", "")
         views = re.findall('[0-9]+', views_text)
+        
+        try:
+            if question['tag_combinations'] != 'No tag combinations':
+                if len(question['tag_combinations']) < 1000:
+                    for tag_combo in question['tag_combinations']:
+                        tag_combo_string = ' '.join(tag_combo)
+                        if tag_combo_string == 'vue.js v-data-table':
+                            print(question['_id'])
+                        if not tag_combo_string in tag_combo_frequencies:
+                            tag_combo_frequencies[tag_combo_string] = 1
+                        else:
+                            tag_combo_frequencies[tag_combo_string] += 1    
+        except:
+            print('not found')
         
         if len(views) != 0:
             views_integer = int(views[0])
@@ -1061,6 +1076,25 @@ def index():
     list_collaboration_tools_tag_link_matrix = np.array2string(collaborations_tools_tag_link_matrix, separator=",")
     list_developer_tools_tag_link_matrix = np.array2string(developer_tools_tag_link_matrix, separator=",")
 
+    inclusion_index_dict = {}
+    for key,value in tag_combo_frequencies.items():
+        tags = key.split(" ")
+        try:
+            tag_1 = int(sorted_tags_and_values[tags[0]])
+            tag_2 = int(sorted_tags_and_values[tags[1]])
+            tag_combo_inclusion_index = value/min(tag_1,tag_2)
+            inclusion_index_dict.update({key : tag_combo_inclusion_index})
+        except:
+            print('tag not found')
+        
+    inclusion_index_dict = dict(sorted(inclusion_index_dict.items(), key=lambda x:x[1], reverse=True))
+    top_10_inclusion_index = dict(islice(inclusion_index_dict.items(), 10))
+    # print(top_10_inclusion_index)
+    # print(tag_combo_frequencies['vue.js v-data-table'])
+    # print(sorted_tags_and_values['vue.js'])
+    # print(sorted_tags_and_values['v-data-table'])
+    
+    
     return render_template('index.html', questions=questions, question_count=question_count, users=users, labels=labels,
                             values=values,
                             list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
@@ -1139,7 +1173,7 @@ def index():
                             sorted_votes_distribution_values = sorted_votes_distribution_values,
                             sorted_views_distribution_labels = sorted_views_distribution_labels,
                             sorted_views_distribution_values = sorted_views_distribution_values,
-                            answeredData = answeredData
+                            answeredData = answeredData, top_10_inclusion_index = top_10_inclusion_index
                            )
 
 
