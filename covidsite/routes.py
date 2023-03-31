@@ -1094,7 +1094,9 @@ def index():
     # print(tag_combo_frequencies['vue.js v-data-table'])
     # print(sorted_tags_and_values['vue.js'])
     # print(sorted_tags_and_values['v-data-table'])
-    
+
+
+
     
     return render_template('index.html', questions=questions, question_count=question_count, users=users, labels=labels,
                             values=values,
@@ -2287,7 +2289,9 @@ def fetch():
     inclusion_index_dict = dict(sorted(inclusion_index_dict.items(), key=lambda x: x[1], reverse=True))
     top_10_inclusion_index = dict(islice(inclusion_index_dict.items(), 10))
 
-    return render_template('index.html', questions=questions, question_count=question_count, users=users, labels=labels,
+
+
+    return render_template('index.html',  questions=questions, question_count=question_count, users=users, labels=labels,
                            values=values,
                            list_of_tags_and_values=list_of_tags_and_values, barChartLabels=barChartLabels,
                            barChartValues=barChartValues, latLngInt=latLngInt, latitudes=latitudes,
