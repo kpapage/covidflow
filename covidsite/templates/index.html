@@ -620,9 +620,12 @@
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="ninthChart">
                                 <h6 class="m-0 font-weight-bold text-primary">Topics Derived from Questions
                                     <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                        <span class="tooltiptext">This figure contains the topics produced from the application of
-                                            a topic modelling algorithm on the question texts. The larger the circle, the most discussed
-                                            is a topic while the distances between topics indicate how similar (or dissimilar) they are.
+                                        <span class="tooltiptext">These figures contain the topics produced from the application of
+                                            the BertTopic and LDA algorithms on the question titles. In the first figure,
+                                            the points (which represent questions) are projected in a 2D space and showcase
+                                            the different communities (or topics).
+                                            In the third figure, the larger the circle, the most discussedis a topic while
+                                            the distances between topics indicate how similar (or dissimilar) they are.
                                         </span>
                                     </div>
                                 </h6>
@@ -632,6 +635,8 @@
                                         src="/get_lda"></iframe>
                                 <iframe style="width: 100%;height: 700px; " frameborder="0"
                                         src="/get_lda2"></iframe>
+                                <iframe style="width: 100%;height: 700px; " frameborder="0"
+                                        src="/get_lda3"></iframe>
                             </div>
                         </div>
                     </div>
@@ -706,9 +711,9 @@
                                         id="eighthChart">
                                     <h6 class="m-0 font-weight-bold text-primary">Median time elapsed until the first answer per Competence Group
                                         <div class="tooltip2"><i class="fas fa-info-circle"></i>
-                                            <span class="tooltiptext"> These are the top 10 pairs of tags appearing together in question based on
-                                            the Inclusion Index. The inclusion index is a metri that is calculated by dividing the total co-occurences
-                                            of two tags with the minimum frequency of each tag. It has a range of [0,1].</span>
+                                            <span class="tooltiptext"> This table contains the median time elapsed for a question to receive a first answer.
+                                            The higher the time, the more "difficult" a question can be considered. The median times are presented for all questions
+                                            and for each Competence Group.</span>
                                         </div>
                                     </h6>
                                 </div>
