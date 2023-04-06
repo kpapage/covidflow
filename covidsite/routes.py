@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask import Flask
 from covidsite.extensions import mongo
+
 from pymongo import MongoClient
 from itertools import islice, combinations
 
@@ -15,6 +16,8 @@ from datetime import timezone
 import numpy as np
 
 from operator import itemgetter
+
+from statistics import median
 
 app = Flask(__name__)
 
@@ -131,7 +134,7 @@ def index():
                         else:
                             tag_combo_frequencies[tag_combo_string] += 1    
         except:
-            print('not found')
+            print('')
         
         if len(views) != 0:
             views_integer = int(views[0])
@@ -300,6 +303,57 @@ def index():
     collaboration_tools_sorted_elapsed_time_data_list = sorted(collaboration_tools_elapsed_time_data_list, key=itemgetter(0))
     dev_tools_sorted_elapsed_time_data_list = sorted(dev_tools_elapsed_time_data_list, key=itemgetter(0))
     
+    elapsed_times_all = []
+    elapsed_times_languages = []
+    elapsed_times_web_frameworks = []
+    elapsed_times_big_data_ml = []
+    elapsed_times_databases = []
+    elapsed_times_platforms = []
+    elapsed_times_colab_tools = []
+    elapsed_times_dev_tools = []
+    
+    for time_list in sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_all.append(time_list[0])
+    
+    for time_list in languages_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_languages.append(time_list[0])
+    
+    for time_list in web_frameworks_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_web_frameworks.append(time_list[0])
+    
+    for time_list in big_data_ml_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_big_data_ml.append(time_list[0])        
+    
+    for time_list in databases_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_databases.append(time_list[0])
+    
+    for time_list in platforms_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_platforms.append(time_list[0])
+    
+    for time_list in collaboration_tools_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_colab_tools.append(time_list[0])
+            
+    for time_list in dev_tools_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_dev_tools.append(time_list[0])
+    
+    median_times_dict = {
+        "All" : median(elapsed_times_all),
+        "Languages" : median(elapsed_times_languages),
+        "Web Frameworks" : median(elapsed_times_web_frameworks),
+        "Big Data - ML" : median(elapsed_times_big_data_ml),
+        "Databases" : median(elapsed_times_databases),
+        "Platforms" : median(elapsed_times_platforms),
+        "Collaboration Tools" : median(elapsed_times_colab_tools),
+        "Developer Tools" : median(elapsed_times_dev_tools)
+    }
     
     times_data_list = []
     number_of_distinct_times_data_list = []
@@ -1086,7 +1140,7 @@ def index():
             if tag_combo_inclusion_index<=1:
                 inclusion_index_dict.update({key : tag_combo_inclusion_index})
         except:
-            print('tag not found')
+            print('')
         
     inclusion_index_dict = dict(sorted(inclusion_index_dict.items(), key=lambda x:x[1], reverse=True))
     top_10_inclusion_index = dict(islice(inclusion_index_dict.items(), 10))
@@ -1176,7 +1230,8 @@ def index():
                             sorted_votes_distribution_values = sorted_votes_distribution_values,
                             sorted_views_distribution_labels = sorted_views_distribution_labels,
                             sorted_views_distribution_values = sorted_views_distribution_values,
-                            answeredData = answeredData, top_10_inclusion_index = top_10_inclusion_index
+                            answeredData = answeredData, top_10_inclusion_index = top_10_inclusion_index,
+                            median_times_dict = median_times_dict
                            )
 
 
@@ -1321,14 +1376,12 @@ def fetch():
                 if len(question['tag_combinations']) < 1000:
                     for tag_combo in question['tag_combinations']:
                         tag_combo_string = ' '.join(tag_combo)
-                        if tag_combo_string == 'vue.js v-data-table':
-                            print(question['_id'])
                         if not tag_combo_string in tag_combo_frequencies:
                             tag_combo_frequencies[tag_combo_string] = 1
                         else:
                             tag_combo_frequencies[tag_combo_string] += 1
         except:
-            print('not found')
+            print('')
 
         if len(views) != 0:
             views_integer = int(views[0])
@@ -1497,6 +1550,58 @@ def fetch():
     collaboration_tools_sorted_elapsed_time_data_list = sorted(collaboration_tools_elapsed_time_data_list, key=itemgetter(0))
     dev_tools_sorted_elapsed_time_data_list = sorted(dev_tools_elapsed_time_data_list, key=itemgetter(0))
     
+    elapsed_times_all = []
+    elapsed_times_languages = []
+    elapsed_times_web_frameworks = []
+    elapsed_times_big_data_ml = []
+    elapsed_times_databases = []
+    elapsed_times_platforms = []
+    elapsed_times_colab_tools = []
+    elapsed_times_dev_tools = []
+    
+    for time_list in sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_all.append(time_list[0])
+    
+    for time_list in languages_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_languages.append(time_list[0])
+    
+    for time_list in web_frameworks_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_web_frameworks.append(time_list[0])
+    
+    for time_list in big_data_ml_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_big_data_ml.append(time_list[0])        
+    
+    for time_list in databases_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_databases.append(time_list[0])
+    
+    for time_list in platforms_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_platforms.append(time_list[0])
+    
+    for time_list in collaboration_tools_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_colab_tools.append(time_list[0])
+            
+    for time_list in dev_tools_sorted_elapsed_time_data_list:
+        if time_list[1] == 1:
+            elapsed_times_dev_tools.append(time_list[0])
+    
+    median_times_dict = {
+        "All" : median(elapsed_times_all) if len(elapsed_times_all) != 0 else 0,
+        "Languages" : median(elapsed_times_languages) if len(elapsed_times_languages) != 0 else 0,
+        "Web Frameworks" : median(elapsed_times_web_frameworks) if len(elapsed_times_web_frameworks) != 0 else 0,
+        "Big Data - ML" : median(elapsed_times_big_data_ml) if len(elapsed_times_big_data_ml) != 0 else 0,
+        "Databases" : median(elapsed_times_databases) if len(elapsed_times_databases) != 0 else 0,
+        "Platforms" : median(elapsed_times_platforms) if len(elapsed_times_platforms) != 0 else 0,
+        "Collaboration Tools" : median(elapsed_times_colab_tools) if len(elapsed_times_colab_tools) != 0 else 0,
+        "Developer Tools" : median(elapsed_times_dev_tools) if len(elapsed_times_dev_tools) != 0 else 0
+    }
+    
     
     times_data_list = []
     number_of_distinct_times_data_list = []
@@ -1529,9 +1634,9 @@ def fetch():
     survival_time_curve_values = []
     for i in range(len(times_data_list)):
         if i == 0:
-            survival_time_curve_values.append((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i])
+            survival_time_curve_values.append((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i]) if times_left_list[i] != 0 else 0
         else:
-            survival_time_curve_values.append(((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i])* survival_time_curve_values[i-1])
+            survival_time_curve_values.append(((times_left_list[i] - number_of_distinct_times_data_list[i]) /  times_left_list[i])* survival_time_curve_values[i-1]) if times_left_list[i] != 0 else 0
     
     
     
@@ -1566,9 +1671,9 @@ def fetch():
     languages_survival_time_curve_values = []
     for i in range(len(languages_times_data_list)):
         if i == 0:
-            languages_survival_time_curve_values.append((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i])
+            languages_survival_time_curve_values.append((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i]) if languages_times_left_list[i] != 0 else 0
         else:
-            languages_survival_time_curve_values.append(((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i]) * languages_survival_time_curve_values[i-1])
+            languages_survival_time_curve_values.append(((languages_times_left_list[i] - languages_number_of_distinct_times_data_list[i]) /  languages_times_left_list[i]) * languages_survival_time_curve_values[i-1]) if languages_times_left_list[i] != 0 else 0
         
     
     
@@ -1603,9 +1708,9 @@ def fetch():
     web_frameworks_survival_time_curve_values = []
     for i in range(len(web_frameworks_times_data_list)):
         if i == 0:
-            web_frameworks_survival_time_curve_values.append((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i])
+            web_frameworks_survival_time_curve_values.append((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i]) if web_frameworks_times_left_list[i] != 0 else 0
         else:
-            web_frameworks_survival_time_curve_values.append(((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i])* web_frameworks_survival_time_curve_values[i-1])
+            web_frameworks_survival_time_curve_values.append(((web_frameworks_times_left_list[i] - web_frameworks_number_of_distinct_times_data_list[i]) /  web_frameworks_times_left_list[i])* web_frameworks_survival_time_curve_values[i-1]) if web_frameworks_times_left_list[i] != 0 else 0
         
         
 
@@ -1640,9 +1745,9 @@ def fetch():
     big_data_ml_survival_time_curve_values = []
     for i in range(len(big_data_ml_times_data_list)):
         if i == 0:
-            big_data_ml_survival_time_curve_values.append((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i])
+            big_data_ml_survival_time_curve_values.append((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i]) if big_data_ml_times_left_list[i] != 0 else 0
         else:
-            big_data_ml_survival_time_curve_values.append(((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i])* big_data_ml_survival_time_curve_values[i-1])
+            big_data_ml_survival_time_curve_values.append(((big_data_ml_times_left_list[i] - big_data_ml_number_of_distinct_times_data_list[i]) /  big_data_ml_times_left_list[i])* big_data_ml_survival_time_curve_values[i-1]) if big_data_ml_times_left_list[i] != 0 else 0
             
     databases_times_data_list = []
     databases_number_of_distinct_times_data_list = []
@@ -1675,9 +1780,9 @@ def fetch():
     databases_survival_time_curve_values = []
     for i in range(len(databases_times_data_list)):
         if i == 0:
-            databases_survival_time_curve_values.append((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i])
+            databases_survival_time_curve_values.append((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i]) if databases_times_left_list[i] != 0 else 0
         else:
-            databases_survival_time_curve_values.append(((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i])* databases_survival_time_curve_values[i-1])
+            databases_survival_time_curve_values.append(((databases_times_left_list[i] - databases_number_of_distinct_times_data_list[i]) /  databases_times_left_list[i])* databases_survival_time_curve_values[i-1]) if databases_times_left_list[i] != 0 else 0
             
     
     platforms_times_data_list = []
@@ -1711,9 +1816,9 @@ def fetch():
     platforms_survival_time_curve_values = []
     for i in range(len(platforms_times_data_list)):
         if i == 0:
-            platforms_survival_time_curve_values.append((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])
+            platforms_survival_time_curve_values.append((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i]) if platforms_times_left_list[i] != 0 else 0
         else:
-            platforms_survival_time_curve_values.append(((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])* platforms_survival_time_curve_values[i-1])
+            platforms_survival_time_curve_values.append(((platforms_times_left_list[i] - platforms_number_of_distinct_times_data_list[i]) /  platforms_times_left_list[i])* platforms_survival_time_curve_values[i-1]) if platforms_times_left_list[i] != 0 else 0
     
     
     
@@ -1748,9 +1853,9 @@ def fetch():
     collaboration_tools_survival_time_curve_values = []
     for i in range(len(collaboration_tools_times_data_list)):
         if i == 0:
-            collaboration_tools_survival_time_curve_values.append((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])
+            collaboration_tools_survival_time_curve_values.append((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i]) if collaboration_tools_times_left_list[i] != 0 else 0
         else:
-            collaboration_tools_survival_time_curve_values.append(((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])* collaboration_tools_survival_time_curve_values[i-1])
+            collaboration_tools_survival_time_curve_values.append(((collaboration_tools_times_left_list[i] - collaboration_tools_number_of_distinct_times_data_list[i]) /  collaboration_tools_times_left_list[i])* collaboration_tools_survival_time_curve_values[i-1]) if collaboration_tools_times_left_list[i] != 0 else 0
         
         
     
@@ -1785,9 +1890,9 @@ def fetch():
     dev_tools_survival_time_curve_values = []
     for i in range(len(dev_tools_times_data_list)):
         if i == 0:
-            dev_tools_survival_time_curve_values.append((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i])
+            dev_tools_survival_time_curve_values.append((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i]) if dev_tools_times_left_list[i] != 0 else 0
         else:
-            dev_tools_survival_time_curve_values.append(((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i])* dev_tools_survival_time_curve_values[i-1])    
+            dev_tools_survival_time_curve_values.append(((dev_tools_times_left_list[i] - dev_tools_number_of_distinct_times_data_list[i]) /  dev_tools_times_left_list[i])* dev_tools_survival_time_curve_values[i-1]) if dev_tools_times_left_list[i] != 0 else 0    
         
     
              
@@ -2284,7 +2389,7 @@ def fetch():
             if tag_combo_inclusion_index <= 1:
                 inclusion_index_dict.update({key: tag_combo_inclusion_index})
         except:
-            print('tag not found')
+            print('')
 
     inclusion_index_dict = dict(sorted(inclusion_index_dict.items(), key=lambda x: x[1], reverse=True))
     top_10_inclusion_index = dict(islice(inclusion_index_dict.items(), 10))
@@ -2369,7 +2474,8 @@ def fetch():
                             sorted_votes_distribution_values = sorted_votes_distribution_values,
                             sorted_views_distribution_labels = sorted_views_distribution_labels,
                             sorted_views_distribution_values = sorted_views_distribution_values,
-                            answeredData = answeredData, top_10_inclusion_index = top_10_inclusion_index
+                            answeredData = answeredData, top_10_inclusion_index = top_10_inclusion_index,
+                            median_times_dict = median_times_dict
                            )
 
 if __name__ == "__main__":
