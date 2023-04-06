@@ -1242,11 +1242,6 @@ def get_map():
 @app.route('/get_lda2')
 def get_map2():
     return render_template('bert_visualize_hierarchy.html')
-
-@app.route('/get_lda3')
-def get_map3():
-    return render_template('lda_PCI_9_topics_Titles.html')
-
 @app.route('/get_dates', methods=['GET'])
 def fetch():
     client = MongoClient('localhost', 27017)
