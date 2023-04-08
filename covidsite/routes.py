@@ -129,14 +129,12 @@ def index():
                 if len(question['tag_combinations']) < 1000:
                     for tag_combo in question['tag_combinations']:
                         tag_combo_string = ' '.join(tag_combo)
-                        if tag_combo_string == 'vue.js v-data-table':
-                            print(question['_id'])
                         if not tag_combo_string in tag_combo_frequencies:
                             tag_combo_frequencies[tag_combo_string] = 1
                         else:
                             tag_combo_frequencies[tag_combo_string] += 1    
         except:
-            print('')
+            pass
         
         if len(views) != 0:
             views_integer = int(views[0])
@@ -157,12 +155,12 @@ def index():
         if question_time:           
             if question['first_answer'] != 'No answers':
                 first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                 event = 1   
             else:
                 current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                 current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                 event = 0    
             if hour_diff!=0.0:
                 elapsed_time_data_list.append([hour_diff,event])
@@ -175,12 +173,12 @@ def index():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         languages_elapsed_time_data_list.append([hour_diff,event])
@@ -189,12 +187,12 @@ def index():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         web_frameworks_elapsed_time_data_list.append([hour_diff,event])
@@ -203,12 +201,12 @@ def index():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         big_data_ml_elapsed_time_data_list.append([hour_diff,event])
@@ -217,12 +215,12 @@ def index():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         databases_elapsed_time_data_list.append([hour_diff,event])
@@ -231,12 +229,12 @@ def index():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         platforms_elapsed_time_data_list.append([hour_diff,event])
@@ -245,12 +243,12 @@ def index():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         collaboration_tools_elapsed_time_data_list.append([hour_diff,event])
@@ -259,12 +257,12 @@ def index():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         dev_tools_elapsed_time_data_list.append([hour_diff,event])
@@ -781,7 +779,6 @@ def index():
     
     sorted_ids_and_response_time = dict(sorted(ids_and_response_times.items(), key=lambda item: item[1][0]))
     top_10_sorted_ids_and_response_time = dict(islice(sorted_ids_and_response_time.items(), 10))
-    print(sorted_ids_and_response_time)
 
 
     numberOfComments = sum(comments)
@@ -1158,14 +1155,11 @@ def index():
             if tag_combo_inclusion_index<=1:
                 inclusion_index_dict.update({key : tag_combo_inclusion_index})
         except:
-            print('')
+            pass
         
     inclusion_index_dict = dict(sorted(inclusion_index_dict.items(), key=lambda x:x[1], reverse=True))
     top_10_inclusion_index = dict(islice(inclusion_index_dict.items(), 10))
-    # print(top_10_inclusion_index)
-    # print(tag_combo_frequencies['vue.js v-data-table'])
-    # print(sorted_tags_and_values['vue.js'])
-    # print(sorted_tags_and_values['v-data-table'])
+    
 
 
 
@@ -1330,6 +1324,7 @@ def fetch():
     ids_and_answers = {}
     ids_and_comments = {}
     ids_and_views = {}
+    ids_and_response_times = {}
     usernames = []
     locations = []
     location_name = []
@@ -1407,7 +1402,7 @@ def fetch():
                         else:
                             tag_combo_frequencies[tag_combo_string] += 1
         except:
-            print('')
+            pass
 
         if len(views) != 0:
             views_integer = int(views[0])
@@ -1428,112 +1423,114 @@ def fetch():
         if question_time:           
             if question['first_answer'] != 'No answers':
                 first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                 event = 1   
             else:
                 current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                 current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                 event = 0    
             if hour_diff!=0.0:
                 elapsed_time_data_list.append([hour_diff,event])
+        
+        ids_and_response_times.update({q_link: [hour_diff, question['question_title']]})
         #########################
         for q_tag in dif_tags:
             if fields_and_techs.get(q_tag) == 'Languages':
-                languages.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, question['question_title']]})
+                languages.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, hour_diff, question['question_title']]})
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         languages_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Web Frameworks':
-                web_frameworks.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, question['question_title']]})
+                web_frameworks.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, hour_diff, question['question_title']]})
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         web_frameworks_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Big Data - ML':
-                big_data_ml.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, question['question_title']]})
+                big_data_ml.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, hour_diff, question['question_title']]})
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         big_data_ml_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Databases':
-                databases.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, question['question_title']]})
+                databases.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, hour_diff, question['question_title']]})
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         databases_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Platforms':
-                platforms.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, question['question_title']]})
+                platforms.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, hour_diff, question['question_title']]})
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         platforms_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Collaboration Tools':
-                collaboration_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, question['question_title']]})
+                collaboration_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, hour_diff, question['question_title']]})
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         collaboration_tools_elapsed_time_data_list.append([hour_diff,event])
             if fields_and_techs.get(q_tag) == 'Developer Tools':
-                dev_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, question['question_title']]})
+                dev_tools.update({q_link: [int(question['votes']), int(question['answers']), int(question['comments']), views_integer, hour_diff, question['question_title']]})
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
                         event = 1   
                     else:
                         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
                         current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 3600,1)
+                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         dev_tools_elapsed_time_data_list.append([hour_diff,event])
@@ -1943,6 +1940,9 @@ def fetch():
 
     sorted_language_views = dict(sorted(languages.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_languages_views = dict(islice(sorted_language_views.items(), 10))
+    
+    sorted_language_response_time = dict(sorted(languages.items(), key=lambda item: item[1][4]))
+    top_10_languages_response_time = dict(islice(sorted_language_response_time.items(), 10))
 
     sorted_web_frameworks_votes = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_web_frameworks_votes = dict(islice(sorted_web_frameworks_votes.items(), 10))
@@ -1955,6 +1955,9 @@ def fetch():
 
     sorted_web_frameworks_views = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_web_frameworks_views = dict(islice(sorted_web_frameworks_views.items(), 10))
+    
+    sorted_web_frameworks_response_time = dict(sorted(web_frameworks.items(), key=lambda item: item[1][4]))
+    top_10_web_frameworks_response_time = dict(islice(sorted_web_frameworks_response_time.items(), 10))
 
     sorted_big_data_ml_votes = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_big_data_ml_votes = dict(islice(sorted_big_data_ml_votes.items(), 10))
@@ -1967,6 +1970,9 @@ def fetch():
 
     sorted_big_data_ml_views = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_big_data_ml_views = dict(islice(sorted_big_data_ml_views.items(), 10))
+    
+    sorted_big_data_ml_response_time = dict(sorted(big_data_ml.items(), key=lambda item: item[1][4]))
+    top_10_big_data_ml_response_time = dict(islice(sorted_big_data_ml_response_time.items(), 10))
 
     sorted_databases_votes = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_databases_votes = dict(islice(sorted_databases_votes.items(), 10))
@@ -1979,6 +1985,9 @@ def fetch():
 
     sorted_databases_views = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_databases_views = dict(islice(sorted_databases_views.items(), 10))
+    
+    sorted_databases_response_time = dict(sorted(databases.items(), key=lambda item: item[1][4]))
+    top_10_databases_response_time = dict(islice(sorted_databases_response_time.items(), 10))
 
     sorted_platforms_votes = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_platforms_votes = dict(islice(sorted_platforms_votes.items(), 10))
@@ -1991,59 +2000,60 @@ def fetch():
 
     sorted_platforms_views = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_platforms_views = dict(islice(sorted_platforms_views.items(), 10))
+    
+    sorted_platforms_response_time = dict(sorted(platforms.items(), key=lambda item: item[1][4]))
+    top_10_platforms_response_time = dict(islice(sorted_platforms_response_time.items(), 10))
 
-    sorted_collaboration_tools_votes = dict(
-        sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][0]))
+    sorted_collaboration_tools_votes = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_collaboration_tools_votes = dict(islice(sorted_collaboration_tools_votes.items(), 10))
 
-    sorted_collaboration_tools_answers = dict(
-        sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][1]))
+    sorted_collaboration_tools_answers = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][1]))
     top_10_collaboration_tools_answers = dict(islice(sorted_collaboration_tools_answers.items(), 10))
 
-    sorted_collaboration_tools_comments = dict(
-        sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][2]))
+    sorted_collaboration_tools_comments = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][2]))
     top_10_collaboration_tools_comments = dict(islice(sorted_collaboration_tools_comments.items(), 10))
 
-    sorted_collaboration_tools_views = dict(
-        sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][3]))
+    sorted_collaboration_tools_views = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_collaboration_tools_views = dict(islice(sorted_collaboration_tools_views.items(), 10))
+    
+    sorted_collaboration_tools_response_time = dict(sorted(collaboration_tools.items(), key=lambda item: item[1][4]))
+    top_10_collaboration_tools_response_time = dict(islice(sorted_collaboration_tools_response_time.items(), 10))
+
     ##############################################
 
-    sorted_dev_tools_votes = dict(
-        sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][0]))
+    sorted_dev_tools_votes = dict(sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_dev_tools_votes = dict(islice(sorted_dev_tools_votes.items(), 10))
 
-    sorted_dev_tools_answers = dict(
-        sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][1]))
+    sorted_dev_tools_answers = dict(sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][1]))
     top_10_dev_tools_answers = dict(islice(sorted_dev_tools_answers.items(), 10))
 
-    sorted_dev_tools_comments = dict(
-        sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][2]))
+    sorted_dev_tools_comments = dict(sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][2]))
     top_10_dev_tools_comments = dict(islice(sorted_dev_tools_comments.items(), 10))
 
-    sorted_dev_tools_views = dict(
-        sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][3]))
+    sorted_dev_tools_views = dict(sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_dev_tools_views = dict(islice(sorted_dev_tools_views.items(), 10))
+    
+    sorted_dev_tools_response_time = dict(sorted(dev_tools.items(), key=lambda item: item[1][4]))
+    top_10_dev_tools_response_time = dict(islice(sorted_dev_tools_response_time.items(), 10))
 
     distinct_users = Counter(usernames)
     sorted_distinct_users = dict(sorted(distinct_users.items(), reverse=True, key=lambda item: item[1]))
     top_10_distinct_users = dict(islice(sorted_distinct_users.items(), 10))
 
-    sorted_ids_and_votes = dict(
-        sorted(ids_and_votes.items(), reverse=True, key=lambda item: item[1][0]))
+    sorted_ids_and_votes = dict(sorted(ids_and_votes.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_votes = dict(islice(sorted_ids_and_votes.items(), 10))
 
-    sorted_ids_and_answers = dict(
-        sorted(ids_and_answers.items(), reverse=True, key=lambda item: item[1][0]))
+    sorted_ids_and_answers = dict(sorted(ids_and_answers.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_answers = dict(islice(sorted_ids_and_answers.items(), 10))
 
-    sorted_ids_and_comments = dict(
-        sorted(ids_and_comments.items(), reverse=True, key=lambda item: item[1][0]))
+    sorted_ids_and_comments = dict(sorted(ids_and_comments.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_comments = dict(islice(sorted_ids_and_comments.items(), 10))
 
-    sorted_ids_and_views = dict(
-        sorted(ids_and_views.items(), reverse=True, key=lambda item: item[1][0]))
+    sorted_ids_and_views = dict(sorted(ids_and_views.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_views = dict(islice(sorted_ids_and_views.items(), 10))
+    
+    sorted_ids_and_response_time = dict(sorted(ids_and_response_times.items(), key=lambda item: item[1][0]))
+    top_10_sorted_ids_and_response_time = dict(islice(sorted_ids_and_response_time.items(), 10))
 
 
     numberOfComments = sum(comments)
@@ -2395,7 +2405,6 @@ def fetch():
                         developer_tools_tag_link_matrix[combination[1], combination[0]] += 1
             developer_tools_tags_to_be_linked.clear()
 
-    # print(not np.any(developer_tools_tag_link_matrix))
     list_tag_link_matrix = np.array2string(tag_link_matrix, separator=",")
     list_languages_tag_link_matrix = np.array2string(languages_tag_link_matrix, separator=",")
     list_frameworks_tag_link_matrix = np.array2string(frameworks_tag_link_matrix, separator=",")
@@ -2415,7 +2424,7 @@ def fetch():
             if tag_combo_inclusion_index <= 1:
                 inclusion_index_dict.update({key: tag_combo_inclusion_index})
         except:
-            print('')
+            pass
 
     inclusion_index_dict = dict(sorted(inclusion_index_dict.items(), key=lambda x: x[1], reverse=True))
     top_10_inclusion_index = dict(islice(inclusion_index_dict.items(), 10))
@@ -2501,7 +2510,15 @@ def fetch():
                             sorted_views_distribution_labels = sorted_views_distribution_labels,
                             sorted_views_distribution_values = sorted_views_distribution_values,
                             answeredData = answeredData, top_10_inclusion_index = top_10_inclusion_index,
-                            median_times_dict = median_times_dict
+                            median_times_dict = median_times_dict, 
+                            top_10_languages_response_time = top_10_languages_response_time,
+                            top_10_web_frameworks_response_time = top_10_web_frameworks_response_time,
+                            top_10_big_data_ml_response_time = top_10_big_data_ml_response_time,
+                            top_10_databases_response_time = top_10_databases_response_time,
+                            top_10_platforms_response_time = top_10_platforms_response_time,
+                            top_10_collaboration_tools_response_time = top_10_collaboration_tools_response_time,
+                            top_10_dev_tools_response_time = top_10_dev_tools_response_time,
+                            top_10_sorted_ids_and_response_time = top_10_sorted_ids_and_response_time
                            )
 
 if __name__ == "__main__":
