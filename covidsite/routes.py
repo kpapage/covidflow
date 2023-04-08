@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask import Flask
-# from covidsite.extensions import mongo
-from flask_pymongo import PyMongo
+from covidsite.extensions import mongo
+
 from pymongo import MongoClient
 from itertools import islice, combinations
 
@@ -20,7 +20,7 @@ from operator import itemgetter
 from statistics import median
 
 app = Flask(__name__)
-mongo = PyMongo()
+
 
 
 @app.route('/', methods=['GET', 'POST'])

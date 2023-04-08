@@ -26,6 +26,15 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static',filename='sb-admin-2.min.css') }}" rel="stylesheet">
+    <style>
+        .rotate-icon {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .collapsed .rotate-icon {
+            transform: rotate(-180deg);
+        }
+    </style>
 
 
 </head>
@@ -156,11 +165,11 @@
                     <div class="col-xl-12">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" id="overview">
-                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOverview" aria-expanded="true" aria-controls="collapseOverview" title= "Click to minimize">
-                                    <h6 class="m-0 font-weight-bold text-primary">Overview</h6>
-                                </button>
+                                <a type= "button"class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOverview">
+                                    <h6 class="m-0 font-weight-bold text-primary">Overview <i class="fas fa-chevron-up rotate-icon"></i></h6>  
+                                </a>
                             </div>
-                            <div class="collapse show" id="collapseOverview"> 
+                            <div class="collapse" id="collapseOverview"> 
                                 <div class="card-body" >
                                     <p class="text-justify">Covid-19 disrupted daily lives in many levels both societal and medical. With the medical community trying effortlessly to develop vaccines and contain the virus, a multitude of data was produced regarding cases, symptoms, vaccination numbers and regional information about each country. Recognizing the value of these data, the programming community came together in times of crisis and exchanged knowledge on how to process these data and develop solutions on their own. The members of the community were programmers, scientists, data analysts and many other individuals that contributed to the so-called Scientific Software Development (SSD) i.e. the development of software from scientific data aimed at scientific use.</p>
     
@@ -2615,6 +2624,7 @@ function fade(opacity) {
     });
 
 </script>
+
 
 </div>
 </body>
