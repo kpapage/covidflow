@@ -166,6 +166,10 @@ def index():
                 elapsed_time_data_list.append([hour_diff,event])
                 
         ids_and_response_times.update({q_link: [hour_diff, question['question_title']]})
+
+        merged_dict = {}
+        for key in ids_and_response_times.keys():
+            merged_dict[key] = [ids_and_response_times[key][0], ids_and_response_times[key][1], ids_and_answers[key][0]]
         #########################
         for q_tag in dif_tags:
             if fields_and_techs.get(q_tag) == 'Languages':
@@ -665,9 +669,14 @@ def index():
 
     sorted_language_views = dict(sorted(languages.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_languages_views = dict(islice(sorted_language_views.items(), 10))
-    
-    sorted_language_response_time = dict(sorted(languages.items(), key=lambda item: item[1][4]))
+
+    answered_languages = {k: v for k, v in languages.items() if v[1] > 0}
+
+    sorted_language_response_time = dict(sorted(answered_languages.items(), key=lambda item: item[1][4]))
     top_10_languages_response_time = dict(islice(sorted_language_response_time.items(), 10))
+
+    sorted_language_response_time_reverse = dict(sorted(answered_languages.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_languages_response_time_reverse = dict(islice(sorted_language_response_time_reverse.items(), 10))
 
     sorted_web_frameworks_votes = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_web_frameworks_votes = dict(islice(sorted_web_frameworks_votes.items(), 10))
@@ -680,9 +689,14 @@ def index():
 
     sorted_web_frameworks_views = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_web_frameworks_views = dict(islice(sorted_web_frameworks_views.items(), 10))
+
+    answered_web_frameworks = {k: v for k, v in web_frameworks.items() if v[1] > 0}
     
-    sorted_web_frameworks_response_time = dict(sorted(web_frameworks.items(), key=lambda item: item[1][4]))
+    sorted_web_frameworks_response_time = dict(sorted(answered_web_frameworks.items(), key=lambda item: item[1][4]))
     top_10_web_frameworks_response_time = dict(islice(sorted_web_frameworks_response_time.items(), 10))
+
+    sorted_web_frameworks_response_time_reverse = dict(sorted(answered_web_frameworks.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_web_frameworks_response_time_reverse = dict(islice(sorted_web_frameworks_response_time_reverse.items(), 10))
 
     sorted_big_data_ml_votes = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_big_data_ml_votes = dict(islice(sorted_big_data_ml_votes.items(), 10))
@@ -695,9 +709,14 @@ def index():
 
     sorted_big_data_ml_views = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_big_data_ml_views = dict(islice(sorted_big_data_ml_views.items(), 10))
-    
-    sorted_big_data_ml_response_time = dict(sorted(big_data_ml.items(), key=lambda item: item[1][4]))
+
+    answered_big_data_ml = {k: v for k, v in big_data_ml.items() if v[1] > 0}
+
+    sorted_big_data_ml_response_time = dict(sorted(answered_big_data_ml.items(), key=lambda item: item[1][4]))
     top_10_big_data_ml_response_time = dict(islice(sorted_big_data_ml_response_time.items(), 10))
+
+    sorted_big_data_ml_response_time_reverse = dict(sorted(answered_big_data_ml.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_big_data_ml_response_time_reverse = dict(islice(sorted_big_data_ml_response_time_reverse.items(), 10))
 
     sorted_databases_votes = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_databases_votes = dict(islice(sorted_databases_votes.items(), 10))
@@ -710,9 +729,14 @@ def index():
 
     sorted_databases_views = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_databases_views = dict(islice(sorted_databases_views.items(), 10))
-    
-    sorted_databases_response_time = dict(sorted(databases.items(), key=lambda item: item[1][4]))
+
+    answered_databases = {k: v for k, v in databases.items() if v[1] > 0}
+
+    sorted_databases_response_time = dict(sorted(answered_databases.items(), key=lambda item: item[1][4]))
     top_10_databases_response_time = dict(islice(sorted_databases_response_time.items(), 10))
+
+    sorted_databases_response_time_reverse = dict(sorted(answered_databases.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_databases_response_time_reverse = dict(islice(sorted_databases_response_time_reverse.items(), 10))
 
     sorted_platforms_votes = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_platforms_votes = dict(islice(sorted_platforms_votes.items(), 10))
@@ -725,9 +749,14 @@ def index():
 
     sorted_platforms_views = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_platforms_views = dict(islice(sorted_platforms_views.items(), 10))
-    
-    sorted_platforms_response_time = dict(sorted(platforms.items(), key=lambda item: item[1][4]))
+
+    answered_platforms = {k: v for k, v in platforms.items() if v[1] > 0}
+
+    sorted_platforms_response_time = dict(sorted(answered_platforms.items(), key=lambda item: item[1][4]))
     top_10_platforms_response_time = dict(islice(sorted_platforms_response_time.items(), 10))
+
+    sorted_platforms_response_time_reverse = dict(sorted(answered_platforms.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_platforms_response_time_reverse = dict(islice(sorted_platforms_response_time_reverse.items(), 10))
 
     sorted_collaboration_tools_votes = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_collaboration_tools_votes = dict(islice(sorted_collaboration_tools_votes.items(), 10))
@@ -740,9 +769,14 @@ def index():
 
     sorted_collaboration_tools_views = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_collaboration_tools_views = dict(islice(sorted_collaboration_tools_views.items(), 10))
-    
-    sorted_collaboration_tools_response_time = dict(sorted(collaboration_tools.items(), key=lambda item: item[1][4]))
+
+    answered_collaboration_tools = {k: v for k, v in collaboration_tools.items() if v[1] > 0}
+
+    sorted_collaboration_tools_response_time = dict(sorted(answered_collaboration_tools.items(), key=lambda item: item[1][4]))
     top_10_collaboration_tools_response_time = dict(islice(sorted_collaboration_tools_response_time.items(), 10))
+
+    sorted_collaboration_tools_response_time_reverse = dict(sorted(answered_collaboration_tools.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_collaboration_tools_response_time_reverse = dict(islice(sorted_collaboration_tools_response_time_reverse.items(), 10))
 
     ##############################################
 
@@ -757,9 +791,14 @@ def index():
 
     sorted_dev_tools_views = dict(sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_dev_tools_views = dict(islice(sorted_dev_tools_views.items(), 10))
-    
-    sorted_dev_tools_response_time = dict(sorted(dev_tools.items(), key=lambda item: item[1][4]))
+
+    answered_dev_tools = {k: v for k, v in dev_tools.items() if v[1] > 0}
+
+    sorted_dev_tools_response_time = dict(sorted(answered_dev_tools.items(), key=lambda item: item[1][4]))
     top_10_dev_tools_response_time = dict(islice(sorted_dev_tools_response_time.items(), 10))
+
+    sorted_dev_tools_response_time_reverse = dict(sorted(answered_dev_tools.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_dev_tools_response_time_reverse = dict(islice(sorted_dev_tools_response_time_reverse.items(), 10))
 
     distinct_users = Counter(usernames)
     sorted_distinct_users = dict(sorted(distinct_users.items(), reverse=True, key=lambda item: item[1]))
@@ -776,9 +815,14 @@ def index():
 
     sorted_ids_and_views = dict(sorted(ids_and_views.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_views = dict(islice(sorted_ids_and_views.items(), 10))
-    
-    sorted_ids_and_response_time = dict(sorted(ids_and_response_times.items(), key=lambda item: item[1][0]))
+
+    answered_ids_and_response_times = {k: v for k, v in merged_dict.items() if v[2] > 0}
+
+    sorted_ids_and_response_time = dict(sorted(answered_ids_and_response_times.items(), key=lambda item: item[1][0]))
     top_10_sorted_ids_and_response_time = dict(islice(sorted_ids_and_response_time.items(), 10))
+
+    sorted_ids_and_response_time_reverse = dict(sorted(answered_ids_and_response_times.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_sorted_ids_and_response_time_reverse = dict(islice(sorted_ids_and_response_time_reverse.items(), 10))
 
 
     numberOfComments = sum(comments)
@@ -1251,10 +1295,16 @@ def index():
                             top_10_platforms_response_time = top_10_platforms_response_time,
                             top_10_collaboration_tools_response_time = top_10_collaboration_tools_response_time,
                             top_10_dev_tools_response_time = top_10_dev_tools_response_time,
-                            top_10_sorted_ids_and_response_time = top_10_sorted_ids_and_response_time
+                            top_10_sorted_ids_and_response_time = top_10_sorted_ids_and_response_time,
+                            top_10_languages_response_time_reverse=top_10_languages_response_time_reverse,
+                            top_10_web_frameworks_response_time_reverse=top_10_web_frameworks_response_time_reverse,
+                            top_10_big_data_ml_response_time_reverse=top_10_big_data_ml_response_time_reverse,
+                            top_10_databases_response_time_reverse=top_10_databases_response_time_reverse,
+                            top_10_platforms_response_time_reverse=top_10_platforms_response_time_reverse,
+                            top_10_collaboration_tools_response_time_reverse=top_10_collaboration_tools_response_time_reverse,
+                            top_10_dev_tools_response_time_reverse=top_10_dev_tools_response_time_reverse,
+                            top_10_sorted_ids_and_response_time_reverse=top_10_sorted_ids_and_response_time_reverse
                            )
-
-
 @app.route('/get_lda')
 def get_map():
     return render_template('bert_visualize_docs.html')
@@ -1262,6 +1312,10 @@ def get_map():
 @app.route('/get_lda2')
 def get_map2():
     return render_template('bert_visualize_hierarchy.html')
+
+@app.route('/get_lda3')
+def get_map3():
+    return render_template('lda_PCI_9_topics_Titles.html')
 @app.route('/get_dates', methods=['GET'])
 def fetch():
     client = MongoClient('localhost', 27017)
@@ -1434,6 +1488,9 @@ def fetch():
                 elapsed_time_data_list.append([hour_diff,event])
         
         ids_and_response_times.update({q_link: [hour_diff, question['question_title']]})
+        merged_dict = {}
+        for key in ids_and_response_times.keys():
+            merged_dict[key] = [ids_and_response_times[key][0], ids_and_response_times[key][1], ids_and_answers[key][0]]
         #########################
         for q_tag in dif_tags:
             if fields_and_techs.get(q_tag) == 'Languages':
@@ -1940,9 +1997,14 @@ def fetch():
 
     sorted_language_views = dict(sorted(languages.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_languages_views = dict(islice(sorted_language_views.items(), 10))
-    
-    sorted_language_response_time = dict(sorted(languages.items(), key=lambda item: item[1][4]))
+
+    answered_languages = {k: v for k, v in languages.items() if v[1] > 0}
+
+    sorted_language_response_time = dict(sorted(answered_languages.items(), key=lambda item: item[1][4]))
     top_10_languages_response_time = dict(islice(sorted_language_response_time.items(), 10))
+
+    sorted_language_response_time_reverse = dict(sorted(answered_languages.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_languages_response_time_reverse = dict(islice(sorted_language_response_time_reverse.items(), 10))
 
     sorted_web_frameworks_votes = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_web_frameworks_votes = dict(islice(sorted_web_frameworks_votes.items(), 10))
@@ -1955,9 +2017,14 @@ def fetch():
 
     sorted_web_frameworks_views = dict(sorted(web_frameworks.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_web_frameworks_views = dict(islice(sorted_web_frameworks_views.items(), 10))
-    
-    sorted_web_frameworks_response_time = dict(sorted(web_frameworks.items(), key=lambda item: item[1][4]))
+
+    answered_web_frameworks = {k: v for k, v in web_frameworks.items() if v[1] > 0}
+
+    sorted_web_frameworks_response_time = dict(sorted(answered_web_frameworks.items(), key=lambda item: item[1][4]))
     top_10_web_frameworks_response_time = dict(islice(sorted_web_frameworks_response_time.items(), 10))
+
+    sorted_web_frameworks_response_time_reverse = dict(sorted(answered_web_frameworks.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_web_frameworks_response_time_reverse = dict(islice(sorted_web_frameworks_response_time_reverse.items(), 10))
 
     sorted_big_data_ml_votes = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_big_data_ml_votes = dict(islice(sorted_big_data_ml_votes.items(), 10))
@@ -1970,9 +2037,14 @@ def fetch():
 
     sorted_big_data_ml_views = dict(sorted(big_data_ml.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_big_data_ml_views = dict(islice(sorted_big_data_ml_views.items(), 10))
-    
-    sorted_big_data_ml_response_time = dict(sorted(big_data_ml.items(), key=lambda item: item[1][4]))
+
+    answered_big_data_ml = {k: v for k, v in big_data_ml.items() if v[1] > 0}
+
+    sorted_big_data_ml_response_time = dict(sorted(answered_big_data_ml.items(), key=lambda item: item[1][4]))
     top_10_big_data_ml_response_time = dict(islice(sorted_big_data_ml_response_time.items(), 10))
+
+    sorted_big_data_ml_response_time_reverse = dict(sorted(answered_big_data_ml.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_big_data_ml_response_time_reverse = dict(islice(sorted_big_data_ml_response_time_reverse.items(), 10))
 
     sorted_databases_votes = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_databases_votes = dict(islice(sorted_databases_votes.items(), 10))
@@ -1985,9 +2057,14 @@ def fetch():
 
     sorted_databases_views = dict(sorted(databases.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_databases_views = dict(islice(sorted_databases_views.items(), 10))
-    
-    sorted_databases_response_time = dict(sorted(databases.items(), key=lambda item: item[1][4]))
+
+    answered_databases = {k: v for k, v in databases.items() if v[1] > 0}
+
+    sorted_databases_response_time = dict(sorted(answered_databases.items(), key=lambda item: item[1][4]))
     top_10_databases_response_time = dict(islice(sorted_databases_response_time.items(), 10))
+
+    sorted_databases_response_time_reverse = dict(sorted(answered_databases.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_databases_response_time_reverse = dict(islice(sorted_databases_response_time_reverse.items(), 10))
 
     sorted_platforms_votes = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_platforms_votes = dict(islice(sorted_platforms_votes.items(), 10))
@@ -2000,9 +2077,14 @@ def fetch():
 
     sorted_platforms_views = dict(sorted(platforms.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_platforms_views = dict(islice(sorted_platforms_views.items(), 10))
-    
-    sorted_platforms_response_time = dict(sorted(platforms.items(), key=lambda item: item[1][4]))
+
+    answered_platforms = {k: v for k, v in platforms.items() if v[1] > 0}
+
+    sorted_platforms_response_time = dict(sorted(answered_platforms.items(), key=lambda item: item[1][4]))
     top_10_platforms_response_time = dict(islice(sorted_platforms_response_time.items(), 10))
+
+    sorted_platforms_response_time_reverse = dict(sorted(answered_platforms.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_platforms_response_time_reverse = dict(islice(sorted_platforms_response_time_reverse.items(), 10))
 
     sorted_collaboration_tools_votes = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_collaboration_tools_votes = dict(islice(sorted_collaboration_tools_votes.items(), 10))
@@ -2015,9 +2097,14 @@ def fetch():
 
     sorted_collaboration_tools_views = dict(sorted(collaboration_tools.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_collaboration_tools_views = dict(islice(sorted_collaboration_tools_views.items(), 10))
-    
-    sorted_collaboration_tools_response_time = dict(sorted(collaboration_tools.items(), key=lambda item: item[1][4]))
+
+    answered_collaboration_tools = {k: v for k, v in collaboration_tools.items() if v[1] > 0}
+
+    sorted_collaboration_tools_response_time = dict(sorted(answered_collaboration_tools.items(), key=lambda item: item[1][4]))
     top_10_collaboration_tools_response_time = dict(islice(sorted_collaboration_tools_response_time.items(), 10))
+
+    sorted_collaboration_tools_response_time_reverse = dict(sorted(answered_collaboration_tools.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_collaboration_tools_response_time_reverse = dict(islice(sorted_collaboration_tools_response_time_reverse.items(), 10))
 
     ##############################################
 
@@ -2032,9 +2119,14 @@ def fetch():
 
     sorted_dev_tools_views = dict(sorted(dev_tools.items(), reverse=True, key=lambda item: item[1][3]))
     top_10_dev_tools_views = dict(islice(sorted_dev_tools_views.items(), 10))
-    
-    sorted_dev_tools_response_time = dict(sorted(dev_tools.items(), key=lambda item: item[1][4]))
+
+    answered_dev_tools = {k: v for k, v in dev_tools.items() if v[1] > 0}
+
+    sorted_dev_tools_response_time = dict(sorted(answered_dev_tools.items(), key=lambda item: item[1][4]))
     top_10_dev_tools_response_time = dict(islice(sorted_dev_tools_response_time.items(), 10))
+
+    sorted_dev_tools_response_time_reverse = dict(sorted(answered_dev_tools.items(), reverse=True, key=lambda item: item[1][4]))
+    top_10_dev_tools_response_time_reverse = dict(islice(sorted_dev_tools_response_time_reverse.items(), 10))
 
     distinct_users = Counter(usernames)
     sorted_distinct_users = dict(sorted(distinct_users.items(), reverse=True, key=lambda item: item[1]))
@@ -2051,9 +2143,14 @@ def fetch():
 
     sorted_ids_and_views = dict(sorted(ids_and_views.items(), reverse=True, key=lambda item: item[1][0]))
     top_10_sorted_ids_and_views = dict(islice(sorted_ids_and_views.items(), 10))
-    
-    sorted_ids_and_response_time = dict(sorted(ids_and_response_times.items(), key=lambda item: item[1][0]))
+
+    answered_ids_and_response_times = {k: v for k, v in merged_dict.items() if v[2] > 0}
+
+    sorted_ids_and_response_time = dict(sorted(answered_ids_and_response_times.items(), key=lambda item: item[1][0]))
     top_10_sorted_ids_and_response_time = dict(islice(sorted_ids_and_response_time.items(), 10))
+
+    sorted_ids_and_response_time_reverse = dict(sorted(answered_ids_and_response_times.items(), reverse=True, key=lambda item: item[1][0]))
+    top_10_sorted_ids_and_response_time_reverse = dict(islice(sorted_ids_and_response_time_reverse.items(), 10))
 
 
     numberOfComments = sum(comments)
@@ -2518,7 +2615,15 @@ def fetch():
                             top_10_platforms_response_time = top_10_platforms_response_time,
                             top_10_collaboration_tools_response_time = top_10_collaboration_tools_response_time,
                             top_10_dev_tools_response_time = top_10_dev_tools_response_time,
-                            top_10_sorted_ids_and_response_time = top_10_sorted_ids_and_response_time
+                            top_10_sorted_ids_and_response_time = top_10_sorted_ids_and_response_time,
+                            top_10_languages_response_time_reverse=top_10_languages_response_time_reverse,
+                            top_10_web_frameworks_response_time_reverse=top_10_web_frameworks_response_time_reverse,
+                            top_10_big_data_ml_response_time_reverse=top_10_big_data_ml_response_time_reverse,
+                            top_10_databases_response_time_reverse=top_10_databases_response_time_reverse,
+                            top_10_platforms_response_time_reverse=top_10_platforms_response_time_reverse,
+                            top_10_collaboration_tools_response_time_reverse=top_10_collaboration_tools_response_time_reverse,
+                            top_10_dev_tools_response_time_reverse=top_10_dev_tools_response_time_reverse,
+                            top_10_sorted_ids_and_response_time_reverse=top_10_sorted_ids_and_response_time_reverse
                            )
 
 if __name__ == "__main__":

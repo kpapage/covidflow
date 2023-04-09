@@ -596,7 +596,8 @@
                                         <option value="Answers">Answers</option>
                                         <option value="Comments">Comments</option>
                                         <option value="Views">Views</option>
-                                        <option value="Response Time">Response Time</option>
+                                        <option value="Minimum Response Time">Minimum Response Time</option>
+                                        <option value="Maximum Response Time">Maximum Response Time</option>
                                     </select>
                                 </div>
 
@@ -954,7 +955,7 @@
         row.appendChild(cell2);
 
         var cell3 = document.createElement("td");
-        var cellText3 = document.createTextNode(value + 'min');
+        var cellText3 = document.createTextNode(value + ' min');
         cell3.appendChild(cellText3);
         row.appendChild(cell3);
 
@@ -1048,10 +1049,14 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_languages_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time"){
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_languages_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_languages_response_time_reverse | safe }}
             }
         } else if (selectClass === "Web Frameworks") {
             if (select === "Votes") {
@@ -1070,10 +1075,14 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_web_frameworks_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time") {
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_web_frameworks_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_web_frameworks_response_time_reverse | safe }}
             }
         } else if (selectClass === "Big Data - ML") {
             if (select === "Votes") {
@@ -1092,10 +1101,14 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_big_data_ml_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time") {
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_big_data_ml_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_big_data_ml_response_time_reverse | safe }}
             }
         } else if (selectClass === "Databases") {
             if (select === "Votes") {
@@ -1114,10 +1127,14 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_databases_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time") {
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_databases_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_databases_response_time_reverse | safe }}
             }
         } else if (selectClass === "Platforms") {
             if (select === "Votes") {
@@ -1136,10 +1153,14 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_platforms_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time") {
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_platforms_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_platforms_response_time_reverse | safe }}
             }
         } else if (selectClass === "Collaboration Tools") {
             if (select === "Votes") {
@@ -1158,10 +1179,14 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_collaboration_tools_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time"){
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_collaboration_tools_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_collaboration_tools_response_time_reverse | safe }}
             }
         } else if (selectClass === "Developer Tools") {
             if (select === "Votes") {
@@ -1180,10 +1205,14 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_dev_tools_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time") {
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_dev_tools_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_dev_tools_response_time_reverse | safe }}
             }
         } else if (selectClass === "All") {
             if (select === "Votes") {
@@ -1202,12 +1231,15 @@
                 var name = "Views";
                 topTen =
                 {{ top_10_sorted_ids_and_views | safe }}
-            } else {
-                var name = "Response Time";
+            } else if (select === "Minimum Response Time"){
+                var name = "Minimum Response Time";
                 topTen =
                 {{ top_10_sorted_ids_and_response_time | safe }}
+            }else {
+                var name = "Maximum Response Time";
+                topTen =
+                {{ top_10_sorted_ids_and_response_time_reverse | safe }}
             }
-
         }
         var tbl = document.getElementById('topTenTable');
 
@@ -1238,6 +1270,7 @@
 
 
         var count = 1;
+        console.log(topTen)
         for (const [key, value] of Object.entries(topTen)) {
             var row = document.createElement("tr");
             var cell1 = document.createElement("th");
@@ -1261,7 +1294,7 @@
 
             var cell3 = document.createElement("td");
             if (selectClass === "All") {
-                var cellText3 = ((select === "Response Time") ? document.createTextNode(value [0] + 'min') : document.createTextNode(value [0]));
+                var cellText3 = ((select === "Minimum Response Time") || (select === "Maximum Response Time")  ? document.createTextNode(value [0] + ' min') : document.createTextNode(value [0]));
             } else {
                 if (select === "Votes") {
                     var cellText3 = document.createTextNode(value [0]);
@@ -1272,7 +1305,7 @@
                 } else if (select === "Views") {
                     var cellText3 = document.createTextNode(value [3]);
                 } else {
-                    var cellText3 = document.createTextNode(value [4] + 'min');
+                    var cellText3 = document.createTextNode(value [4] + ' min');
                 }
             }
             cell3.appendChild(cellText3);
@@ -1284,7 +1317,6 @@
             count++;
         }
     }
-
 
 </script>
 
