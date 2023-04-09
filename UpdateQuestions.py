@@ -35,11 +35,14 @@ for question in collection.find(no_cursor_timeout=True).batch_size(30):
         try:
             answers = driver.find_elements(By.XPATH,
                                            "//div[contains(@id, 'answers')]//div[contains(@class, 'answercell')]")
+            print(len(answers))
+            time.sleep(5)
             timestamps = []
             for answer in answers:
-                timestamp = answer.find_element(By.XPATH,
-                                                "//div[contains(@class, 'answercell')]//span[contains(@class, 'relativetime')]")
-                timestamps.append(timestamp.get_attribute('title'))
+                timestamp_list = answer.find_elements(By.XPATH,"//div[contains(@class, 'answercell')]//span[contains(@class, 'relativetime')]")
+                for element in timestamp_list:
+                    timestamps.append(element.get_attribute('title'))
+            print(timestamps)
             if not timestamps:
                 collection.update_one(
                     {"question_id": question['question_id']},
@@ -60,12 +63,8 @@ for question in collection.find(no_cursor_timeout=True).batch_size(30):
                         }
                     )
                 else:
-                    max = -10
-                    for timestamp in timestamps:
-                        d = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%SZ")
-                        sum = d.year + d.month + d.day + d.hour + d.minute + d.second
-                        if sum > max:
-                            first_answer = timestamp
+                    first_answer = min(timestamps)
+                    print(first_answer)
                     collection.update_one(
                         {"question_id": question['question_id']},
                         {"$set":

@@ -368,20 +368,16 @@ for label in labels:
                                                "//div[contains(@id, 'answers')]//div[contains(@class, 'answercell')]")
                 timestamps = []
                 for answer in answers:
-                    timestamp = answer.find_element(By.XPATH,
-                                                    "//div[contains(@class, 'answercell')]//span[contains(@class, 'relativetime')]")
-                    timestamps.append(timestamp.get_attribute('title'))
+                    timestamp_list = answer.find_elements(By.XPATH,
+                                                          "//div[contains(@class, 'answercell')]//span[contains(@class, 'relativetime')]")
+                    for element in timestamp_list:
+                        timestamps.append(element.get_attribute('title'))
                 if not timestamps:
                     questions[id].append('No answers')
                 if len(timestamps) == 1:
                     questions[id].append(timestamps[0])
                 if len(timestamps) > 1:
-                    max = -10
-                    for timestamp in timestamps:
-                        d = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%SZ")
-                        sum = d.year + d.month + d.day + d.hour + d.minute + d.second
-                        if sum > max:
-                            first_answer = timestamp
+                    first_answer = min(timestamps)
                     questions[id].append(first_answer)
             except NoSuchElementException:
                 questions[id].append('No answers')
