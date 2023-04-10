@@ -364,14 +364,11 @@ for label in labels:
             views = driver.find_element(By.XPATH, '//*[contains(@title,"Viewed")]')
             questions[id].append(views.get_attribute('title'))
             try:
-                answers = driver.find_elements(By.XPATH,
-                                               "//div[contains(@id, 'answers')]//div[contains(@class, 'answercell')]")
+                timestamp_list = driver.find_elements(By.XPATH,"//div[contains(@id, 'answer-')]//div[contains(@class, 'answercell')]//span[contains(@class, 'relativetime')]")
+                time.sleep(5)
                 timestamps = []
-                for answer in answers:
-                    timestamp_list = answer.find_elements(By.XPATH,
-                                                          "//div[contains(@class, 'answercell')]//span[contains(@class, 'relativetime')]")
-                    for element in timestamp_list:
-                        timestamps.append(element.get_attribute('title'))
+                for element in timestamp_list:
+                    timestamps.append(element.get_attribute('title'))
                 if not timestamps:
                     questions[id].append('No answers')
                 if len(timestamps) == 1:
