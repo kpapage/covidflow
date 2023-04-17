@@ -1,17 +1,18 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+
 from flask import Flask
+
 from covidsite.extensions import mongo
 
 from pymongo import MongoClient
+
 from itertools import islice, combinations
 
 from collections import Counter
 
 import re
 
-from datetime import datetime
-
-from datetime import timezone
+from datetime import datetime, timezone, date
 
 import numpy as np
 
@@ -20,8 +21,6 @@ from operator import itemgetter
 from statistics import median
 
 app = Flask(__name__)
-
-
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,7 +39,8 @@ def index():
     question_number = len(covidCollection.distinct('_id'))
     dates = []
     date_from = '2020-01-01'
-    date_to = '2022-09-19'
+    today = date.today()
+    date_to = str(today)
     dates_and_values = {}
     tags = []
     tags_and_values = {}
@@ -1474,18 +1474,21 @@ def fetch():
         #########################
         
         question_time = datetime.fromisoformat(question['timestamps'][:-1]).replace(tzinfo=timezone.utc)
+        date_to_formatted = datetime.fromisoformat(date_to + " 23:59:59").replace(tzinfo=timezone.utc)
         if question_time:           
             if question['first_answer'] != 'No answers':
                 first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                event = 1   
-            else:
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                if first_answer_time <= date_to_formatted:
+                    hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                    event = 1
+                else:      
+                    hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                    event = 0   
+            else:      
+                hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                 event = 0    
             if hour_diff!=0.0:
-                elapsed_time_data_list.append([hour_diff,event])
+                elapsed_time_data_list.append([hour_diff,event])            
         
         ids_and_response_times.update({q_link: [hour_diff, question['question_title']]})
         merged_dict = {}
@@ -1498,12 +1501,14 @@ def fetch():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                        event = 1   
+                        if first_answer_time <= date_to_formatted:
+                            hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                            event = 1
+                        else:      
+                            hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                            event = 0    
                     else:
-                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                        hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         languages_elapsed_time_data_list.append([hour_diff,event])
@@ -1512,12 +1517,14 @@ def fetch():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                        event = 1   
+                        if first_answer_time <= date_to_formatted:
+                            hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                            event = 1
+                        else:      
+                            hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                            event = 0  
                     else:
-                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                        hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         web_frameworks_elapsed_time_data_list.append([hour_diff,event])
@@ -1526,12 +1533,14 @@ def fetch():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                        event = 1   
+                        if first_answer_time <= date_to_formatted:
+                            hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                            event = 1
+                        else:      
+                            hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                            event = 0  
                     else:
-                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                        hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         big_data_ml_elapsed_time_data_list.append([hour_diff,event])
@@ -1540,12 +1549,14 @@ def fetch():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                        event = 1   
+                        if first_answer_time <= date_to_formatted:
+                            hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                            event = 1
+                        else:      
+                            hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                            event = 0 
                     else:
-                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                        hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         databases_elapsed_time_data_list.append([hour_diff,event])
@@ -1554,12 +1565,14 @@ def fetch():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                        event = 1   
+                        if first_answer_time <= date_to_formatted:
+                            hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                            event = 1
+                        else:      
+                            hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                            event = 0  
                     else:
-                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                        hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         platforms_elapsed_time_data_list.append([hour_diff,event])
@@ -1568,12 +1581,14 @@ def fetch():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                        event = 1   
+                        if first_answer_time <= date_to_formatted:
+                            hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                            event = 1
+                        else:      
+                            hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                            event = 0  
                     else:
-                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                        hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         collaboration_tools_elapsed_time_data_list.append([hour_diff,event])
@@ -1582,12 +1597,14 @@ def fetch():
                 if question_time:           
                     if question['first_answer'] != 'No answers':
                         first_answer_time = datetime.fromisoformat(question['first_answer'][:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
-                        event = 1   
+                        if first_answer_time <= date_to_formatted:
+                            hour_diff = round((first_answer_time - question_time).total_seconds() / 60,1)
+                            event = 1
+                        else:      
+                            hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
+                            event = 0   
                     else:
-                        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"Z"
-                        current_time_formatted = datetime.fromisoformat(current_time[:-1]).replace(tzinfo=timezone.utc)
-                        hour_diff = round((current_time_formatted - question_time).total_seconds() / 60,1)
+                        hour_diff = round((date_to_formatted - question_time).total_seconds() / 60,1)
                         event = 0    
                     if hour_diff!=0.0:
                         dev_tools_elapsed_time_data_list.append([hour_diff,event])
