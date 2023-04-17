@@ -102,24 +102,24 @@ def index():
         if question['comments'] in comments_distribution.keys():
             comments_distribution[question['comments']]+=1
         else:
-            comments_distribution.update({int(question['comments']) : 1})
+            comments_distribution[int(question['comments'])]= 1
             
         answers.append(int(question['answers']))
         if question['answers'] in answers_distribution.keys():
-            answers_distribution[question['answers']] += 1
+            answers_distribution[int(question['answers'])] += 1
         else:
-            answers_distribution.update({int(question['answers']) : 1})
+            answers_distribution[int(question['answers'])] = 1
         if int(question['answers']) > 0:
             answered_questions += 1
         else:
             unanswered_questions += 1
-        
+
         integer_votes = int(question['votes'])
         votes.append(integer_votes)
         if integer_votes in votes_distribution.keys():
             votes_distribution[integer_votes] += 1
         else:
-            votes_distribution.update({integer_votes : 1})
+            votes_distribution[integer_votes] = 1
             
         views_text = str((question['views'])).replace(",", "")
         views = re.findall('[0-9]+', views_text)
@@ -286,11 +286,12 @@ def index():
     sorted_comments_distribution = dict(sorted(comments_distribution.items(), key=lambda x:x[0]))
     sorted_comments_distribution_labels = list(sorted_comments_distribution.keys())
     sorted_comments_distribution_values = list(sorted_comments_distribution.values())
-    
+
+    print(answers_distribution)
     sorted_answers_distribution = dict(sorted(answers_distribution.items(), key=lambda x:x[0]))
     sorted_answers_distribution_labels = list(sorted_answers_distribution.keys())
     sorted_answers_distribution_values = list(sorted_answers_distribution.values())
-    
+
     sorted_votes_distribution = dict(sorted(votes_distribution.items(), key=lambda x:x[0]))
     sorted_votes_distribution_labels = list(sorted_votes_distribution.keys())
     sorted_votes_distribution_values = list(sorted_votes_distribution.values())
@@ -1424,13 +1425,13 @@ def fetch():
         if question['comments'] in comments_distribution.keys():
             comments_distribution[question['comments']]+=1
         else:
-            comments_distribution.update({int(question['comments']) : 1})
+            comments_distribution[int(question['comments'])] =1
 
         answers.append(int(question['answers']))
         if question['answers'] in answers_distribution.keys():
-            answers_distribution[question['answers']] += 1
+            answers_distribution[int(question['answers'])] += 1
         else:
-            answers_distribution.update({int(question['answers']) : 1})
+            answers_distribution[int(question['answers'])] = 1
         if int(question['answers']) > 0:
             answered_questions += 1
         else:
@@ -1441,7 +1442,7 @@ def fetch():
         if integer_votes in votes_distribution.keys():
             votes_distribution[integer_votes] += 1
         else:
-            votes_distribution.update({integer_votes : 1})
+            votes_distribution[integer_votes] = 1
 
         views_text = str((question['views'])).replace(",", "")
         views = re.findall('[0-9]+', views_text)
@@ -1607,7 +1608,7 @@ def fetch():
     sorted_comments_distribution = dict(sorted(comments_distribution.items(), key=lambda x:x[0]))
     sorted_comments_distribution_labels = list(sorted_comments_distribution.keys())
     sorted_comments_distribution_values = list(sorted_comments_distribution.values())
-    
+
     sorted_answers_distribution = dict(sorted(answers_distribution.items(), key=lambda x:x[0]))
     sorted_answers_distribution_labels = list(sorted_answers_distribution.keys())
     sorted_answers_distribution_values = list(sorted_answers_distribution.values())
