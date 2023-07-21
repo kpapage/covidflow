@@ -1,9 +1,7 @@
 FROM ubuntu
 
 # Copy files
-COPY ../ /covidflow
-COPY ./actual_requirements.txt /covidflow/actual_requirements.txt
-COPY ./.env /covidflow/.env
+COPY . /covidflow
 WORKDIR /covidflow
 
 # Install Python and dependencies
@@ -24,4 +22,4 @@ RUN apt install -y python3-pip
 RUN pip install -r actual_requirements.txt
 
 # RUN python3 /covidflow/ScrapeQuestions.py
-CMD ["python3", "-m" , "gunicorn", "-w", "8", "-b", "0.0.0.0:8000", "covidsite.routes:app"]
+CMD ["python3", "-m" , "gunicorn", "-w", "8", "-b", "0.0.0.0:8000", "covidflow.covidsite.routes:app"]

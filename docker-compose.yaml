@@ -10,8 +10,8 @@ services:
             - MONGO_INITDB_DATABASE
         volumes:
             - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
-            - ../technologies_list.json:/preload/technologies_list.json
-            - ../questions.json:/preload/questions.json
+            - ./technologies_list.json:/preload/technologies_list.json
+            - ./questions.json:/preload/questions.json
             - ./data:/data/db    
 
     backend:
@@ -29,7 +29,7 @@ services:
             - "443:443"
             - "80:80"
         volumes:
-            - ../covidsite/static:/static
+            - ./covidsite/static:/static
             - ./nginx.conf:/etc/nginx/nginx.conf:ro
             - ./server.crt:/certs/server.crt:ro
             - ./server.key:/certs/server.key:ro
