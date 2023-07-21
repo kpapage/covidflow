@@ -1,15 +1,13 @@
-import pymongo
-from datetime import date
-from selenium import webdriver
 import time
+
+import pymongo
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
-import re
-import math
-import openpyxl
-from geopy.geocoders import Nominatim
-from datetime import datetime
 from selenium.webdriver.common.by import By
+from geopy.geocoders import Nominatim
+
+
 
 print('Extracting Question Data')
 cluster = pymongo.MongoClient("mongodb://localhost:27017/")

@@ -1,0 +1,18 @@
+flask
+flask_pymongo
+numpy
+python-dotenv
+gunicorn
+# pandas
+# geopy
+# selenium
+# scikit-learn
+# imbalanced-learn
+# nltk
+# seaborn
+# matplotlib
+# keras
+# tensorflow
+# transformers
+# xgboost
+# sentence-transformers

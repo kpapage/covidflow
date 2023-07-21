@@ -3,61 +3,39 @@ def removekey(d, key):
     del r[key]
     return r
 
-from selenium import webdriver
-import pandas as pd
+
 import time
+import re
+import math
+import itertools
+from datetime import date, timedelta
+
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
-import re
-import math
-import openpyxl
-from geopy.geocoders import Nominatim
-from datetime import datetime,date,timedelta
-# from openpyxl.styles import Alignment
-import pymongo
-import pickle
-import ast
-import itertools
-from webdriver_manager.chrome import ChromeDriverManager
-import requests
-import wget
-import zipfile
-import os
-# Import necessary libraries
-import os
-import re
-import pandas as pd
-# from keras import Sequential, Input, Model
-# from keras.layers import Dense, Embedding, LSTM, Bidirectional, Flatten, Dropout, Reshape
-from nltk.corpus import stopwords
-from keras.utils import pad_sequences
-from imblearn.over_sampling import ADASYN, BorderlineSMOTE
-# from sklearn.ensemble import RandomForestClassifier
-# from sklearn.linear_model import LogisticRegression
+from selenium.webdriver import FirefoxOptions
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, f1_score, recall_score, roc_curve, auc, roc_auc_score
-from nltk.stem import WordNetLemmatizer
-# from sklearn.neighbors import KNeighborsClassifier
-# from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
-import seaborn as sns
+from sklearn.model_selection import StratifiedKFold
+from imblearn.over_sampling import ADASYN
+from nltk import word_tokenize, pos_tag, ne_chunk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 import matplotlib.pyplot as plt
+import seaborn as sns
+from keras.utils import pad_sequences
+import tensorflow as tf
 from transformers import BertTokenizer, BertModel, BertForSequenceClassification
 from xgboost import XGBClassifier
-# import transformers
-import tensorflow as tf
 from sentence_transformers import SentenceTransformer
-# import torch
-# from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
-# from torch.optim import AdamW
-# from transformers import get_linear_schedule_with_warmup
-# from torch.nn.utils import clip_grad_norm_
-# from tqdm.notebook import tqdm
+import pandas as pd
 import numpy as np
-import math
-from sklearn.model_selection import StratifiedKFold
-from nltk import word_tokenize, pos_tag, ne_chunk
+import pymongo
+from geopy.geocoders import Nominatim
+
+
 
 METRICS = [
     tf.keras.metrics.AUC(name='roc-auc'),
@@ -273,17 +251,13 @@ def create_classifier():
 
 
 classifier=pd.read_pickle("xgb_model.pkl")
-options = webdriver.ChromeOptions()
-options.add_argument("user-data-dir=C:\\Users\giou2\\AppData\\Local\\Google\\Chrome\\User Data")
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
-driver = webdriver.Chrome(ChromeDriverManager().install(),
-    #executable_path='chromedriver.exe',
-    options=options)
-browser_version = driver.capabilities['browserVersion']
-driver_version = driver.capabilities['chrome']['chromedriverVersion'].split(' ')[0]
-print("browser version",browser_version)
-print("driver version",driver_version)
-print('Extracting Question Data')
+options = FirefoxOptions()
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("--headless")
+options.add_argument("--disable-gpu")
+driver = webdriver.Firefox(options=options)
+
 
 labels = ['covid*', "coronavirus", "corona-virus", "2019-ncov", "sars-cov"]
 with open("searchdate.txt") as file:

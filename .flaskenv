@@ -1,2 +1,0 @@
-FLASK_APP=covidsite
-FLASK_ENV=production

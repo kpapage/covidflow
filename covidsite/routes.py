@@ -1,30 +1,27 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
-
-from flask import Flask
-
-from covidsite.extensions import mongo
-
-from pymongo import MongoClient
-
 from itertools import islice, combinations
-
-from collections import Counter
-
 import re
-
 from datetime import datetime, timezone, date
-
-import numpy as np
-
 from operator import itemgetter
-
+from collections import Counter
 from statistics import median
 
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Flask
+from pymongo import MongoClient
+import numpy as np
+from dotenv import dotenv_values
+
+
 app = Flask(__name__)
+USERNAME = dotenv_values(".env")["MONGO_INITDB_ROOT_USERNAME"]
+PASSWORD = dotenv_values(".env")["MONGO_INITDB_ROOT_PASSWORD"]
+DATABASE = dotenv_values(".env")["MONGO_INITDB_DATABASE"]
+URI = f"mongodb://{USERNAME}:{PASSWORD}@mongodb:27017/{DATABASE}"
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    client = MongoClient('localhost',27017)
+    client = MongoClient(URI)
     db = client['COVID-db']
     covidCollection = db.questions
     questions = covidCollection.find()  # load questions from collection
@@ -1319,7 +1316,7 @@ def get_map3():
     return render_template('lda_PCI_9_topics_Titles.html')
 @app.route('/get_dates', methods=['GET'])
 def fetch():
-    client = MongoClient('localhost', 27017)
+    client = MongoClient(URI)
     db = client['COVID-db']
     covidCollection = db.questions
     date_from = request.args.get('dateFrom')
