@@ -1,6 +1,6 @@
 set -e
 
-mongosh <<EOF
+mongo <<EOF
 db = db.getSiblingDB('admin')
 db.auth('$MONGO_INITDB_ROOT_USERNAME', '$MONGO_INITDB_ROOT_PASSWORD')
 
