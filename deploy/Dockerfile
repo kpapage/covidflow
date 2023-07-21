@@ -1,7 +1,7 @@
 FROM ubuntu
 
 # Copy files
-COPY ./covidflow /covidflow
+COPY ../ /covidflow
 COPY ./actual_requirements.txt /covidflow/actual_requirements.txt
 COPY ./.env /covidflow/.env
 WORKDIR /covidflow
