@@ -9,7 +9,7 @@ import re
 import math
 import itertools
 from datetime import date, timedelta
-
+import pickle
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
@@ -34,8 +34,7 @@ import pandas as pd
 import numpy as np
 import pymongo
 from geopy.geocoders import Nominatim
-
-
+import os
 
 METRICS = [
     tf.keras.metrics.AUC(name='roc-auc'),
@@ -78,18 +77,20 @@ def encode_BERT_2(model, corpus):
 
 def create_corpus2(X):
     corpus = []
-    for i in range(0, len(X)):
-        review = re.sub(r'[^a-zA-Z0-9\s]', '', X[i])
-        review = re.sub(r'http\S+', '', review)
+    try:
+        for i in range(0, len(X)):
+            review = re.sub(r'[^a-zA-Z0-9\s]', '', X[i])
+            review = re.sub(r'http\S+', '', review)
 
-        review = review.lower()
-        words = word_tokenize(review)
-        tagged = pos_tag(words)
-        chunked = ne_chunk(tagged)
-        filtered = [tup[0] for tup in tagged if
-                    (tup[1].startswith("N") or tup[1].startswith("V") or tup[1].startswith("J"))]
-        corpus.append(' '.join(filtered))
-
+            review = review.lower()
+            words = word_tokenize(review)
+            tagged = pos_tag(words)
+            chunked = ne_chunk(tagged)
+            filtered = [tup[0] for tup in tagged if
+                        (tup[1].startswith("N") or tup[1].startswith("V") or tup[1].startswith("J"))]
+            corpus.append(' '.join(filtered))
+    except KeyError:
+        pass
     return corpus
 
 
@@ -250,13 +251,12 @@ def create_classifier():
     show_conf_matrix(y_test, y_pred)
 
 
-classifier=pd.read_pickle("xgb_model.pkl")
-options = FirefoxOptions()
-options.add_argument("--headless")
-options.add_argument("--no-sandbox")
-options.add_argument("--headless")
-options.add_argument("--disable-gpu")
-driver = webdriver.Firefox(options=options)
+options = webdriver.ChromeOptions()
+options.add_argument("user-data-dir=C:\\Users\giou2\\AppData\\Local\\Google\\Chrome\\User Data")
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
+driver = webdriver.Chrome(
+    executable_path='chromedriver-win64/chromedriver.exe'
+    , options=options)
 
 
 labels = ['covid*', "coronavirus", "corona-virus", "2019-ncov", "sars-cov"]
@@ -267,9 +267,10 @@ list_of_dataframes = []
 for label in labels:
     print("Extracting question data about {}".format(label))
     driver.get("https://stackoverflow.com/search?page=1&tab=Relevance&q={}%20created%3a{}%20{}%3a{}".format(label, searchdate,'is','question'))
-    results_text = driver.find_element(By.CSS_SELECTOR, ".flex--item.fl1.fs-body3.mr12").text
+    results_text = driver.find_element(By.XPATH, '//div[contains(@class, "fs-body1")]').text
     numberOfResults = float(re.sub("[^0-9]", "", results_text))
     pages = math.ceil(numberOfResults / 15)
+    print(pages)
     questions = {}
     covered_ids = []
     processed_ids = []
@@ -475,6 +476,7 @@ df_final = pd.concat(list_of_dataframes, ignore_index = True)
 colnames = ['Id', 'Tags', 'Timestamp', 'Votes', 'Answers', 'User ID', 'Title', 'Views', 'First Answer', 'Code','Comments', 'Closed', 'Body', 'Location', 'Deleted', 'Latitude', 'Longitude']
 df_final.columns = colnames
 df_final = df_final.drop_duplicates(subset=['Id'])
+df_final.to_excel('test.xlsx')
 print('Constructed Final Dataframe')
 title = []
 question_id = []
@@ -506,6 +508,8 @@ corpus_X = create_corpus2(X)
 
 X_embed = create_embeddings_sentence_transformers('all-mpnet-base-v2', corpus_X)
 
+with open('xgb_model.pkl', 'rb') as f:
+    classifier = pickle.load(f)
 pred = classifier.predict(X_embed)
 pred = pd.DataFrame(pred)
 df_final['Filter'] = pred

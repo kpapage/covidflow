@@ -19,7 +19,7 @@ options = webdriver.ChromeOptions()
 options.add_argument("user-data-dir=C:\\Users\giou2\\AppData\\Local\\Google\\Chrome\\User Data")
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 driver = webdriver.Chrome(
-    executable_path='chromedriver_win32/chromedriver.exe'
+    executable_path='chromedriver-win64/chromedriver.exe'
     , options=options)
 
 for question in collection.find(no_cursor_timeout=True).batch_size(30):
