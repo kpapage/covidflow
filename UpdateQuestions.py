@@ -16,11 +16,32 @@ collection = db["questions"]
 
 
 options = webdriver.ChromeOptions()
-options.add_argument("user-data-dir=C:\\Users\giou2\\AppData\\Local\\Google\\Chrome\\User Data")
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
+options.add_argument('--ignore-certificate-errors')
+options.add_argument("--test-type")
+#options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(
     executable_path='chromedriver-win64/chromedriver.exe'
     , options=options)
+driver.get('https://stackoverflow.com/users/login')
+
+driver.maximize_window()
+
+mail="konsgeor@csd.auth.gr"
+passw ="stoapth1996"
+
+# key user email
+email = driver.find_element(By.NAME, 'email')
+email.send_keys(mail)
+
+# key user password
+password = driver.find_element(By.NAME, 'password')
+password.send_keys(passw)
+
+# press login
+login = driver.find_element(By.NAME, 'submit-button')
+time.sleep(2)
+login.click()
+time.sleep(3)
 
 for question in collection.find(no_cursor_timeout=True).batch_size(30):
     lista = []  # [votes,comments,answers,closed,views,first_date]
