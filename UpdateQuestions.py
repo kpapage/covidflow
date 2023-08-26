@@ -4,6 +4,7 @@ import pymongo
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from geopy.geocoders import Nominatim
 
@@ -88,7 +89,7 @@ for question in collection.find(no_cursor_timeout=True).batch_size(30):
                             }
                         }
                     )
-        except NoSuchElementException:
+        except (NoSuchElementException, WebDriverException) as e:
              pass
         try:
             comments_link = question_text.find_element(By.CSS_SELECTOR,".js-show-link.comments-link")
