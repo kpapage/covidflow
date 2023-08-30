@@ -35,13 +35,23 @@ import numpy as np
 import pymongo
 from geopy.geocoders import Nominatim
 import os
+import nltk
+from dotenv import dotenv_values
+
+
+nltk.download('averaged_perceptron_tagger', quiet=True)
+nltk.download('maxent_ne_chunker', quiet=True)
+nltk.download('words', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('punkt', quiet=True)
+nltk.download('wordnet', quiet=True)
 
 METRICS = [
     tf.keras.metrics.AUC(name='roc-auc'),
     tf.keras.metrics.BinaryAccuracy(name='accuracy'),
     tf.keras.metrics.Precision(name='precision'),
     tf.keras.metrics.Recall(name="recall")
-          ]
+]
 
 def create_embeddings_sentence_transformers(model, corpus):
 
@@ -255,15 +265,20 @@ options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument("--test-type")
 #options.add_experimental_option("detach", True)
-driver = webdriver.Chrome(
-    executable_path='chromedriver-win64/chromedriver.exe'
-    , options=options)
+# driver = webdriver.Chrome(
+#     executable_path="http://localhost:4444/wd/hub",
+#     options=options)
+
+driver = webdriver.Remote(
+    command_executor='http://chrome:4444/wd/hub',
+    options=options
+)
 driver.get('https://stackoverflow.com/users/login')
 
 driver.maximize_window()
 
-mail="konsgeor@csd.auth.gr"
-passw ="stoapth1996"
+mail = dotenv_values(".env")["STACKOVERFLOW_EMAIL"]
+passw = dotenv_values(".env")["STACKOVERFLOW_PASSWORD"]
 
 # key user email
 email = driver.find_element(By.NAME, 'email')
@@ -622,7 +637,13 @@ for index, row in df_final.iterrows():
         combinations = list(itertools.combinations(to_combine, 2))
         tag_combinations.append(combinations)
 print('Completed Combinations Extraction')
-cluster = pymongo.MongoClient("mongodb://localhost:27017/")
+
+USERNAME = dotenv_values(".env")["MONGO_INITDB_ROOT_USERNAME"]
+PASSWORD = dotenv_values(".env")["MONGO_INITDB_ROOT_PASSWORD"]
+DATABASE = dotenv_values(".env")["MONGO_INITDB_DATABASE"]
+URI = f"mongodb://{USERNAME}:{PASSWORD}@mongodb:27017/{DATABASE}"
+# cluster = pymongo.MongoClient("mongodb://localhost:27017/")
+cluster = pymongo.MongoClient(URI)
 db = cluster["COVID-db"]
 collection = db["questions"]
 last = db.questions.find().sort('_id', pymongo.DESCENDING).limit(1)[0]['_id'] + 1

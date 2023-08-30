@@ -1,9 +1,23 @@
 version: "3.7"
 services:
+    chrome:
+        image: selenium/standalone-chrome
+        container_name: chrome
+        ports:
+            - 4444:4444
+            - 7900:7900
+        environment:
+          - SE_NODE_MAX_SESSIONS=2
+        restart: always
+        volumes:
+            - /dev/shm:/dev/shm
+        
     mongo:
         image: mongo:4.4.9
         container_name: mongodb
         restart: always
+        ports:
+            - 27017:27017
         environment:
             - MONGO_INITDB_ROOT_USERNAME
             - MONGO_INITDB_ROOT_PASSWORD
@@ -16,14 +30,19 @@ services:
 
     backend:
         build: .
-        container_name: backend
         restart: always
         links:
             - mongo
+            - chrome
+        volumes:
+            - ./cron_log.txt:/cron_log.txt
+            # - ./env/lib/python3.10/site-packages:/usr/local/lib/python3.10/dist-packages:ro
+        depends_on: 
+            - mongo
+            - chrome
 
     nginx:
         image: nginx
-        container_name: nginx
         restart: always
         ports:
             - "443:443"
@@ -35,4 +54,5 @@ services:
             - ./server.key:/certs/server.key:ro
         links:
             - backend
-
+        depends_on:
+            - backend

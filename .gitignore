@@ -1,0 +1,7 @@
+.env
+env
+data
+cron_log.txt
+server.crt
+server.csr
+server.key

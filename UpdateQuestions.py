@@ -7,11 +7,16 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from geopy.geocoders import Nominatim
-
+from dotenv import dotenv_values
 
 
 print('Extracting Question Data')
-cluster = pymongo.MongoClient("mongodb://localhost:27017/")
+USERNAME = dotenv_values(".env")["MONGO_INITDB_ROOT_USERNAME"]
+PASSWORD = dotenv_values(".env")["MONGO_INITDB_ROOT_PASSWORD"]
+DATABASE = dotenv_values(".env")["MONGO_INITDB_DATABASE"]
+URI = f"mongodb://{USERNAME}:{PASSWORD}@mongodb:27017/{DATABASE}"
+cluster = pymongo.MongoClient(URI)
+# cluster = pymongo.MongoClient("mongodb://localhost:27017/")
 db = cluster["COVID-db"]
 collection = db["questions"]
 
@@ -20,15 +25,20 @@ options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument("--test-type")
 #options.add_experimental_option("detach", True)
-driver = webdriver.Chrome(
-    executable_path='chromedriver-win64/chromedriver.exe'
-    , options=options)
+# driver = webdriver.Chrome(
+#     executable_path='chromedriver-win64/chromedriver.exe'
+#     , options=options)
+driver = webdriver.Remote(
+    command_executor='http://chrome:4444/wd/hub',
+    options=options,
+)
+
 driver.get('https://stackoverflow.com/users/login')
 
 driver.maximize_window()
 
-mail="konsgeor@csd.auth.gr"
-passw ="stoapth1996"
+mail = dotenv_values(".env")["STACKOVERFLOW_EMAIL"]
+passw = dotenv_values(".env")["STACKOVERFLOW_PASSWORD"]
 
 # key user email
 email = driver.find_element(By.NAME, 'email')
